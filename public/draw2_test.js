@@ -225,13 +225,24 @@ const keyZ = function (e) {
   }
 };
 document.addEventListener('keydown', function (e) { // 對整個頁面監聽
-  console.log(e.key);
-  if (e.key === 'Meta') {
+  const Mac = new RegExp('Mac');
+  const Win = new RegExp('Win');
+  const computerType = navigator.platform;
+  if (e.key === 'Meta' && Mac.test(computerType) === true) {
+    document.addEventListener('keydown', keyZ);
+  }
+  if (e.key === 'Meta' && Win.test(computerType) === true) {
     document.addEventListener('keydown', keyZ);
   }
 });
 document.addEventListener('keyup', function (e) { // 對整個頁面監聽
-  if (e.key === 'Meta') {
+  const Mac = new RegExp('Mac');
+  const Win = new RegExp('Win');
+  const computerType = navigator.platform;
+  if (e.key === 'Meta' && Mac.test(computerType) === true) {
+    document.removeEventListener('keydown', keyZ);
+  }
+  if (e.key === 'Meta' && Win.test(computerType) === true) {
     document.removeEventListener('keydown', keyZ);
   }
 });
