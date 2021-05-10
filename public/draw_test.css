@@ -18,21 +18,44 @@
   width: 200px;
 }
 
-#draw {
+/* #add_canvas {
   border: 1px solid #999;
   flex: left;
+  width: 80px;
+  height: 50px;
+} */
+#favcolor{
+	width: 32px;
+	height: 32px;
 }
-#img{
-  border: 1px solid #999;
-  width: 400px ;
-  height: 250px;
+.demo {
+  display: flex;
+  flex-direction: column;
 }
 
-#gamer_img{
+#eraser,
+#RB_color,
+#undo,
+#redo{
+  width: 200px;
+}
+
+.draw {
+  border: 1px solid #999;
+  /* float: left; */
+  position: absolute;
+}
+
+#imgs{
   border: 1px solid #999;
   width: 800px ;
   height: 500px;
 }
+
+.img{
+  position: absolute;
+}
+
 #color_view {
   border: 1px solid #999;
   width: 100px;
