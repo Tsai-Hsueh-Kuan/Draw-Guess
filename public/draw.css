@@ -5,7 +5,7 @@
   max-width: 860px;
 } */
 
-.value-range-display {
+.lineWidthRange {
   visibility: visible;
   width: 0;
   height: 0;
@@ -14,17 +14,17 @@
   border-color: transparent transparent #5B5B5B transparent;
 }
 
-#myRange {
+#lineWidthRange {
   width: 200px;
 }
 
-/* #add_canvas {
+#addCanvas {
   border: 1px solid #999;
-  flex: left;
-  width: 80px;
-  height: 50px;
-} */
-#favcolor{
+  position: absolute;
+  width: 800px;
+  height: 500px;
+}
+#colorChoose{
 	width: 32px;
 	height: 32px;
 }
@@ -34,10 +34,13 @@
 }
 
 #eraser,
-#RB_color,
+#rainbowColor,
 #undo,
-#redo{
+#redo,
+#getQuestion,
+#skip{
   width: 200px;
+  height: 30px;
 }
 
 .draw {
@@ -56,12 +59,12 @@
   position: absolute;
 }
 
-#color_view {
+#colorView {
   border: 1px solid #999;
   width: 100px;
 }
 
-#question_data {
+#questionData {
   max-width: 40%;
   display: flex;
   justify-content: space-between;
@@ -77,12 +80,4 @@
   align-items: center;
 }
 
-#skip {
-  border: 1px solid #999;
-  border-radius: 5px;
-  width: 200px;
-  height: 40px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
+

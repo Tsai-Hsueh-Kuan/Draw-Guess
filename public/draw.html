@@ -5,14 +5,14 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-  <link rel="stylesheet" href="/draw_test.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/draw.css">
   <title>draw_test</title>
 </head>
-<body>
-  
+<body>  
   <div class="demo">
     <!-- 調整色彩 -->
-      <input type="color" id="favcolor" name="favcolor" value="#ffffff"><br><br>
+      <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
 
       <!-- <div class="color">
       R<input id="red" type="range" name="points" min="0" max="255" value="0"><br>
@@ -27,13 +27,13 @@
 
 
       <div >
-        <div class="value-range-display"></div>
-        <input id="myRange" type="range" min="1" max="50" step="1" value="5">
+        <div class="lineWidthRange"></div>
+        <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
       </div>
 
-      <button id="RB_color">rainbow color</button>
+      <button id="rainbowColor">rainbow color : ON</button>
       <br>
-      <div id="color_view">color view</div>
+      <div id="colorView">color view</div>
       <br>
       <button id="eraser">eraser</button>
       <br>
@@ -43,23 +43,30 @@
     <!-- 下載 -->
     <button id="undo">undo</button>
     <button id="redo">redo</button>
+    <button id="getQuestion">New Question</button>
+    <h1 id="time">準備開始</h1>
+    <!-- <button id="skip">skip</button> -->
+  
+
     <!-- <a id="save" href="#" class="color-btn-green">Save Canvas</a> -->
     <!-- 下載end -->
     </div>
     <br>
     <!-- Canvas -->
-    <div id="add_canvas">
-      <canvas id="draw0" class="draw" width="800" height="500">
-        Sorry, your browser doesn't support the &lt;canvas&gt; element.
+    <div id="addCanvas">
+      <canvas class="draw" id="draw0" width="800" height="500" style="z-index: 0;">
       </canvas>
     </div>
     <!-- Canvas end -->
-    <div id="question_data">
-    <div id="question">question</div>
-    <div id="skip">skip</div>
+    <div id="questionData">
+    <div id="question"></div>
     </div>
+    
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
 </body>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/draw2_test.js"></script>
+<script src="/draw.js"></script>
 
 </html>
