@@ -54,7 +54,7 @@ fetch('/api/1.0/user/profile', {
     return err;
   });
 
-const socket = io((''), {
+const socket = io(('https://hsuehkuan.tw'), {
   auth: {
     token: token,
     room: room,
