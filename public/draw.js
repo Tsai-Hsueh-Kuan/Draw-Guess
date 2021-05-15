@@ -2,9 +2,65 @@ const url = new URLSearchParams(window.location.search);
 const type = 'idiom';// url.get('type');
 const room = url.get('room');
 const password = url.get('password');
-const hostId = '6';
+let userId;
+let userName;
+let userPhoto;
+let userScore;
+let roomId;
+
+const token = localStorage.getItem('token');
+fetch('/api/1.0/user/profile', {
+  method: 'GET',
+  headers: { authorization: `Bearer ${token}` }
+})
+  .then(function (response) {
+    if (response.status === 200) {
+      return response.json(); // 內建promise , send type need json
+    } else if (response.status === 403) {
+      localStorage.removeItem('token');
+      sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
+        .then(() => {
+          return window.location.assign('/');
+        });
+    } else if (response.status === 401) {
+      localStorage.removeItem('token');
+      sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
+        .then(() => {
+          return window.location.assign('/');
+        });
+    }
+  }).then(data => {
+    userId = data.data.id;
+    userName = data.data.name;
+    userPhoto = data.data.photo;
+    userScore = data.data.score;
+    const info = document.getElementById('info');
+
+    const name = document.createElement('div');
+    name.textContent = `NAME: ${userName}`;
+    info.appendChild(name);
+
+    const photo = document.createElement('img');
+    if (userPhoto) {
+      photo.setAttribute('src', `${userPhoto}`);
+    } else {
+      photo.setAttribute('src', './images/member.png');
+    }
+    photo.style.width = '5%';
+    info.appendChild(photo);
+  })
+  .catch(function (err) {
+    return err;
+  });
+
 // socket io
-const socket = io();
+const socket = io((''), {
+  auth: {
+    token: token,
+    room: room,
+    type: 'host'
+  }
+});
 
 const canvasDiv = document.querySelector('#addCanvas');
 const canvas = document.querySelector('.draw');
@@ -169,23 +225,12 @@ canvasDiv.addEventListener('mouseup', function () {
 const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
 getQuestion.addEventListener('click', function () {
-  if (gameDone) {
-    socket.emit('getQuestion', { room: room, type: type, hostId: hostId });
-    gameDone = false;
-    isDrawing = false;
-    const canvasDiv = document.querySelector('#addCanvas');
-    canvasDiv.innerHTML = '';
-    canvasNum = 0;
-    const canvas = document.createElement('canvas');
-    canvas.className = 'draw';
-    canvas.id = 'draw' + canvasNum;
-    canvas.width = '800';
-    canvas.height = '500';
-    canvas.style.zIndex = canvasNum;
-    ctx[canvasNum] = canvas.getContext('2d');
-    canvasDiv.appendChild(canvas);
+  if (!roomId) {
+    alert('你也等一下人吧');
+  } else if (gameDone) {
+    socket.emit('getQuestion', { room: room, type: type, hostId: userId });
   } else {
-    alert('這場遊戲還沒結束');
+    sweetAlert('這場遊戲尚未結束！', '試著 讓作品更豐富', 'error', { button: { text: '繼續畫！!' } });
   }
 });
 
@@ -201,20 +246,34 @@ socket.on(`question${room}`, (msg) => {
   startTime = new Date().getTime();
   if (msg) {
     startCountdown(timeout);
+    const canvasDiv = document.querySelector('#addCanvas');
+    canvasDiv.innerHTML = '';
+    canvasNum = 0;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'draw';
+    canvas.id = 'draw' + canvasNum;
+    canvas.width = '800';
+    canvas.height = '500';
+    canvas.style.zIndex = canvasNum;
+    ctx[canvasNum] = canvas.getContext('2d');
+    canvasDiv.appendChild(canvas);
+    gameDone = false;
+    isDrawing = false;
     questionSql = msg;
     question.textContent = `question: ${questionSql}`;
     time.textContent = ('遊戲開始');
   }
 });
+const limitTime = 20;
 const time = document.getElementById('time');
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
     // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
-    if (countIndex < 10) {
+    if (countIndex < limitTime) {
       // console.log(`${10 - countIndex}: 偏差${deviation}ms`);
-      time.textContent = (`剩 ${10 - countIndex} 秒鐘！`);
+      time.textContent = (`剩 ${limitTime - countIndex} 秒鐘！`);
       countIndex++;
 
       // 下一次倒數計時
@@ -234,7 +293,7 @@ const undo = function () {
     const c = myobj.getContext('2d');
     c.clearRect(0, 0, 800, 500);
     canvasNum--;
-    socket.emit('undo', { room: room, data: 1 });
+    socket.emit('undo', { room: room, canvasNum: canvasNum, data: 1 });
   }
 };
 const undoBottom = document.querySelector('#undo');
@@ -282,9 +341,18 @@ socket.on(`redo url${room}`, async (msg) => {
 });
 
 socket.on(`answerShow${room}`, (msg) => {
-  console.log(msg);
+  console.log('answerShow' + msg);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
+  console.log('userCorrect:');
   console.log(msg);
+});
+
+const playerList = document.getElementById('playerList');
+const host = document.getElementById('host');
+socket.on(`roomUserId${room}`, (msg) => {
+  host.textContent = 'host id: ' + msg.hostId;
+  playerList.textContent = 'player list: ' + msg.roomUserId;
+  roomId = msg.roomUserId;
 });

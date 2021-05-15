@@ -1,5 +1,7 @@
 const { core, query, transaction, commit, rollback, end } = require('../../util/mysqlcon.js');
-
+const User = require('./user_model');
+const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
+const jwt = require('jsonwebtoken');
 const getquestion = async (type) => {
   const question = await query('SELECT * from question where type = ? AND inuse = 0 limit 1', type);
   return question;
@@ -29,11 +31,42 @@ const updateHistory = async (gameId, userId, record) => {
   await query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
 };
 
+const updateScore = async (score, userId) => {
+  await query('UPDATE user SET score = score + ? where id = ? ', [score, userId]);
+};
+
+const inputCanvas = async (gameId, canvasNum, canvasData, data) => {
+  await query('INSERT INTO draw.canvas (game_id,canvas_num,canvas_data,canvas_undo) VALUES (?,?,?,?)', [gameId, canvasNum, canvasData, data]);
+};
+
+const verifyTokenSocket = (token) => {
+  try {
+    const user = jwt.verify(token, TOKEN_SECRET);
+    return user;
+  } catch {
+    console.log('wrong token');
+    return 'err';
+  }
+};
+
+const getRank = async () => {
+  const data = await query('SELECT id,name,photo,score from draw.user order by score desc limit 10');
+  for (const i in data) {
+    if (data[i].photo) {
+      data[i].photo = IP + data[i].photo;
+    }
+  }
+  return data;
+};
 module.exports = {
   getquestion,
   updateInuse,
   resetInuse,
   getGame,
   getHistory,
-  updateHistory
+  updateHistory,
+  updateScore,
+  inputCanvas,
+  verifyTokenSocket,
+  getRank
 };

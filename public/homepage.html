@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>User sign up</title>
+     
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+<link rel="stylesheet" href="/homepage.css">
+</head>
+<body>
+  <!-- <nav class="navbar navbar-dark bg-dark nav justify-content-end">
+  <ul class="nav justify-content-end">
+    <li class="nav-item">
+      <button type="button" class="btn btn-primary test" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign Up</button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Sign In</button>
+    </li>
+    <li class="nav-item">
+      <button id="exampleModal2">Sign Out</button>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+    </li>
+  </ul>
+</nav> -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light navbar navbar-dark bg-dark nav justify-content-end">
+  <div class="justify-content-end">
+  <div class="navbar-brand">
+        <button type="button" class="btn btn-primary test" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign Up</button>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Sign In</button>
+        <button type="button" class="btn btn-primary" id="exampleModal2">Sign Out</button>
+        
+  </div>
+</div>
+</nav>
+<div>user info</div>
+<div class="info" id="info"></div>
+<div>rank</div>
+<div class="rank" id="rank"></div>
+
+      <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Open modal for @getbootstrap</button>
+       -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">註冊</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form name="signUpForm">
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">NAME:</label>
+                  <input type="text" name="name" class="form-control" id="recipient-name1">
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">PASSWORD:</label>
+                  <input type="password" class="form-control" name="password" id="message-text1"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">PHOTO:</label>
+                  <input type="file" name="photo" name="photo" class="form-control" id="photo"></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id="signUpButton" class="btn btn-primary">Send message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">登入</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form name="signInForm">
+                    <div class="mb-3">
+                      <label for="recipient-name" class="col-form-label">NAME:</label>
+                      <input type="text" name="name" class="form-control" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="message-text" class="col-form-label">PASSWORD:</label>
+                      <input type="password" class="form-control" name="password" id="message-text"></textarea>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" id="signInButton" class="btn btn-primary">Send message</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <script src="/socket.io/socket.io.js"></script>
+      <script src="homepage.js"></script>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+</body>
+</html>

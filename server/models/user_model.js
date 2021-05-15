@@ -2,7 +2,7 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const got = require('got');
 const { core, query, transaction, commit, rollback, end } = require('../../util/mysqlcon.js');
-const { TOKEN_EXPIRE, TOKEN_SECRET } = process.env; // 30 days by seconds
+const { TOKEN_EXPIRE, TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');
 const { createHash } = require('crypto');
 
@@ -24,18 +24,19 @@ const signUp = async (name, password, photo) => {
     const user = {
       password: passwordencryption(password),
       name: name,
-      photo: photo || null
+      photo: photo || null,
+      score: 0
     };
-    // const accessToken = jwt.sign({
-    //   name: user.name,
-    //   password: user.password
-    // }, TOKEN_SECRET);
-    // user.access_token = accessToken;
 
     const queryStr = 'INSERT INTO user SET ?';
     const result = await query(queryStr, user);
-
     user.id = result.insertId;
+    const accessToken = jwt.sign({
+      id: user.id,
+      name: user.name
+    }, TOKEN_SECRET, { expiresIn: '36000s' });
+    user.access_token = accessToken;
+
     await commit();
     return { user };
   } catch (error) {
@@ -45,96 +46,50 @@ const signUp = async (name, password, photo) => {
   }
 };
 
-// const nativeSignIn = async (email, password) => {
-//   try {
-//     await transaction();
+const signIn = async (name, password) => {
+  try {
+    await transaction();
+    const nameCheck = await query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
+    if (!nameCheck[0]) {
+      return { error: 'please check your name' };
+    }
+    if (nameCheck[0].password !== passwordencryption(password)) {
+      await commit();
+      return { error: 'Password is wrong' };
+    }
+    const user = {
+      id: nameCheck[0].id,
+      password: passwordencryption(password),
+      name: nameCheck[0].name,
+      photo: nameCheck[0].photo
+    };
+    const accessToken = jwt.sign({
+      id: nameCheck[0].id,
+      name: user.name
+    }, TOKEN_SECRET, { expiresIn: '36000s' });
 
-//     const users = await query('SELECT * FROM user WHERE email = ?', [email]);
-//     const user = users[0];
-//     if (!bcrypt.compareSync(password, user.password)) {
-//       await commit();
-//       return { error: 'Password is wrong' };
-//     }
+    user.access_token = accessToken;
+    await commit();
+    return { user };
+  } catch (error) {
+    console.log(error);
+    await rollback();
+    return { error };
+  }
+};
 
-//     const loginAt = new Date();
-//     const accessToken = jwt.sign({
-//       provider: user.provider,
-//       name: user.name,
-//       email: user.email,
-//       picture: user.picture
-//     }, TOKEN_SECRET);
+const getUserDetail = async (userId) => {
+  try {
+    const userDetail = await query('SELECT * FROM user WHERE id = ?', userId);
+    if (userDetail[0].photo) {
+      userDetail[0].photo = IP + userDetail[0].photo;
+    }
 
-//     const queryStr = 'UPDATE user SET access_token = ?, access_expired = ?, login_at = ? WHERE id = ?';
-//     await query(queryStr, [accessToken, TOKEN_EXPIRE, loginAt, user.id]);
-
-//     await commit();
-
-//     user.access_token = accessToken;
-//     user.login_at = loginAt;
-//     user.access_expired = TOKEN_EXPIRE;
-//     return { user };
-//   } catch (error) {
-//     await rollback();
-//     return { error };
-//   }
-// };
-
-// const facebookSignIn = async (id, roleId, name, email) => {
-//   try {
-//     await transaction();
-//     const loginAt = new Date();
-//     const user = {
-//       provider: 'facebook',
-//       role_id: roleId,
-//       email: email,
-//       name: name,
-//       picture: 'https://graph.facebook.com/' + id + '/picture?type=large',
-//       access_expired: TOKEN_EXPIRE,
-//       login_at: loginAt
-//     };
-//     const accessToken = jwt.sign({
-//       provider: user.provider,
-//       name: user.name,
-//       email: user.email,
-//       picture: user.picture
-//     }, TOKEN_SECRET);
-//     user.access_token = accessToken;
-
-//     const users = await query('SELECT id FROM user WHERE email = ? AND provider = \'facebook\' FOR UPDATE', [email]);
-//     let userId;
-//     if (users.length === 0) { // Insert new user
-//       const queryStr = 'insert into user set ?';
-//       const result = await query(queryStr, user);
-//       userId = result.insertId;
-//     } else { // Update existed user
-//       userId = users[0].id;
-//       const queryStr = 'UPDATE user SET access_token = ?, access_expired = ?, login_at = ?  WHERE id = ?';
-//       await query(queryStr, [accessToken, TOKEN_EXPIRE, loginAt, userId]);
-//     }
-//     user.id = userId;
-
-//     await commit();
-
-//     return { user };
-//   } catch (error) {
-//     await rollback();
-//     return { error };
-//   }
-// };
-
-// const getUserDetail = async (email, roleId) => {
-//   try {
-//     if (roleId) {
-//       const users = await query('SELECT * FROM user WHERE email = ? AND role_id = ?', [email, roleId]);
-//       return users[0];
-//     } else {
-//       const users = await query('SELECT * FROM user WHERE email = ?', [email]);
-//       return users[0];
-//     }
-//   } catch (e) {
-//     return null;
-//   }
-// };
+    return userDetail[0];
+  } catch (error) {
+    return null;
+  }
+};
 
 // const getFacebookProfile = async function (accessToken) {
 //   try {
@@ -174,10 +129,11 @@ const signUp = async (name, password, photo) => {
 // };
 
 module.exports = {
-  signUp
+  signUp,
+  signIn,
   // nativeSignIn,
   // facebookSignIn,
-  // getUserDetail,
+  getUserDetail
   // getFacebookProfile,
   // getViewList
 };

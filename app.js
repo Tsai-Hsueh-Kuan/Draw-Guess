@@ -4,6 +4,7 @@ const port = NODE_ENV === 'test' ? PORT_TEST : PORT;
 // Express Initialization
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 app.set('trust proxy', true);
 // app.set('trust proxy', 'loopback');
@@ -16,10 +17,16 @@ app.use(express.urlencoded({ extended: true }));
 // CORS allow all
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/homepage.html'), (err) => {
+    if (err) res.send(404);
+  });
+});
 // API routes
 app.use('/api/' + API_VERSION,
   [
-    require('./server/routes/user_route')
+    require('./server/routes/user_route'),
+    require('./server/routes/game_route')
   ]
 );
 

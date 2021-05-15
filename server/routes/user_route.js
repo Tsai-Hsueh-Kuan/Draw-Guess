@@ -1,18 +1,24 @@
 const router = require('express').Router();
-
+const { upload } = require('../../util/util');
+const cpUpload = upload.single('photo');
 const {
-  wrapAsync
+  wrapAsync,
+  verifyToken
 } = require('../../util/util');
 
 const {
   signUp,
-  signIn
+  signIn,
+  getUserProfile
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
-  .post(wrapAsync(signUp));
+  .post(cpUpload, wrapAsync(signUp));
 
 router.route('/user/signin')
-  .post(wrapAsync(signIn));
+  .post(cpUpload, wrapAsync(signIn));
+
+router.route('/user/profile')
+  .get(verifyToken, wrapAsync(getUserProfile));
 
 module.exports = router;
