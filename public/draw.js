@@ -225,7 +225,7 @@ canvasDiv.addEventListener('mouseup', function () {
 const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
 getQuestion.addEventListener('click', function () {
-  if (!roomId) {
+  if (!roomId[0]) {
     alert('你也等一下人吧');
   } else if (gameDone) {
     socket.emit('getQuestion', { room: room, type: type, hostId: userId });

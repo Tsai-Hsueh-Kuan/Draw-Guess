@@ -31,7 +31,8 @@ app.use('/api/' + API_VERSION,
 );
 
 // socket.io
-const server = require('http').Server(app);
+// const server = require('http').Server(app);
+const server = require('https').Server(app);
 const io = require('socket.io')(server);
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
