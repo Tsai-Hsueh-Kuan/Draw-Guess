@@ -56,7 +56,9 @@ fetch('/api/1.0/user/profile', {
 
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
-start.addEventListener('click', function (ev) {
+start.addEventListener('click', function () {
+  // const imgs = document.querySelector('#imgs');
+  // imgs.innerHTML = '';
   fetch('/api/1.0/game/single', {
     method: 'GET',
     headers: { authorization: `Bearer ${token}` }
@@ -78,9 +80,6 @@ start.addEventListener('click', function (ev) {
           });
       }
     }).then(data => {
-      startTime = new Date().getTime();
-
-      startCountdown(timeout);
       if (data.error) {
         sweetAlert('已無更多題目！', '何不試試連線模式？', 'warning', { button: { text: 'Click Me!' } })
           .then(() => {
@@ -88,6 +87,13 @@ start.addEventListener('click', function (ev) {
           });
       } else {
         canvasAll = data.data.game;
+        if (canvasAll) {
+          startTime = new Date().getTime();
+          startCountdown(timeout);
+        } else {
+          alert('不好意思 爛題目 請再按下一題');
+        }
+
         const recordDiv = document.getElementById('record');
         for (const i in data.data.history) {
           const recordName = data.data.history[i].name;
@@ -142,7 +148,7 @@ function startCountdown (interval) {
     } else {
       i = 0;
       countIndex = 1;
-      console.log('no');
+      console.log('draw done');
     }
   }, interval);
 }
