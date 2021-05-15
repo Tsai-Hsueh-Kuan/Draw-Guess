@@ -106,7 +106,7 @@ socket.on(`answer${room}`, (msg) => {
   title.textContent = ('遊戲開始');
   gameDone = false;
   message.textContent = '請開始作答';
-  socket.emit('checkPlayer', { userId: userId, room: room });
+  socket.emit('checkPlayerInGame', { userId: userId, room: room });
 });
 
 socket.on(`convasData${room}`, (msg) => {

@@ -74,8 +74,18 @@ const socketCon = (io) => {
         userId[msg.room] = '';
         socket.broadcast.emit(`answer${msg.room}`, question[msg.room]);
         socket.emit(`question${msg.room}`, question[msg.room]);
-        gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
-        getHistory(gameId[msg.room], userId[msg.room], 'fail');
+        socket.on('checkPlayerInGame', async (msg) => {
+          if (!userId[msg.room]) {
+            userId[msg.room] = [msg.userId];
+            gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
+            getHistory(gameId[msg.room], userId[msg.room], 'fail');
+          } else {
+            userId[msg.room].push(msg.userId);
+            gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
+            getHistory(gameId[msg.room], userId[msg.room], 'fail');
+          }
+        });
+
         userId[msg.room] = '';
         gameTime[msg.room] = 1; // 倒數計時任務執行次數
         const timeout = 1000; // 觸發倒數計時任務的時間間隙
