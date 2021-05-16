@@ -7,6 +7,7 @@ let userName;
 let userPhoto;
 let userScore;
 let answerLimit = true;
+let answerGet;
 const token = localStorage.getItem('token');
 
 fetch('/api/1.0/user/profile', {
@@ -54,7 +55,7 @@ fetch('/api/1.0/user/profile', {
     return err;
   });
 
-const socket = io(('https://hsuehkuan.tw'), {
+const socket = io((''), {
   auth: {
     token: token,
     room: room,
@@ -141,6 +142,7 @@ answer.addEventListener('submit', function (ev) {
     socket.on(`answerCorrect${userId}`, (msg) => {
       if (msg.check) {
         message.textContent = `正確答案！ ${answerCheck}`;
+        answerGet = answerCheck;
         gameStatus = 2;
       } else {
         message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
@@ -151,7 +153,7 @@ answer.addEventListener('submit', function (ev) {
   } else if (gameStatus === 0) {
     message.textContent = 'please wait next game';
   } else if (gameStatus === 2) {
-    message.textContent = `您已答對 答案就是${answerCheck} please wait next game`;
+    message.textContent = `您已答對 答案就是${answerGet} please wait next game`;
   }
 
   ev.preventDefault();

@@ -6,7 +6,7 @@ let userId;
 let userName;
 let userPhoto;
 let userScore;
-let roomId;
+let roomId = [];
 
 const token = localStorage.getItem('token');
 fetch('/api/1.0/user/profile', {
@@ -54,7 +54,7 @@ fetch('/api/1.0/user/profile', {
   });
 
 // socket io
-const socket = io(('https://hsuehkuan.tw'), {
+const socket = io((''), {
   auth: {
     token: token,
     room: room,
@@ -354,5 +354,7 @@ const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
   host.textContent = 'host id: ' + msg.hostId;
   playerList.textContent = 'player list: ' + msg.roomUserId;
-  roomId = msg.roomUserId;
+  if (msg.roomUserId) {
+    roomId = msg.roomUserId;
+  }
 });

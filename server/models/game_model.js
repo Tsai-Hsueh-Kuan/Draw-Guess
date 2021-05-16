@@ -11,6 +11,9 @@ const getSingleGame = async (id) => {
   const result = gameIdListArray.filter((e) => {
     return gameIdCheckArray.indexOf(e) === -1;
   });
+  console.log(gameIdListArray);
+  console.log(gameIdCheckArray);
+  console.log(result);
   if (!result[0]) {
     return { error: '已無更多題庫給您' };
   } else {

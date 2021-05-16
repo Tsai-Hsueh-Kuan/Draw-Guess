@@ -1,13 +1,14 @@
 const url = new URLSearchParams(window.location.search);
 const type = url.get('type');
-const room = url.get('room');
 let userId;
 let userName;
 let userPhoto;
 let userScore;
 let canvasAll;
 let i = 0;
-const answerLimit = true;
+let gameStatus = 0;
+let answerLimit = true;
+let getAnswer;
 const token = localStorage.getItem('token');
 
 fetch('/api/1.0/user/profile', {
@@ -53,14 +54,15 @@ fetch('/api/1.0/user/profile', {
   .catch(function (err) {
     return err;
   });
-
+const title = document.getElementById('title');
+const message = document.getElementById('message');
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
 start.addEventListener('click', function () {
   // const imgs = document.querySelector('#imgs');
   // imgs.innerHTML = '';
   fetch('/api/1.0/game/single', {
-    method: 'GET',
+    method: 'post',
     headers: { authorization: `Bearer ${token}` }
   })
     .then(function (response) {
@@ -87,13 +89,18 @@ start.addEventListener('click', function () {
           });
       } else {
         canvasAll = data.data.game;
-        if (canvasAll) {
+        if (canvasAll[0].canvas_data) {
+          console.log(canvasAll);
+          getAnswer = canvasAll[0].question;
+          imgs.innerHTML = '';
           startTime = new Date().getTime();
           startCountdown(timeout);
         } else {
           alert('不好意思 爛題目 請再按下一題');
         }
-
+        title.textContent = ('遊戲開始');
+        gameStatus = 1;
+        message.textContent = '請開始作答';
         const recordDiv = document.getElementById('record');
         for (const i in data.data.history) {
           const recordName = data.data.history[i].name;
@@ -136,19 +143,57 @@ function startCountdown (interval) {
     // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime && canvasAll[i]) {
-      const img = document.createElement('img');
-      img.src = canvasAll[i].canvas_data;
-      img.className = 'img';
-      img.id = 'img' + i;
-      imgs.appendChild(img);
+      if (canvasAll[i].canvas_data !== '0') {
+        const img = document.createElement('img');
+        img.src = canvasAll[i].canvas_data;
+        img.className = 'img';
+        img.id = 'img' + i;
+        imgs.appendChild(img);
+      } else if (canvasAll[i].canvas_undo !== '0') {
+        const img = document.getElementsByClassName('img');
+
+        const finalNum = img.length;
+
+        img[finalNum - 1].remove();
+      }
       // 下一次倒數計時
       i++;
       countIndex++;
       startCountdown(timeout - deviation);
     } else {
+      gameStatus = 0;
       i = 0;
       countIndex = 1;
+      start.textContent = 'NEXT GAME';
       console.log('draw done');
     }
   }, interval);
 }
+
+const answer = document.getElementById('answer');
+answer.addEventListener('submit', function (ev) {
+  const answerCheck = document.getElementById('answerCheck').value;
+  if (gameStatus === 1 && answerLimit) {
+    answerLimit = false;
+    setTimeout(() => {
+      answerLimit = true;
+    }, 2000);
+
+    if (answerCheck === getAnswer) {
+      message.textContent = `正確答案！ ${answerCheck}`;
+      gameStatus = 2;
+      start.textContent = 'NEXT GAME';
+    } else {
+      message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+    }
+  } else if (gameStatus === 0) {
+    message.textContent = 'please wait next game';
+  } else if (gameStatus === 2) {
+    message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
+    start.textContent = 'NEXT GAME';
+  } else if (!answerLimit) {
+    message.textContent = '作答時間間隔太短';
+  }
+
+  ev.preventDefault();
+}, false);
