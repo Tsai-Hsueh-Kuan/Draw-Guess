@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
     if (err) res.send(404);
   });
 });
+
 // API routes
 app.use('/api/' + API_VERSION,
   [

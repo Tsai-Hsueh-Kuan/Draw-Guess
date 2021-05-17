@@ -58,6 +58,11 @@ const getRank = async () => {
   }
   return data;
 };
+
+const getUser = async (userId) => {
+  const data = await query('SELECT id,name,photo from draw.user where id = ?', userId);
+  return data;
+};
 module.exports = {
   getquestion,
   updateInuse,
@@ -68,5 +73,6 @@ module.exports = {
   updateScore,
   inputCanvas,
   verifyTokenSocket,
-  getRank
+  getRank,
+  getUser
 };

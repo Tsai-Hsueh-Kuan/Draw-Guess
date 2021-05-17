@@ -6,14 +6,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
   <link rel="stylesheet" href="/draw.css">
-  <title>draw_test</title>
+  <title>draw</title>
 </head>
-<body>  
-  <div>user info</div>
+<body>
+  <input id="example" value="need del">
+  <button id="copy" data-clipboard-target="#example">複製</button>
+  <script>
+    
+  	new Clipboard( "#copy" );
+  </script>
+<br>
+  <div>user info-----</div>
   <div class="info" id="info"></div>
-  <div id="host"></div>
-  <div id="playerList"></div>
+  <br>
+  <div>host-----</div>
+  <div id="host" class="host"></div>
+  <br>
+  <div>player list-----</div>
+  <div id="playerList" class="playerList"></div>
   <div class="demo">
     <!-- 調整色彩 -->
       <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>

@@ -173,6 +173,44 @@ socket.on(`userCorrect${room}`, (msg) => {
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
-  host.textContent = 'host id: ' + msg.hostId;
-  playerList.textContent = 'player list: ' + msg.roomUserId;
+  playerList.innerHTML = '';
+  if (msg.roomUserData[0]) {
+    for (const i in msg.roomUserData) {
+      const gamerName = msg.roomUserData[i].name;
+      const gamerPhoto = msg.roomUserData[i].photo;
+      const userinfo = document.createElement('div');
+      userinfo.className = 'userinfo';
+      playerList.appendChild(userinfo);
+      const name = document.createElement('div');
+      name.textContent = `NAME: ${gamerName}`;
+      userinfo.appendChild(name);
+      const photo = document.createElement('img');
+      if (gamerPhoto) {
+        photo.setAttribute('src', `${gamerPhoto}`);
+      } else {
+        photo.setAttribute('src', './images/member.png');
+      }
+      photo.style.width = '5%';
+      userinfo.appendChild(photo);
+    }
+  }
+  host.innerHTML = '';
+  if (msg.hostDetail) {
+    const hostName = msg.hostDetail[0].name;
+    const hostPhoto = msg.hostDetail[0].photo;
+    const hostinfo = document.createElement('div');
+    hostinfo.className = 'hostinfo';
+    host.appendChild(hostinfo);
+    const name = document.createElement('div');
+    name.textContent = `NAME: ${hostName}`;
+    hostinfo.appendChild(name);
+    const photo = document.createElement('img');
+    if (hostPhoto) {
+      photo.setAttribute('src', `${hostPhoto}`);
+    } else {
+      photo.setAttribute('src', './images/member.png');
+    }
+    photo.style.width = '5%';
+    hostinfo.appendChild(photo);
+  }
 });

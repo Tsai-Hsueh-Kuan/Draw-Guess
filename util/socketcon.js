@@ -6,7 +6,7 @@ const {
 } = require('./cache.js');
 const { core, query, transaction, commit, rollback, end } = require('./mysqlcon.js');
 
-const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank } = require('../server/models/socketcon_model');
+const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser } = require('../server/models/socketcon_model');
 const { use } = require('../server/routes/user_route.js');
 const timeCheck = [];
 const question = [];
@@ -17,6 +17,7 @@ const gameId = [];
 const gameTime = [];
 const userId = [];
 const roomUserId = [];
+const hostDetail = [];
 const limitTime = 20;
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
@@ -27,17 +28,31 @@ const socketCon = (io) => {
       const verifyHost = await verifyTokenSocket(inToken);
       if (`${intype}` === 'host') {
         hostId[inRoom] = verifyHost.id;
-        socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], roomUserId: roomUserId[inRoom] });
-        socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], roomUserId: roomUserId[inRoom] });
+        hostDetail[inRoom] = await getUser(verifyHost.id);
+        const roomUserData = [];
+        for (const i in roomUserId[inRoom]) {
+          const userDetail = await getUser(roomUserId[inRoom][i]);
+          roomUserData[i] = (userDetail[0]);
+        }
+        socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
+        socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
       } else if (`${intype}` === 'player') {
         if (roomUserId[inRoom]) {
           roomUserId[inRoom].push(verifyHost.id);
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], roomUserId: roomUserId[inRoom] });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], roomUserId: roomUserId[inRoom] });
+          const roomUserData = [];
+          for (const i in roomUserId[inRoom]) {
+            const userDetail = await getUser(roomUserId[inRoom][i]);
+            roomUserData[i] = (userDetail[0]);
+          }
+          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
+          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
         } else {
           roomUserId[inRoom] = [verifyHost.id];
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], roomUserId: roomUserId[inRoom] });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], roomUserId: roomUserId[inRoom] });
+          const roomUserData = [];
+          const userDetail = await getUser(verifyHost.id);
+          roomUserData[inRoom] = (userDetail[0]);
+          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
+          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
         }
       }
     }
@@ -52,8 +67,13 @@ const socketCon = (io) => {
         } else if (`${outtype}` === 'player') {
           if (roomUserId[outRoom]) {
             roomUserId[outRoom].pop();
-            socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom] });
-            socket.broadcast.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom] });
+            const roomUserData = [];
+            for (const i in roomUserId[outRoom]) {
+              const userDetail = await getUser(roomUserId[outRoom][i]);
+              roomUserData[i] = (userDetail[0]);
+            }
+            socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData });
+            socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData });
           } else {
             console.log('不可能啊');
           }
@@ -63,6 +83,7 @@ const socketCon = (io) => {
     try {
       socket.on('getQuestion', async (msg) => {
         hostId[msg.room] = msg.hostId;
+
         let questionData = await getquestion(msg.type);
         if (!questionData[0]) {
           await updateInuse(msg.type);
@@ -115,6 +136,7 @@ const socketCon = (io) => {
       });
 
       socket.on('answerCheck', async (msg) => {
+        const userData = await getUser(msg.userId);
         if (timeCheck[msg.room]) {
           if (msg.answerData === question[msg.room]) {
             updateHistory(gameId[msg.room], msg.userId, msg.canvasNum);
@@ -122,8 +144,8 @@ const socketCon = (io) => {
             const rankData = await getRank();
             socket.broadcast.emit('getRank', { data: rankData });
             socket.emit(`answerCorrect${msg.userId}`, { check: true, answer: '' });
-            socket.emit(`userCorrect${msg.room}`, { userId: msg.userId, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: (limitTime - gameTime[msg.room]) });
-            socket.broadcast.emit(`userCorrect${msg.room}`, { userId: msg.userId, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: (limitTime - gameTime[msg.room]) });
+            socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: (limitTime - gameTime[msg.room]) });
+            socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: (limitTime - gameTime[msg.room]) });
           } else {
             socket.emit(`answerCorrect${msg.userId}`, { check: false, answer: '' });
             socket.emit(`answerShow${msg.room}`, msg);
