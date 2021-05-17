@@ -267,7 +267,7 @@ socket.on(`question${room}`, (msg) => {
     time.textContent = ('遊戲開始');
   }
 });
-const limitTime = 20;
+const limitTime = 30;
 const time = document.getElementById('time');
 function startCountdown (interval) {
   setTimeout(() => {

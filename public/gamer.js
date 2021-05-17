@@ -76,7 +76,7 @@ let gameDone = true;
 let countIndex = 1; // 倒數計時任務執行次數
 let timeout = 1000; // 觸發倒數計時任務的時間間隙
 let startTime = new Date().getTime();
-const limitTime = 20;
+const limitTime = 30;
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();

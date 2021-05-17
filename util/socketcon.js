@@ -20,7 +20,7 @@ const roomUserId = [];
 const hostDetail = [];
 const roomUserData = [];
 const disconnectTime = [];
-const limitTime = 20;
+const limitTime = 30;
 let hostDisconnect;
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
