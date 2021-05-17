@@ -5,7 +5,6 @@ const urlhost = window.location.host;
 const type = url.get('type');
 const room = url.get('room');
 const urlAll = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
-console.log(urlAll);
 let userId;
 let userName;
 let userPhoto;
@@ -249,7 +248,7 @@ socket.on(`question${room}`, (msg) => {
   timeout = 1000; // 觸發倒數計時任務的時間間隙
   startTime = new Date().getTime();
   if (msg) {
-    startCountdown(timeout);
+    startCountdown(50);
     const canvasDiv = document.querySelector('#addCanvas');
     canvasDiv.innerHTML = '';
     canvasNum = 0;
@@ -276,7 +275,6 @@ function startCountdown (interval) {
     // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime) {
-      // console.log(`${10 - countIndex}: 偏差${deviation}ms`);
       time.textContent = (`剩 ${limitTime - countIndex} 秒鐘！`);
       countIndex++;
 
@@ -345,7 +343,8 @@ socket.on(`redo url${room}`, async (msg) => {
 });
 
 socket.on(`answerShow${room}`, (msg) => {
-  console.log('answerShow' + msg);
+  console.log('answerShow');
+  console.log(msg);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
@@ -359,8 +358,8 @@ socket.on(`roomUserId${room}`, (msg) => {
   playerList.innerHTML = '';
   if (msg.roomUserData[0]) {
     for (const i in msg.roomUserData) {
-      const gamerName = msg.roomUserData[i].name;
-      const gamerPhoto = msg.roomUserData[i].photo;
+      const gamerName = msg.roomUserData[i][0].name;
+      const gamerPhoto = msg.roomUserData[i][0].photo;
       const userinfo = document.createElement('div');
       userinfo.className = 'userinfo';
       playerList.appendChild(userinfo);
@@ -378,27 +377,49 @@ socket.on(`roomUserId${room}`, (msg) => {
     }
   }
   host.innerHTML = '';
-
-  const hostName = msg.hostDetail[0].name;
-  const hostPhoto = msg.hostDetail[0].photo;
-  const hostinfo = document.createElement('div');
-  hostinfo.className = 'hostinfo';
-  host.appendChild(hostinfo);
-  const name = document.createElement('div');
-  name.textContent = `NAME: ${hostName}`;
-  hostinfo.appendChild(name);
-  const photo = document.createElement('img');
-  if (hostPhoto) {
-    photo.setAttribute('src', `${hostPhoto}`);
-  } else {
-    photo.setAttribute('src', './images/member.png');
+  if (msg.hostDetail) {
+    const hostName = msg.hostDetail[0].name;
+    const hostPhoto = msg.hostDetail[0].photo;
+    const hostinfo = document.createElement('div');
+    hostinfo.className = 'hostinfo';
+    host.appendChild(hostinfo);
+    const name = document.createElement('div');
+    name.textContent = `NAME: ${hostName}`;
+    hostinfo.appendChild(name);
+    const photo = document.createElement('img');
+    if (hostPhoto) {
+      photo.setAttribute('src', `${hostPhoto}`);
+    } else {
+      photo.setAttribute('src', './images/member.png');
+    }
+    photo.style.width = '5%';
+    hostinfo.appendChild(photo);
   }
-  photo.style.width = '5%';
-  hostinfo.appendChild(photo);
-
   if (msg.roomUserId) {
     roomId = msg.roomUserId;
   }
 });
 const copy = document.getElementById('example');
 copy.value = urlAll;
+
+const leave = document.getElementById('leave');
+leave.addEventListener('click', function () {
+  sweetAlert('確定要離開嗎？', `親愛的 ${userId} 玩家`, 'warning', {
+    buttons: {
+      cancel: {
+        text: '取消',
+        visible: true,
+        value: 'cancel'
+      },
+      confirm: {
+        text: 'Confirm',
+        visible: true,
+        value: 'check'
+      }
+    }
+  }).then((value) => {
+    if (value === 'check') {
+      return window.location.assign('/');
+    }
+  });
+});

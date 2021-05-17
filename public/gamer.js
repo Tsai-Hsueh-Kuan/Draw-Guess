@@ -1,7 +1,13 @@
 
 const url = new URLSearchParams(window.location.search);
+
+const protocol = window.location.protocol;
+const urlhost = window.location.host;
+
 const type = url.get('type');
 const room = url.get('room');
+const urlGamer = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
+const urlDraw = protocol + '//' + urlhost + '/draw.html?room=' + room + '&type=' + type;
 let userId;
 let userName;
 let userPhoto;
@@ -103,7 +109,7 @@ socket.on(`answer${room}`, (msg) => {
   countIndex = 1; // 倒數計時任務執行次數
   timeout = 1000; // 觸發倒數計時任務的時間間隙
   startTime = new Date().getTime();
-  startCountdown(timeout);
+  startCountdown(50);
   title.textContent = ('遊戲開始');
   gameDone = false;
   message.textContent = '請開始作答';
@@ -139,7 +145,7 @@ answer.addEventListener('submit', function (ev) {
     }, 2000);
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
-    socket.on(`answerCorrect${userId}`, (msg) => {
+    socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
         message.textContent = `正確答案！ ${answerCheck}`;
         answerGet = answerCheck;
@@ -160,11 +166,27 @@ answer.addEventListener('submit', function (ev) {
 }, false);
 
 socket.on(`answerShow${room}`, (msg) => {
+  console.log('answerShow');
   console.log(msg);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
+  console.log('userCorrect:');
   console.log(msg);
+});
+
+socket.on(`closeRoom${room}`, () => {
+  sweetAlert('房主已離開房間！', '將回到首頁 請重新選擇房間', 'info', {
+    buttons: {
+      confirm: {
+        text: 'click me',
+        visible: true,
+        value: 'check'
+      }
+    }
+  }).then(() => {
+    return window.location.assign('/');
+  });
 });
 
 // window.addEventListener('load', function () {
@@ -176,8 +198,8 @@ socket.on(`roomUserId${room}`, (msg) => {
   playerList.innerHTML = '';
   if (msg.roomUserData[0]) {
     for (const i in msg.roomUserData) {
-      const gamerName = msg.roomUserData[i].name;
-      const gamerPhoto = msg.roomUserData[i].photo;
+      const gamerName = msg.roomUserData[i][0].name;
+      const gamerPhoto = msg.roomUserData[i][0].photo;
       const userinfo = document.createElement('div');
       userinfo.className = 'userinfo';
       playerList.appendChild(userinfo);
@@ -213,4 +235,26 @@ socket.on(`roomUserId${room}`, (msg) => {
     photo.style.width = '5%';
     hostinfo.appendChild(photo);
   }
+});
+
+const leave = document.getElementById('leave');
+leave.addEventListener('click', function () {
+  sweetAlert('確定要離開嗎？', `親愛的 ${userId} 玩家`, 'warning', {
+    buttons: {
+      cancel: {
+        text: '取消',
+        visible: true,
+        value: 'cancel'
+      },
+      confirm: {
+        text: 'Confirm',
+        visible: true,
+        value: 'check'
+      }
+    }
+  }).then((value) => {
+    if (value === 'check') {
+      return window.location.assign('/');
+    }
+  });
 });

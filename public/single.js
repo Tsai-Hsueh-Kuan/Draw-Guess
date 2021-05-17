@@ -98,10 +98,11 @@ start.addEventListener('click', function () {
         } else {
           alert('不好意思 爛題目 請再按下一題');
         }
-        title.textContent = ('遊戲開始');
         gameStatus = 1;
+        title.textContent = ('遊戲開始');
         message.textContent = '請開始作答';
         const recordDiv = document.getElementById('record');
+        recordDiv.innerHTML = '';
         for (const i in data.data.history) {
           const recordName = data.data.history[i].name;
           const recordPhoto = data.data.history[i].photo;
@@ -164,6 +165,8 @@ function startCountdown (interval) {
       gameStatus = 0;
       i = 0;
       countIndex = 1;
+      title.textContent = (`遊戲結束 正確答案是${getAnswer}`);
+      message.textContent = '請按NEXT GAME繼續';
       start.textContent = 'NEXT GAME';
       console.log('draw done');
     }
@@ -180,7 +183,8 @@ answer.addEventListener('submit', function (ev) {
     }, 2000);
 
     if (answerCheck === getAnswer) {
-      message.textContent = `正確答案！ ${answerCheck}`;
+      message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
+      title.textContent = `正確答案！ ${getAnswer}`;
       gameStatus = 2;
       start.textContent = 'NEXT GAME';
     } else {

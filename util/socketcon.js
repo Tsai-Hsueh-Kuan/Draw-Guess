@@ -18,7 +18,10 @@ const gameTime = [];
 const userId = [];
 const roomUserId = [];
 const hostDetail = [];
+const roomUserData = [];
+const disconnectTime = [];
 const limitTime = 20;
+let hostDisconnect;
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
     const inToken = socket.handshake.auth.token;
@@ -27,32 +30,25 @@ const socketCon = (io) => {
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (`${intype}` === 'host') {
+        hostDisconnect = false;
         hostId[inRoom] = verifyHost.id;
         hostDetail[inRoom] = await getUser(verifyHost.id);
-        const roomUserData = [];
-        for (const i in roomUserId[inRoom]) {
-          const userDetail = await getUser(roomUserId[inRoom][i]);
-          roomUserData[i] = (userDetail[0]);
-        }
-        socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
-        socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
+        socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+        socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
       } else if (`${intype}` === 'player') {
         if (roomUserId[inRoom]) {
           roomUserId[inRoom].push(verifyHost.id);
-          const roomUserData = [];
-          for (const i in roomUserId[inRoom]) {
-            const userDetail = await getUser(roomUserId[inRoom][i]);
-            roomUserData[i] = (userDetail[0]);
-          }
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
+          const userDetail = await getUser(verifyHost.id);
+          roomUserData[inRoom].push(userDetail);
+          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         } else {
           roomUserId[inRoom] = [verifyHost.id];
-          const roomUserData = [];
+          roomUserData[inRoom] = [];
           const userDetail = await getUser(verifyHost.id);
-          roomUserData[inRoom] = (userDetail[0]);
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData });
+          roomUserData[inRoom] = [userDetail];
+          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         }
       }
     }
@@ -60,20 +56,56 @@ const socketCon = (io) => {
       const outToken = socket.handshake.auth.token;
       const outRoom = socket.handshake.auth.room;
       const outtype = socket.handshake.auth.type;
+      const verifyHost = await verifyTokenSocket(outToken);
       if (outToken) {
-        const verifyHost = await verifyTokenSocket(outToken);
         if (`${outtype}` === 'host') {
-          hostId[outRoom] = verifyHost.id;
+          hostDisconnect = true;
+          disconnectTime[outRoom] = 1; // 倒數計時任務執行次數
+          const timeout = 1000; // 觸發倒數計時任務的時間間隙
+          const startTime = new Date().getTime();
+          function startCountdown (interval) {
+            setTimeout(() => {
+              const endTime = new Date().getTime();
+              const deviation = endTime - (startTime + disconnectTime[outRoom] * timeout);
+              if (disconnectTime[outRoom] < 5) {
+                disconnectTime[outRoom]++;
+                startCountdown(timeout - deviation);
+              } else {
+                if (hostDisconnect === true) {
+                  socket.emit(`closeRoom${outRoom}`);
+                  socket.broadcast.emit(`closeRoom${outRoom}`);
+                  timeCheck[outRoom] = '';
+                  question[outRoom] = '';
+                  questionId[outRoom] = '';
+                  canvas[outRoom] = '';
+                  hostId[outRoom] = '';
+                  gameId[outRoom] = '';
+                  gameTime[outRoom] = '';
+                  userId[outRoom] = '';
+                  roomUserId[outRoom] = '';
+                  hostDetail[outRoom] = '';
+                  roomUserData[outRoom] = '';
+                }
+              }
+            }, interval);
+          }
+          startCountdown(50);
         } else if (`${outtype}` === 'player') {
-          if (roomUserId[outRoom]) {
-            roomUserId[outRoom].pop();
-            const roomUserData = [];
+          if (roomUserId[outRoom][0]) {
+            roomUserId[outRoom] = roomUserId[outRoom].filter(function (item) {
+              return item !== verifyHost.id;
+            });
+            roomUserData[outRoom] = [];
             for (const i in roomUserId[outRoom]) {
               const userDetail = await getUser(roomUserId[outRoom][i]);
-              roomUserData[i] = (userDetail[0]);
+              if (i === 0) {
+                roomUserData[outRoom] = [userDetail];
+              } else {
+                roomUserData[outRoom].push(userDetail);
+              }
             }
-            socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData });
-            socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData });
+            socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+            socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
           } else {
             console.log('不可能啊');
           }
@@ -98,7 +130,6 @@ const socketCon = (io) => {
       });
 
       socket.on('checkPlayerInGame', async (msg) => {
-        console.log(roomUserId[msg.room]);
         if (!userId[msg.room]) {
           userId[msg.room] = [msg.userId];
           gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
@@ -132,7 +163,7 @@ const socketCon = (io) => {
             }
           }, interval);
         }
-        startCountdown(startTime);
+        startCountdown(50);
       });
 
       socket.on('answerCheck', async (msg) => {
@@ -143,11 +174,11 @@ const socketCon = (io) => {
             updateScore((limitTime - gameTime[msg.room]), msg.userId);
             const rankData = await getRank();
             socket.broadcast.emit('getRank', { data: rankData });
-            socket.emit(`answerCorrect${msg.userId}`, { check: true, answer: '' });
+            socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: true, answer: '' });
             socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: (limitTime - gameTime[msg.room]) });
             socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: (limitTime - gameTime[msg.room]) });
           } else {
-            socket.emit(`answerCorrect${msg.userId}`, { check: false, answer: '' });
+            socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
             socket.emit(`answerShow${msg.room}`, msg);
             socket.broadcast.emit(`answerShow${msg.room}`, msg);
           }
@@ -164,7 +195,6 @@ const socketCon = (io) => {
         }
       });
 
-      const aaa = [];
       socket.on('canvasData', async (msg) => {
         if (cache.ready) {
           if (gameId[msg.room]) {
@@ -172,19 +202,11 @@ const socketCon = (io) => {
           } else {
             await promisifyset(msg.room + msg.canvasNum, msg.url, 'Ex', 300);
           }
-
-          const a = { canvasNum: msg.canvasNum, url: msg.url };
-          aaa.push(a);
-          // console.log(aaa);
           socket.broadcast.emit(`convasData${msg.room}`, msg.url);
         }
         if (timeCheck[msg.room]) {
           inputCanvas(gameId[msg.room], msg.canvasNum, msg.url, 0);
         }
-
-        // console.log(hostId[msg.room])
-        // console.log(msg.room);
-        // console.log(msg.canvasNum);
       });
       socket.on('undo', (msg) => {
         socket.broadcast.emit(`undo msg${msg.room}`, msg.data);
@@ -220,6 +242,10 @@ const socketCon = (io) => {
           socket.broadcast.emit('getRank', { data: rankData });
           socket.emit('getRank', { data: rankData });
         }
+      });
+
+      socket.on('closeRoom', async (msg) => {
+        socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
       });
     } catch (err) {
       console.log(err);
