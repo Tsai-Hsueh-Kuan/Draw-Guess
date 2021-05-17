@@ -120,7 +120,7 @@ signInButton.addEventListener('click', function (ev) {
 const signOutButton = document.getElementById('exampleModal2');
 signOutButton.style = 'display:none';
 signOutButton.addEventListener('click', function () {
-  sweetAlert('確定要登出嗎？', `親愛的 ${userId} 玩家`, 'warning', {
+  sweetAlert('確定要登出嗎？', `親愛的 ${userName} 玩家`, 'warning', {
     buttons: {
       cancel: {
         text: '取消',

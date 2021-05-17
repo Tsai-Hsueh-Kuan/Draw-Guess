@@ -15,6 +15,7 @@ const signUp = async (req, res) => {
     res.status(400).send({ error: 'Name and password need to be entered completely' });
     return;
   }
+  console.log('photo');
   name = validator.escape(name);
   const result = await User.signUp(name, password, photo);
   if (result.error) {
