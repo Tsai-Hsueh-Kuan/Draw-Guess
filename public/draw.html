@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+  <link rel="stylesheet" href="/draw.css">
+  <title>draw</title>
+</head>
+<body>
+  <input id="example" value="need del">
+  <button id="copy" data-clipboard-target="#example">複製</button>
+  <script>
+    
+  	new Clipboard( "#copy" );
+  </script>
+<br>
+  <div>user info-----</div>
+  <div class="info" id="info"></div>
+  <br>
+  <div>host-----</div>
+  <div id="host" class="host"></div>
+  <br>
+  <div>player list-----</div>
+  <div id="playerList" class="playerList"></div>
+  <div class="demo">
+    <!-- 調整色彩 -->
+      <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
+
+      <!-- <div class="color">
+      R<input id="red" type="range" name="points" min="0" max="255" value="0"><br>
+      G<input id="green" type="range" name="points" min="0" max="255" value="0"><br>
+      B<input id="blue" type="range" name="points" min="0" max="255" value="0">
+      </div>
+      <div class="value">
+        R<input id="vred" type="text" value="0">
+        G<input id="vgreen" type="text" value="0">
+        B<input id="vblue" type="text" value="0">
+      </div> -->
+
+
+      <div >
+        <div class="lineWidthRange"></div>
+        <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
+      </div>
+
+      <button id="rainbowColor">rainbow color : ON</button>
+      <br>
+      <div id="colorView">color view</div>
+      <br>
+      <button id="eraser">eraser</button>
+      <br>
+
+    <!-- 調整色彩end -->
+    
+    <!-- 下載 -->
+    <button id="undo">undo</button>
+    <button id="redo">redo</button>
+    <button id="getQuestion">New Question</button>
+    <h1 id="time">準備開始</h1>
+    <!-- <button id="skip">skip</button> -->
+  
+
+    <!-- <a id="save" href="#" class="color-btn-green">Save Canvas</a> -->
+    <!-- 下載end -->
+    </div>
+    <br>
+    <!-- Canvas -->
+    <div id="addCanvas">
+      <canvas class="draw" id="draw0" width="800" height="500" style="z-index: 0;">
+      </canvas>
+    </div>
+    <!-- Canvas end -->
+    <div id="questionData">
+    <div id="question"></div>
+    </div>
+    
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/draw.js"></script>
+
+</html>

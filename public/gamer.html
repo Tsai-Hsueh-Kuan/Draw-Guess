@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+  <link rel="stylesheet" href="/draw.css">
+  <title>game</title>
+</head>
+<body>
+  <div>user info-----</div>
+  <div class="info" id="info"></div>
+  <br>
+  <div>host-----</div>
+  <div id="host" class="host"></div>
+  <br>
+  <div>player list-----</div>
+  <div id="playerList" class="playerList"></div>
+  <h1 id="title">準備開始</h1>
+  <h4 id="message">please wait next game</h1>
+    <div id="imgs"></div>
+    <form id="answer">
+      <input type="text" id="answerCheck">
+      <input type="submit">
+    </form>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- <a id="save" href="#" class="color-btn-green">Save Canvas</a> -->
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/gamer.js"></script>
+
+</html>

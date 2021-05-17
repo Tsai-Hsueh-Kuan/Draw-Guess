@@ -5,7 +5,7 @@
   max-width: 860px;
 } */
 
-.value-range-display {
+.lineWidthRange {
   visibility: visible;
   width: 0;
   height: 0;
@@ -14,31 +14,57 @@
   border-color: transparent transparent #5B5B5B transparent;
 }
 
-#myRange {
+#lineWidthRange {
   width: 200px;
 }
 
-#draw {
+#addCanvas {
   border: 1px solid #999;
-  flex: left;
+  position: absolute;
+  width: 800px;
+  height: 500px;
 }
-#img{
-  border: 1px solid #999;
-  width: 400px ;
-  height: 250px;
+#colorChoose{
+	width: 32px;
+	height: 32px;
+}
+.demo {
+  display: flex;
+  flex-direction: column;
 }
 
-#gamer_img{
+#eraser,
+#rainbowColor,
+#undo,
+#redo,
+#getQuestion,
+#skip{
+  width: 200px;
+  height: 30px;
+}
+
+.draw {
+  border: 1px solid #999;
+  /* float: left; */
+  position: absolute;
+}
+
+#imgs{
   border: 1px solid #999;
   width: 800px ;
   height: 500px;
 }
-#color_view {
+
+.img{
+  position: absolute;
+}
+
+#colorView {
   border: 1px solid #999;
   width: 100px;
 }
 
-#question_data {
+#questionData {
   max-width: 40%;
   display: flex;
   justify-content: space-between;
@@ -54,12 +80,4 @@
   align-items: center;
 }
 
-#skip {
-  border: 1px solid #999;
-  border-radius: 5px;
-  width: 200px;
-  height: 40px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
+
