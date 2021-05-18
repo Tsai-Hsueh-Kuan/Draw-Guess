@@ -182,3 +182,8 @@ const testPlay = document.getElementById('testPlay');
 testPlay.addEventListener('click', function () {
   return window.location.assign('/gamer.html?room=3');
 });
+
+const singlePlay = document.getElementById('singlePlay');
+singlePlay.addEventListener('click', function () {
+  return window.location.assign('/single.html?type=english');
+});
