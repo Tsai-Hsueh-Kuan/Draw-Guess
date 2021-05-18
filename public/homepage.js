@@ -177,3 +177,8 @@ socket.on('getRank', async (msg) => {
     userinfo.appendChild(photo);
   }
 });
+
+const testPlay = document.getElementById('testPlay');
+testPlay.addEventListener('click', function () {
+  return window.location.assign('/gamer.html?room=3');
+});
