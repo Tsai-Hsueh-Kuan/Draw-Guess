@@ -12,11 +12,12 @@ const getSingleGame = async (id, type) => {
   const result = gameIdListArray.filter((e) => {
     return gameIdCheckArray.indexOf(e) === -1;
   });
+  console.log(result);
   if (!result[0]) {
     return { error: '已無更多題庫給您' };
   } else {
     const rdQuestion = Math.floor(Math.random() * result.length);
-    const historyCheck = await query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ?', result[rdQuestion]);
+    const historyCheck = await query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? order by draw.history.record', result[rdQuestion]);
     for (const i in historyCheck) {
       delete historyCheck[i].password;
       if (historyCheck[i].photo) {

@@ -61,11 +61,11 @@ const message = document.getElementById('message');
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
 start.addEventListener('click', function () {
-  gameDone = false;
   if (!gameDone) {
     alert('欣賞完作品 再準備下一題');
     return;
   }
+  gameDone = false;
   const typeData = {
     type: type
   };
