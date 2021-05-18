@@ -7,8 +7,10 @@ let userScore;
 let canvasAll;
 let i = 0;
 let gameStatus = 0;
+let gameDone = true;
 let answerLimit = true;
 let getAnswer;
+let gameId;
 const token = localStorage.getItem('token');
 
 fetch('/api/1.0/user/profile', {
@@ -59,11 +61,20 @@ const message = document.getElementById('message');
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
 start.addEventListener('click', function () {
+  gameDone = false;
+  if (!gameDone) {
+    alert('欣賞完作品 再準備下一題');
+    return;
+  }
+  const typeData = {
+    type: type
+  };
   // const imgs = document.querySelector('#imgs');
   // imgs.innerHTML = '';
   fetch('/api/1.0/game/single', {
     method: 'post',
-    headers: { authorization: `Bearer ${token}` }
+    body: JSON.stringify(typeData),
+    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
   })
     .then(function (response) {
       if (response.status === 200) {
@@ -89,8 +100,8 @@ start.addEventListener('click', function () {
           });
       } else {
         canvasAll = data.data.game;
+        gameId = canvasAll[0].game_id;
         if (canvasAll[0].canvas_data) {
-          console.log(canvasAll);
           getAnswer = canvasAll[0].question;
           imgs.innerHTML = '';
           startTime = new Date().getTime();
@@ -166,9 +177,9 @@ function startCountdown (interval) {
       i = 0;
       countIndex = 1;
       title.textContent = (`遊戲結束 正確答案是${getAnswer}`);
-      message.textContent = '請按NEXT GAME繼續';
+      message.textContent = '請等待下一局';
       start.textContent = 'NEXT GAME';
-      console.log('draw done');
+      gameDone = true;
     }
   }, interval);
 }
@@ -187,6 +198,38 @@ answer.addEventListener('submit', function (ev) {
       title.textContent = `正確答案！ ${getAnswer}`;
       gameStatus = 2;
       start.textContent = 'NEXT GAME';
+      const historyData = {
+        record: countIndex,
+        gameId: gameId
+      };
+      console.log(historyData);
+      fetch('/api/1.0/game/history', {
+        method: 'post',
+        body: JSON.stringify(historyData),
+        headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+      })
+        .then(function (response) {
+          if (response.status === 200) {
+            return response.json(); // 內建promise , send type need json
+          } else if (response.status === 403) {
+            localStorage.removeItem('token');
+            sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
+              .then(() => {
+                return window.location.assign('/');
+              });
+          } else if (response.status === 401) {
+            localStorage.removeItem('token');
+            sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
+              .then(() => {
+                return window.location.assign('/');
+              });
+          }
+        }).then(data => {
+          console.log(data);
+        })
+        .catch(function (err) {
+          return err;
+        });
     } else {
       message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
     }

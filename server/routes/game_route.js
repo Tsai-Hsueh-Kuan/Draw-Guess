@@ -7,10 +7,14 @@ const {
 } = require('../../util/util');
 
 const {
-  getSingleGame
+  getSingleGame,
+  updateHistory
 } = require('../controllers/game_controller');
 
 router.route('/game/single')
   .post(verifyToken, wrapAsync(getSingleGame));
+
+router.route('/game/history')
+  .post(verifyToken, wrapAsync(updateHistory));
 
 module.exports = router;

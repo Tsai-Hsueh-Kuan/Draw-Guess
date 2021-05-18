@@ -123,12 +123,12 @@ signOutButton.addEventListener('click', function () {
   sweetAlert('確定要登出嗎？', `親愛的 ${userName} 玩家`, 'warning', {
     buttons: {
       cancel: {
-        text: '取消',
+        text: 'cancel',
         visible: true,
         value: 'cancel'
       },
       confirm: {
-        text: 'Confirm',
+        text: 'Sign Out',
         visible: true,
         value: 'check'
       }

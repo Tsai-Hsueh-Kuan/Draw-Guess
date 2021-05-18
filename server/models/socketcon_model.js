@@ -3,7 +3,7 @@ const User = require('./user_model');
 const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');
 const getquestion = async (type) => {
-  const question = await query('SELECT * from question where type = ? AND inuse = 0 limit 1', type);
+  const question = await query('SELECT * from question where type = ? AND inuse = 0 ORDER BY RAND() limit 1', type);
   return question;
 };
 
@@ -61,7 +61,21 @@ const getRank = async () => {
 
 const getUser = async (userId) => {
   const data = await query('SELECT id,name,photo from draw.user where id = ?', userId);
+  for (const i in data) {
+    if (data[i].photo) {
+      data[i].photo = IP + data[i].photo;
+    }
+  }
   return data;
+};
+
+const checkGameCanvas = async (gameId) => {
+  const data = await query('SELECT id from draw.canvas where game_id = ?', gameId);
+  if (data[0]) {
+  } else {
+    await query('DELETE from draw.game where id = ?', gameId);
+    await query('DELETE from draw.history where game_id = ?', gameId);
+  }
 };
 module.exports = {
   getquestion,
@@ -74,5 +88,6 @@ module.exports = {
   inputCanvas,
   verifyTokenSocket,
   getRank,
-  getUser
+  getUser,
+  checkGameCanvas
 };

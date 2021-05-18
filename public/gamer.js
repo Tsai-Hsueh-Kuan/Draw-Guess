@@ -239,7 +239,7 @@ socket.on(`roomUserId${room}`, (msg) => {
 
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
-  sweetAlert('確定要離開嗎？', `親愛的 ${userId} 玩家`, 'warning', {
+  sweetAlert('確定要離開嗎？', `親愛的 ${userName} 玩家`, 'warning', {
     buttons: {
       cancel: {
         text: '取消',

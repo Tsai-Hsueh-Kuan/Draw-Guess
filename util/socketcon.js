@@ -6,7 +6,7 @@ const {
 } = require('./cache.js');
 const { core, query, transaction, commit, rollback, end } = require('./mysqlcon.js');
 
-const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser } = require('../server/models/socketcon_model');
+const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas } = require('../server/models/socketcon_model');
 const { use } = require('../server/routes/user_route.js');
 const timeCheck = [];
 const question = [];
@@ -157,7 +157,7 @@ const socketCon = (io) => {
               if (userId[msg.room]) {
                 getHistory(gameId[msg.room], userId[msg.room], 'only view');
               }
-
+              checkGameCanvas(gameId[msg.room]);
               socket.broadcast.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
               socket.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
             }
