@@ -53,7 +53,7 @@ const verifyTokenSocket = (token) => {
 };
 
 const getRank = async () => {
-  const data = await query('SELECT id,name,photo,score from draw.user order by score desc limit 10');
+  const data = await query('SELECT id,name,photo,score from draw.user order by score desc');
   for (const i in data) {
     if (data[i].photo) {
       data[i].photo = IP + data[i].photo;
@@ -73,11 +73,18 @@ const getUser = async (userId) => {
 };
 
 const checkGameCanvas = async (gameId) => {
-  const data = await query('SELECT id from draw.canvas where game_id = ?', gameId);
-  if (data[0]) {
-  } else {
-    await query('DELETE from draw.game where id = ?', gameId);
-    await query('DELETE from draw.history where game_id = ?', gameId);
+  try {
+    const data = await query('SELECT id from draw.canvas where game_id = ?', gameId);
+    if (data[0]) {
+    } else {
+      console.log('ok');
+      await query('DELETE from draw.game where id = ?', gameId);
+      await query('DELETE from draw.history where game_id = ?', gameId);
+      return;
+    }
+  } catch {
+    console.log('del err');
+    return 'err';
   }
 };
 const canvasUpdate = async (gameId) => {

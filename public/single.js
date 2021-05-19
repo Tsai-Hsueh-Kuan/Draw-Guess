@@ -9,8 +9,9 @@ let i = 0;
 let gameStatus = 0;
 let gameDone = true;
 let answerLimit = true;
-let getAnswer;
+let getAnswerId;
 let gameId;
+let getAnswer;
 const token = localStorage.getItem('token');
 
 fetch('/api/1.0/user/profile', {
@@ -102,7 +103,7 @@ start.addEventListener('click', function () {
         canvasAll = data.data.game;
         gameId = canvasAll[0].game_id;
         if (canvasAll[0].canvas_data) {
-          getAnswer = canvasAll[0].question;
+          getAnswerId = canvasAll[0].question_id;
           imgs.innerHTML = '';
           startTime = new Date().getTime();
           startCountdown(timeout);
@@ -192,7 +193,22 @@ answer.addEventListener('submit', function (ev) {
     setTimeout(() => {
       answerLimit = true;
     }, 2000);
-
+    const data = {
+      answerId: getAnswerId
+    };
+    console.log(data);
+    fetch('/api/1.0/game/answer', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+    }).then(function (response) {
+      if (response.status === 200) {
+        return response.json(); // 內建promise , send type need json
+      }
+    }).then((data) => {
+      console.log(data);
+      getAnswer = data.answer;
+    });
     if (answerCheck === getAnswer) {
       message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
       title.textContent = `正確答案！ ${getAnswer}`;

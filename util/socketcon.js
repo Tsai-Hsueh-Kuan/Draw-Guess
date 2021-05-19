@@ -63,20 +63,6 @@ const socketCon = (io) => {
       }
     }
 
-    if (intype === 'mainPage') {
-      for (const i in roomList) {
-        if (timeCheck[parseInt(roomList[i])]) {
-          const canvasUpate = await canvasUpdate(gameId[parseInt(roomList[i])]);
-          if (canvasUpate[0]) {
-            console.log('123');
-            socket.broadcast.emit('canvasUpdate', { room: parseInt(roomList[i]), canvas: canvasUpate });
-          } else {
-            console.log('234');
-            return;
-          }
-        }
-      }
-    }
     if (timeCheck[inRoom]) {
       const canvasUpate = await canvasUpdate(gameId[inRoom]);
       socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate });
@@ -90,6 +76,9 @@ const socketCon = (io) => {
       if (outToken) {
         if (`${outtype}` === 'host') {
           hostDisconnect = true;
+          roomList = roomList.filter(function (item) {
+            return item !== outRoom;
+          });
           disconnectTime[outRoom] = 1; // 倒數計時任務執行次數
           const timeout = 1000; // 觸發倒數計時任務的時間間隙
           const startTime = new Date().getTime();
@@ -102,10 +91,6 @@ const socketCon = (io) => {
                 startCountdown(timeout - deviation);
               } else {
                 if (hostDisconnect === true) {
-                  roomList = roomList.filter(function (item) {
-                    return item !== outRoom;
-                  });
-
                   socket.broadcast.emit('mainPageViewClose', { room: outRoom });
                   socket.emit(`closeRoom${outRoom}`);
                   socket.broadcast.emit(`closeRoom${outRoom}`);
@@ -286,6 +271,20 @@ const socketCon = (io) => {
       socket.on('closeRoom', async (msg) => {
         socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
       });
+      if (intype === 'homePage') {
+        for (const i in roomList) {
+          if (timeCheck[parseInt(roomList[i])]) {
+            const canvasUpate = await canvasUpdate(gameId[parseInt(roomList[i])]);
+            if (canvasUpate[0]) {
+              socket.emit('canvasUpdate', { room: parseInt(roomList[i]), canvas: canvasUpate, game: true });
+            } else {
+              console.log('no canvas');
+            }
+          } else {
+            // no
+          }
+        }
+      }
     } catch (err) {
       console.log(err);
     }

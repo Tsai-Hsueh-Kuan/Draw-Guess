@@ -146,7 +146,9 @@ signOutButton.addEventListener('click', function () {
 
 const socket = io((''), {
   auth: {
-    // type: 'mainPage'
+    token: 'homePage',
+    room: 'homePage',
+    type: 'homePage'
   }
 });
 socket.emit('roomData', 'get');
@@ -308,7 +310,7 @@ socket.on('mainPageConvasData', (msg) => {
   const imgs = document.getElementById(`imgs${roomId}`);
   const img = document.createElement('img');
   img.src = msg.url;
-  img.className = 'img';
+  img.className = `img img${roomId}`;
   img.id = 'img' + roomId + 'step' + canvasNum[roomId];
   canvasNum[roomId]++;
   imgs.appendChild(img);
@@ -326,24 +328,31 @@ socket.on('mainPageUndo', (msg) => {
 });
 
 socket.on('canvasUpdate', (msg) => {
-  console.log(msg);
-  //   // const canvasAll = msg.canvas;
-  //   // for (const i in canvasAll) {
-  //   //   if (canvasAll[i].canvas_data !== '0') {
-  //   //     const img = document.createElement('img');
-  //   //     img.src = canvasAll[i].canvas_data;
-  //   //     img.className = 'img';
-  //   //     img.id = 'img' + i;
-  //   //     canvasNum = canvasAll[i].canvas_num - 1;
-  //   //     imgs.appendChild(img);
-  //   //   } else if (canvasAll[i].canvas_undo !== '0') {
-  //   //     const img = document.getElementsByClassName('img');
-
-  //   //     const finalNum = img.length;
-
-//   //     img[finalNum - 1].remove();
-//   //   }
-//   // }
+  const roomId = msg.room;
+  const canvasAll = msg.canvas;
+  const imgs = document.getElementById(`imgs${roomId}`);
+  if (msg.game) {
+    for (const i in canvasAll) {
+      if (canvasAll[i].canvas_data !== '0') {
+        const img = document.createElement('img');
+        img.src = canvasAll[i].canvas_data;
+        img.className = `img img${roomId}`;
+        img.id = 'img' + roomId + 'step' + i;
+        canvasNum[roomId] = canvasAll[i].canvas_num - 1;
+        imgs.appendChild(img);
+      } else if (canvasAll[i].canvas_undo !== '0') {
+        const img = document.getElementsByClassName(`img${roomId}`);
+        const finalNum = img.length;
+        img[finalNum - 1].remove();
+      }
+    }
+  }
+  // else {
+  //   const img = document.createElement('img');
+  //   img.src = '/images/member.png';
+  //   img.className = `img img${roomId}`;
+  //   imgs.appendChild(img);
+  // }
 });
 
 const singlePlay = document.getElementById('singlePlay');

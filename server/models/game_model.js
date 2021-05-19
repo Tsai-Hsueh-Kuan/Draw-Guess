@@ -12,7 +12,6 @@ const getSingleGame = async (id, type) => {
   const result = gameIdListArray.filter((e) => {
     return gameIdCheckArray.indexOf(e) === -1;
   });
-  console.log(result);
   if (!result[0]) {
     return { error: '已無更多題庫給您' };
   } else {
@@ -27,6 +26,7 @@ const getSingleGame = async (id, type) => {
 
     const gameCheck = await query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.id = ?', result[rdQuestion]);
     await query('INSERT into history(game_id,user_id,record) values (?,?,?)', [result[rdQuestion], id, 'fail']);
+
     const data = {
       game: gameCheck,
       history: historyCheck
@@ -39,7 +39,13 @@ const updateHistory = async (gameId, userId, record) => {
   await query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
 };
 
+const getAnswer = async (answerId) => {
+  const answer = await query('SELECT question from draw.question where id = ?', answerId);
+  return { answer: answer };
+};
+
 module.exports = {
   getSingleGame,
-  updateHistory
+  updateHistory,
+  getAnswer
 };
