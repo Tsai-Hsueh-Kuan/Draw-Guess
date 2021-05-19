@@ -1,21 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
- <meta charset="UTF-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Document</title>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+	<meta charset="utf-8"> 
+	<title>Bootstrap 实例 - 弹出框（Popover）插件方法</title>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
- <input id="example" value="Hello World">
- <!-- 
-  屬性設定[註1] 
- data-clipboard-target: 目標物件，將會複製物件的內容
- -->
-<button id="copy" data-clipboard-target="#example">複製</button>
-<script>
- new Clipboard( "#copy" );
-</script>
+
+<div class="container" style="padding: 100px 50px 10px;" >
+	<button type="button" class="btn btn-default popover-show" 
+			title="Popover title" data-container="body" 
+			data-toggle="popover" data-placement="left" 
+			data-content="左侧的 Popover 中的一些内容 —— show 方法">
+		左侧的 Popover
+	</button>
+	<button type="button" class="btn btn-primary popover-hide" 
+			title="Popover title" data-container="body" 
+			data-toggle="popover" data-placement="top" 
+			data-content="顶部的 Popover 中的一些内容 —— hide 方法">
+		顶部的 Popover
+	</button>
+	<button type="button" class="btn btn-success popover-destroy" 
+			title="Popover title" data-container="body" 
+			data-toggle="popover" data-placement="bottom" 
+			data-content="底部的 Popover 中的一些内容 —— destroy 方法">
+		底部的 Popover
+	</button>
+	<button type="button" class="btn btn-warning popover-toggle" 
+			title="Popover title" data-container="body" 
+			data-toggle="popover" data-placement="right" 
+			data-content="右侧的 Popover 中的一些内容 —— toggle 方法">
+		右侧的 Popover
+	</button><br><br><br><br><br><br>
+	
+	<script>
+		$(function () { $('.popover-show').popover('show');});
+		$(function () { $('.popover-hide').popover('hide');});
+		$(function () { $('.popover-destroy').popover('destroy');});
+		$(function () { $('.popover-toggle').popover('toggle');});
+		$(function () { $(".popover-options a").popover({html : true });});
+	</script>
+</div>
+
 </body>
 </html>

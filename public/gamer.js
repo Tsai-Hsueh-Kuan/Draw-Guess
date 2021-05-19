@@ -3,7 +3,6 @@ const url = new URLSearchParams(window.location.search);
 
 const protocol = window.location.protocol;
 const urlhost = window.location.host;
-
 const type = url.get('type');
 const room = url.get('room');
 const urlGamer = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
@@ -14,8 +13,16 @@ let userPhoto;
 let userScore;
 let answerLimit = true;
 let answerGet;
-const token = localStorage.getItem('token');
+const imgs = document.querySelector('#imgs');
 
+const token = localStorage.getItem('token');
+const socket = io((''), {
+  auth: {
+    token: token,
+    room: room,
+    type: 'player'
+  }
+});
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -41,7 +48,25 @@ fetch('/api/1.0/user/profile', {
     userName = data.data.name;
     userPhoto = data.data.photo;
     userScore = data.data.score;
-    socket.emit('checkPlayer', { userId: userId, room: room });
+    socket.on(`canvasUpdate${room}id${token}`, (msg) => {
+      const canvasAll = msg.canvas;
+      for (const i in canvasAll) {
+        if (canvasAll[i].canvas_data !== '0') {
+          const img = document.createElement('img');
+          img.src = canvasAll[i].canvas_data;
+          img.className = 'img';
+          img.id = 'img' + i;
+          canvasNum = canvasAll[i].canvas_num - 1;
+          imgs.appendChild(img);
+        } else if (canvasAll[i].canvas_undo !== '0') {
+          const img = document.getElementsByClassName('img');
+
+          const finalNum = img.length;
+
+          img[finalNum - 1].remove();
+        }
+      }
+    });
     const info = document.getElementById('info');
 
     const name = document.createElement('div');
@@ -61,14 +86,6 @@ fetch('/api/1.0/user/profile', {
     return err;
   });
 
-const socket = io((''), {
-  auth: {
-    token: token,
-    room: room,
-    type: 'player'
-  }
-});
-const imgs = document.querySelector('#imgs');
 let canvasNum = 0;
 let gameStatus = 0;
 let answerData;
@@ -136,7 +153,7 @@ socket.on(`undo msg${room}`, (msg) => {
 const answer = document.getElementById('answer');
 const message = document.getElementById('message');
 answer.addEventListener('submit', function (ev) {
-  const answerCheck = document.getElementById('answerCheck').value;
+  const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
   if (gameStatus === 1 && answerLimit) {
     const time = new Date();
     answerLimit = false;
@@ -157,9 +174,9 @@ answer.addEventListener('submit', function (ev) {
   } else if (!answerLimit) {
     message.textContent = '作答時間間隔太短';
   } else if (gameStatus === 0) {
-    message.textContent = 'please wait next game';
+    message.textContent = 'please wait for next game';
   } else if (gameStatus === 2) {
-    message.textContent = `您已答對 答案就是${answerGet} please wait next game`;
+    message.textContent = `您已答對 答案就是${answerGet} please wait for next game`;
   }
 
   ev.preventDefault();
@@ -171,8 +188,8 @@ socket.on(`answerShow${room}`, (msg) => {
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
-  console.log('userCorrect:');
-  console.log(msg);
+  const updateId = document.getElementById(`score${msg.userData[0].name}`);
+  updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
 });
 
 socket.on(`closeRoom${room}`, () => {
@@ -196,16 +213,22 @@ const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
   playerList.innerHTML = '';
-  if (msg.roomUserData[0]) {
+
+  if (msg.roomUserData && msg.roomUserData[0]) {
     for (const i in msg.roomUserData) {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
+      const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('div');
       userinfo.className = 'userinfo';
       playerList.appendChild(userinfo);
       const name = document.createElement('div');
       name.textContent = `NAME: ${gamerName}`;
       userinfo.appendChild(name);
+      const score = document.createElement('div');
+      score.textContent = `SCORE: ${gamerScore}`;
+      score.id = 'score' + gamerName;
+      userinfo.appendChild(score);
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);

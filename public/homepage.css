@@ -5,3 +5,70 @@ display: flex;
 .btn{
  margin-left: 3%;
 }
+
+
+.mainPart,
+.playerPart,
+.rankPart{
+ border: 1px solid rgb(201, 205, 209);
+ margin:  1%;
+}
+#rankShow{
+
+}
+
+.container{
+ width: 100%;
+}
+
+/* .userinfo{
+ display: flex;
+ flex-direction: row
+}
+
+.userinfoName,
+.userinfoScore{
+ border: solid black 1px
+} */
+.hostPhoto,
+.gamerPhoto,
+.userinfoPhoto{
+ width: 100px;
+ height: 100px;
+ object-fit: cover;
+}
+
+
+.row{
+ justify-content: space-between;
+ /* align-items: center; */
+}
+.rankPart{
+ flex-grow: 1;
+}
+
+.imgs{
+ border: 1px solid #999;
+ min-width: 640px;
+ min-height: 400px;
+ max-height: 400px;
+}
+
+
+.img{
+ position: absolute;
+ min-width: 640px;
+ min-height: 400px;
+ max-height: 400px;
+}
+
+.room{
+ padding: 2%;
+ justify-content:flex-start;
+ display: flex;
+}
+
+.table{
+ max-height: 500px;
+ /* flex-grow: 1; */
+}

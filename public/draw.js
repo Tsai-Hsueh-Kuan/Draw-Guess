@@ -348,24 +348,29 @@ socket.on(`answerShow${room}`, (msg) => {
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
-  console.log('userCorrect:');
-  console.log(msg);
+  console.log(`score${msg.userData[0].name}`);
+  const updateId = document.getElementById(`score${msg.userData[0].name}`);
+  updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
 });
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
   playerList.innerHTML = '';
-  if (msg.roomUserData[0]) {
+  if (msg.roomUserData && msg.roomUserData[0]) {
     for (const i in msg.roomUserData) {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
+      const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('div');
       userinfo.className = 'userinfo';
       playerList.appendChild(userinfo);
       const name = document.createElement('div');
       name.textContent = `NAME: ${gamerName}`;
       userinfo.appendChild(name);
+      const score = document.createElement('div');
+      score.textContent = `SCORE: ${gamerScore}`;
+      userinfo.appendChild(score);
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
@@ -376,6 +381,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       userinfo.appendChild(photo);
     }
   }
+
   host.innerHTML = '';
   if (msg.hostDetail) {
     const hostName = msg.hostDetail[0].name;

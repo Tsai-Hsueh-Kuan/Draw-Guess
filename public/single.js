@@ -186,7 +186,7 @@ function startCountdown (interval) {
 
 const answer = document.getElementById('answer');
 answer.addEventListener('submit', function (ev) {
-  const answerCheck = document.getElementById('answerCheck').value;
+  const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
   if (gameStatus === 1 && answerLimit) {
     answerLimit = false;
     setTimeout(() => {
@@ -234,7 +234,7 @@ answer.addEventListener('submit', function (ev) {
       message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
     }
   } else if (gameStatus === 0) {
-    message.textContent = 'please wait next game';
+    message.textContent = 'please wait for next game';
   } else if (gameStatus === 2) {
     message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
     start.textContent = 'NEXT GAME';

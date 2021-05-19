@@ -3,6 +3,9 @@ const User = require('./user_model');
 const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');
 const getquestion = async (type) => {
+  if (!type) {
+    return 'err';
+  }
   const question = await query('SELECT * from question where type = ? AND inuse = 0 ORDER BY RAND() limit 1', type);
   return question;
 };
@@ -44,7 +47,7 @@ const verifyTokenSocket = (token) => {
     const user = jwt.verify(token, TOKEN_SECRET);
     return user;
   } catch {
-    console.log('wrong token');
+    // console.log('wrong token');
     return 'err';
   }
 };
@@ -60,7 +63,7 @@ const getRank = async () => {
 };
 
 const getUser = async (userId) => {
-  const data = await query('SELECT id,name,photo from draw.user where id = ?', userId);
+  const data = await query('SELECT id,name,photo,score from draw.user where id = ?', userId);
   for (const i in data) {
     if (data[i].photo) {
       data[i].photo = IP + data[i].photo;
@@ -77,6 +80,11 @@ const checkGameCanvas = async (gameId) => {
     await query('DELETE from draw.history where game_id = ?', gameId);
   }
 };
+const canvasUpdate = async (gameId) => {
+  const data = await query('SELECT * from draw.canvas where game_id = ?', gameId);
+  return data;
+};
+
 module.exports = {
   getquestion,
   updateInuse,
@@ -89,5 +97,6 @@ module.exports = {
   verifyTokenSocket,
   getRank,
   getUser,
-  checkGameCanvas
+  checkGameCanvas,
+  canvasUpdate
 };

@@ -11,39 +11,78 @@
 <link rel="stylesheet" href="/homepage.css">
 </head>
 <body>
-  <!-- <nav class="navbar navbar-dark bg-dark nav justify-content-end">
-  <ul class="nav justify-content-end">
-    <li class="nav-item">
-      <button type="button" class="btn btn-primary test" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign Up</button>
-    </li>
-    <li class="nav-item">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Sign In</button>
-    </li>
-    <li class="nav-item">
-      <button id="exampleModal2">Sign Out</button>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-    </li>
-  </ul>
-</nav> -->
+ 
 <nav class="navbar navbar-expand-lg navbar-light bg-light navbar navbar-dark bg-dark nav justify-content-end">
   <div class="justify-content-end">
   <div class="navbar-brand">
-        
+    <div class="info" id="info"></div>
         <button type="button" class="btn btn-primary test" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign Up</button>
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Sign In</button>
         <button type="button" class="btn btn-primary" id="exampleModal2">Sign Out</button>
-        <button type="button" class="btn btn-primary" id="testPlay">TEST PLAY</button>
         <button type="button" class="btn btn-primary" id="singlePlay">SINGLE PLAY</button>
-        
   </div>
 </div>
 </nav>
-<div>user info--------------</div>
-<div class="info" id="info"></div>
-<div>rank--------------</div>
-<div class="rank" id="rank"></div>
+<div class="container-fluid main">
+  <div class="row rowMain">
+    <div class="mainPart col-8 container-fluid" id="mainPart">
+
+    <!-- <div class="room">
+      <div class="imgs"></div>
+      <table class="table">
+
+            <thead>
+              <tr>
+                <th scope="col">NAME</th>
+                <th scope="col">PHOTO</th>
+              </tr>
+            </thead>
+
+            <tbody class="host" id="host">
+
+            </tbody>
+
+            <tbody class="playerList" id="playerList">
+
+            </tbody>
+            
+          
+      </table>
+
+    </div> -->
+
+    </div>
+    <div class="rankPart col-3" id="rankShow"><div">
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#RANK</th>
+              <th scope="col">NAME</th>
+              <th scope="col">SCORE</th>
+              <th scope="col">PHOTO</th>
+            </tr>
+          </thead>
+          <tbody class="rank" id="rank">
+           
+          </tbody>
+        </table>
+
+      </div>
+    
+    </div></div>
+  </div>
+</div>
+<!-- <div id="main">
+  <div>
+    <div>user info--------------</div>
+    <div class="info" id="info"></div>
+    <div>rank--------------</div>
+    <div class="rank" id="rank"></div>
+  </div>
+
+</div> -->
+
 
       <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Open modal for @getbootstrap</button>
        -->
