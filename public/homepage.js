@@ -212,10 +212,14 @@ socket.on('mainPageView', async (msg) => {
   imgs.setAttribute('href', `/gamer.html?room=${roomId}`);
   room.appendChild(imgs);
 
+  const tableDiv = document.createElement('div');
+  tableDiv.className = 'tableDiv';
+  room.appendChild(tableDiv);
+
   const table = document.createElement('table');
   table.id = `table${roomId}`;
   table.className = 'table';
-  room.appendChild(table);
+  tableDiv.appendChild(table);
 
   const thead = document.createElement('thead');
   thead.id = `thead${roomId}`;
@@ -318,13 +322,15 @@ socket.on('mainPageConvasData', (msg) => {
 
 socket.on('mainPageUndo', (msg) => {
   const roomId = msg.room;
-  console.log(canvasNum[roomId]);
-  console.log(msg);
   if (msg.data) {
     const myobj = document.getElementById(`img${roomId}step${canvasNum[roomId] - 1}`);
     myobj.remove();
     canvasNum[roomId]--;
   }
+});
+let roomList;
+socket.on('roomList', (msg) => {
+  roomList = msg.roomList;
 });
 
 socket.on('canvasUpdate', (msg) => {
@@ -357,5 +363,17 @@ socket.on('canvasUpdate', (msg) => {
 
 const singlePlay = document.getElementById('singlePlay');
 singlePlay.addEventListener('click', function () {
-  return window.location.assign('/single.html?type=english');
+  const type = 'english';
+  return window.location.assign(`/single.html?type=${type}`);
+});
+
+const createGame = document.getElementById('createGame');
+createGame.addEventListener('click', function () {
+  const type = 'english';
+  for (let j = 0; j < 10000; j++) {
+    const check = roomList.indexOf(`${j}`);
+    if (check === -1) {
+      return window.location.assign(`/draw.html?room=${j}&type=${type}`);
+    }
+  }
 });

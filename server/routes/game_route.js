@@ -9,7 +9,8 @@ const {
 const {
   getSingleGame,
   updateHistory,
-  getAnswer
+  getAnswer,
+  checkAnswer
 } = require('../controllers/game_controller');
 
 router.route('/game/single')
@@ -19,6 +20,9 @@ router.route('/game/history')
   .post(verifyToken, wrapAsync(updateHistory));
 
 router.route('/game/answer')
+  .post(verifyToken, wrapAsync(checkAnswer));
+
+router.route('/game/done')
   .post(verifyToken, wrapAsync(getAnswer));
 
 module.exports = router;

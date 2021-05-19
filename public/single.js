@@ -177,10 +177,24 @@ function startCountdown (interval) {
       gameStatus = 0;
       i = 0;
       countIndex = 1;
-      title.textContent = (`遊戲結束 正確答案是${getAnswer}`);
-      message.textContent = '請等待下一局';
-      start.textContent = 'NEXT GAME';
-      gameDone = true;
+      const data = {
+        answerId: getAnswerId
+      };
+      fetch('/api/1.0/game/done', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+      }).then(function (response) {
+        if (response.status === 200) {
+          return response.json(); // 內建promise , send type need json
+        }
+      }).then((data) => {
+        getAnswer = data.answer[0].question;
+        title.textContent = (`遊戲結束 正確答案是${getAnswer}`);
+        message.textContent = '請等待下一局';
+        start.textContent = 'NEXT GAME';
+        gameDone = true;
+      });
     }
   }, interval);
 }
@@ -194,9 +208,9 @@ answer.addEventListener('submit', function (ev) {
       answerLimit = true;
     }, 2000);
     const data = {
-      answerId: getAnswerId
+      answerId: getAnswerId,
+      answerCheck: answerCheck
     };
-    console.log(data);
     fetch('/api/1.0/game/answer', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -206,49 +220,44 @@ answer.addEventListener('submit', function (ev) {
         return response.json(); // 內建promise , send type need json
       }
     }).then((data) => {
+      if (data.answer) {
+        getAnswer = data.answer[0].question;
+        return getAnswer;
+      } else {
+        return getAnswer;
+      }
+    }).then((data) => {
       console.log(data);
-      getAnswer = data.answer;
-    });
-    if (answerCheck === getAnswer) {
-      message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
-      title.textContent = `正確答案！ ${getAnswer}`;
-      gameStatus = 2;
-      start.textContent = 'NEXT GAME';
-      const historyData = {
-        record: countIndex,
-        gameId: gameId
-      };
-      console.log(historyData);
-      fetch('/api/1.0/game/history', {
-        method: 'post',
-        body: JSON.stringify(historyData),
-        headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-      })
-        .then(function (response) {
-          if (response.status === 200) {
-            return response.json(); // 內建promise , send type need json
-          } else if (response.status === 403) {
-            localStorage.removeItem('token');
-            sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
-              .then(() => {
-                return window.location.assign('/');
-              });
-          } else if (response.status === 401) {
-            localStorage.removeItem('token');
-            sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
-              .then(() => {
-                return window.location.assign('/');
-              });
-          }
-        }).then(data => {
-          console.log(data);
+      console.log(answerCheck);
+      if (answerCheck === getAnswer) {
+        message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
+        title.textContent = `正確答案！ ${getAnswer}`;
+        gameStatus = 2;
+        start.textContent = 'NEXT GAME';
+        const historyData = {
+          record: countIndex,
+          gameId: gameId
+        };
+        console.log(historyData);
+        fetch('/api/1.0/game/history', {
+          method: 'post',
+          body: JSON.stringify(historyData),
+          headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
         })
-        .catch(function (err) {
-          return err;
-        });
-    } else {
-      message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
-    }
+          .then(function (response) {
+            if (response.status === 200) {
+              return response.json(); // 內建promise , send type need json
+            }
+          }).then(data => {
+            console.log('update record ok');
+          })
+          .catch(function (err) {
+            return err;
+          });
+      } else {
+        message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+      }
+    });
   } else if (gameStatus === 0) {
     message.textContent = 'please wait for next game';
   } else if (gameStatus === 2) {

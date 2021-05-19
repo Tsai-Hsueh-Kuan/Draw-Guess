@@ -7,7 +7,7 @@ const {
 const { core, query, transaction, commit, rollback, end } = require('./mysqlcon.js');
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate } = require('../server/models/socketcon_model');
-const { use } = require('../server/routes/user_route.js');
+
 const timeCheck = [];
 const question = [];
 const questionId = [];
@@ -40,6 +40,7 @@ const socketCon = (io) => {
         hostDisconnect = false;
         hostId[inRoom] = verifyHost.id;
         hostDetail[inRoom] = await getUser(verifyHost.id);
+        socket.broadcast.emit('roomList', { roomList: roomList });
         socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: intype, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
@@ -263,6 +264,7 @@ const socketCon = (io) => {
       });
 
       socket.on('roomData', async (msg) => {
+        socket.emit('roomList', { roomList: roomList });
         for (const i in roomList) {
           socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[roomList[i]], hostDetail: hostDetail[roomList[i]], roomUserId: roomUserId[roomList[i]], roomUserData: roomUserData[roomList[i]] });
         }

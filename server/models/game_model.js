@@ -4,7 +4,9 @@ const { core, query, transaction, commit, rollback, end } = require('../../util/
 const { TOKEN_EXPIRE, TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 
 const getSingleGame = async (id, type) => {
-  const gameIdList = await query('SELECT id from draw.game where host_id <> ?', id);
+  // const gameIdList = await query('SELECT id from draw.game where host_id <> ?', id);
+  const gameIdList = await query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ?', [id, type]);
+
   const gameIdListArray = gameIdList.map(x => x.id);
   const gameIdCheck = await query('SELECT game_id from draw.history where user_id = ?', id);
   const gameIdCheckArray = gameIdCheck.map(x => x.game_id);
@@ -39,13 +41,24 @@ const updateHistory = async (gameId, userId, record) => {
   await query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
 };
 
+const checkAnswer = async (answerId, answerCheck) => {
+  const answer = await query('SELECT question from draw.question where id = ?', answerId);
+  if (answer[0].question === answerCheck) {
+    return { answer: answer };
+  } else {
+    return { answer: '' };
+  }
+};
+
 const getAnswer = async (answerId) => {
   const answer = await query('SELECT question from draw.question where id = ?', answerId);
+
   return { answer: answer };
 };
 
 module.exports = {
   getSingleGame,
   updateHistory,
+  checkAnswer,
   getAnswer
 };

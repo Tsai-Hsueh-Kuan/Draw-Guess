@@ -68,7 +68,7 @@ display: flex;
  display: flex;
 }
 
-.table{
- max-height: 500px;
- /* flex-grow: 1; */
+.tableDiv{
+ height: 400px;
+ overflow: scroll;
 }

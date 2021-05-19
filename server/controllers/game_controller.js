@@ -15,14 +15,18 @@ const updateHistory = async (req, res) => {
   res.status(200).send('done');
 };
 
-const getAnswer = async (req, res) => {
-  console.log(req.body);
-  const answer = await Game.getAnswer(req.body.answerId);
+const checkAnswer = async (req, res) => {
+  const answer = await Game.checkAnswer(req.body.answerId, req.body.answerCheck);
   res.status(200).send(answer);
 };
 
+const getAnswer = async (req, res) => {
+  const answer = await Game.getAnswer(req.body.answerId);
+  res.status(200).send(answer);
+};
 module.exports = {
   getSingleGame,
   updateHistory,
+  checkAnswer,
   getAnswer
 };
