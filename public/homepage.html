@@ -106,6 +106,25 @@
                 </div>
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">PHOTO:</label>
+                  <br>
+                  <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
+      <div >
+        <div class="lineWidthRange"></div>
+        <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
+      </div>
+
+      <button id="rainbowColor">rainbow color : ON</button>
+      <br>
+      <div id="colorView">color view</div>
+      <br>
+      <button id="eraser">eraser</button>
+      <br>
+                  <button id="undo">undo</button>
+                  <!-- <button id="redo">redo</button> -->
+                  <div id="addCanvas">
+                    <canvas class="draw" id="draw0" width="400" height="250" style="z-index: 0;">
+                    </canvas>
+                  </div>
                   <input type="file" name="photo" name="photo" class="form-control" id="photo"></textarea>
                 </div>
               </form>

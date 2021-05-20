@@ -80,3 +80,206 @@
 }
 
 
+.gameMsg{
+  font-size: 20px;
+  border: 1px solid #999;
+  width: 100px;
+  height: 50px;
+}
+
+.navbar-brand{
+display: flex;
+}
+
+.btn{
+ margin-left: 3%;
+}
+
+
+.mainPart,
+.playerPart,
+.rankPart{
+ border: 1px solid rgb(201, 205, 209);
+ margin:  1%;
+}
+#rankShow{
+
+}
+
+.container{
+ width: 100%;
+}
+
+/* .userinfo{
+ display: flex;
+ flex-direction: row
+}
+
+.userinfoName,
+.userinfoScore{
+ border: solid black 1px
+} */
+.hostPhoto,
+.gamerPhoto,
+.userinfoPhoto{
+ width: 100px;
+ height: 100px;
+ object-fit: cover;
+}
+
+
+.row{
+ justify-content: space-between;
+ /* align-items: center; */
+}
+.rankPart{
+ flex-grow: 1;
+}
+
+.imgs{
+ border: 1px solid #999;
+ min-width: 640px;
+ min-height: 400px;
+ max-height: 400px;
+}
+
+
+.img{
+ position: absolute;
+ min-width: 640px;
+ min-height: 400px;
+ max-height: 400px;
+}
+
+.room{
+ padding: 2%;
+ justify-content:flex-start;
+ display: flex;
+}
+
+.tableDiv{
+ height: 400px;
+ overflow: scroll;
+}
+
+.draw {
+ border: 1px solid #999;
+ /* float: left; */
+ position: absolute;
+}
+
+#addCanvas {
+ /* display: flex;
+ position: absolute; */
+ align-items: center;
+ width: 500px;
+ height: 300px;
+}
+/* === */
+.navbar-brand{
+  display: flex;
+  }
+  
+  .btn{
+   margin-left: 3%;
+  }
+  
+  
+  .mainPart,
+  .playerPart,
+  .rankPart{
+   border: 1px solid rgb(201, 205, 209);
+   margin:  1%;
+  }
+  #rankShow{
+  
+  }
+  
+  .container{
+   width: 100%;
+  }
+  
+  /* .userinfo{
+   display: flex;
+   flex-direction: row
+  }
+  
+  .userinfoName,
+  .userinfoScore{
+   border: solid black 1px
+  } */
+  .userPhoto,
+  .hostPhoto,
+  .gamerPhoto,
+  .userinfoPhoto{
+   width: 100px;
+   height: 100px;
+   object-fit: cover;
+  }
+  
+  
+  .row{
+   justify-content: space-between;
+   /* align-items: center; */
+  }
+  .rankPart{
+   flex-grow: 1;
+  }
+  
+  .imgs{
+   border: 1px solid #999;
+   min-width: 800px;
+   min-height: 500px;
+   max-height: 500px;
+  }
+  
+  
+  .img{
+   position: absolute;
+   min-width: 800px;
+   min-height: 500px;
+   max-height: 500px;
+  }
+  
+  .room{
+   padding: 2%;
+   justify-content:flex-start;
+   display: flex;
+  }
+  
+  .tableDiv{
+   height: 400px;
+   overflow: scroll;
+  }
+  
+  .draw {
+   border: 1px solid #999;
+   /* float: left; */
+   position: absolute;
+  }
+  
+  #addCanvas {
+   /* display: flex;
+   position: absolute; */
+   width: 800px;
+   height: 500px;
+   display: block;
+  }
+
+
+
+  .tool{
+    margin-top: 500px;
+  }
+
+  .main{
+    justify-content: center;
+    align-items: center;
+  }
+
+  .correct{
+    border: 2px solid red;
+  }
+  /* #hostPhoto{
+    width: 100px;
+  } */

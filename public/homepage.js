@@ -40,7 +40,7 @@ if (token) {
       } else {
         photo.setAttribute('src', './images/member.png');
       }
-      photo.style.width = '10%';
+      photo.className = 'userPhoto';
       info.appendChild(photo);
     })
     .catch(function (err) {
@@ -196,6 +196,7 @@ const mainPart = document.getElementById('mainPart');
 
 socket.on('mainPageView', async (msg) => {
   const roomId = msg.roomId;
+  const roomType = msg.roomType;
   canvasNum[roomId] = 0;
   let room = document.getElementById(`room${roomId}`);
   if (room) {
@@ -209,7 +210,7 @@ socket.on('mainPageView', async (msg) => {
   const imgs = document.createElement('a');
   imgs.id = `imgs${roomId}`;
   imgs.className = 'imgs';
-  imgs.setAttribute('href', `/gamer.html?room=${roomId}`);
+  imgs.setAttribute('href', `/gamer.html?room=${roomId}&type=${roomType}`);
   room.appendChild(imgs);
 
   const tableDiv = document.createElement('div');
@@ -363,17 +364,251 @@ socket.on('canvasUpdate', (msg) => {
 
 const singlePlay = document.getElementById('singlePlay');
 singlePlay.addEventListener('click', function () {
-  const type = 'english';
-  return window.location.assign(`/single.html?type=${type}`);
+  swal('準備開始單人模式', '請選擇您喜歡的題型', {
+    buttons: {
+      English: true,
+      四字成語: true
+    }
+  })
+    .then((value) => {
+      switch (value) {
+        case 'English':
+
+          return window.location.assign('/single.html?type=english');
+
+        case '四字成語':
+          return window.location.assign('/single.html?type=idiom');
+
+        default:
+          swal("Don't evade!", {
+            buttons: false,
+            timer: 1000
+          });
+      }
+    });
+
+  // const type = 'english';
+  // return window.location.assign(`/single.html?type=${type}`);
 });
 
 const createGame = document.getElementById('createGame');
 createGame.addEventListener('click', function () {
-  const type = 'english';
+  let room;
   for (let j = 0; j < 10000; j++) {
     const check = roomList.indexOf(`${j}`);
     if (check === -1) {
-      return window.location.assign(`/draw.html?room=${j}&type=${type}`);
+      room = j;
+      break;
     }
   }
+  swal('準備開始連線模式', '請選擇您喜歡的題型', {
+    buttons: {
+      English: true,
+      四字成語: true
+    }
+    // timer: 1000
+  })
+    .then((value) => {
+      switch (value) {
+        case 'English':
+
+          return window.location.assign(`/draw.html?room=${room}&type=english`);
+
+        case '四字成語':
+          return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+
+        default:
+          swal('取消!', {
+            buttons: false,
+            timer: 1000
+          });
+      }
+    });
 });
+
+// const canvasDiv = document.querySelector('#addCanvas');
+// const canvas = document.querySelector('.draw');
+// const ctx = [];
+// let canvasNumPhoto = 0;
+// ctx[canvasNumPhoto] = canvas.getContext('2d');
+
+// // 設置畫筆的粗度以及形狀
+// ctx[canvasNumPhoto].lineJoin = 'round';
+// ctx[canvasNumPhoto].lineCap = 'round';
+// ctx[canvasNumPhoto].lineWidth = 5;
+// // 設置flag以及起始座標
+// let isDrawing = false;
+// let lastX = 0;
+// let lastY = 0;
+// // 色彩設置
+// let hue = 0;
+// let colorNow = '#555555';
+// let lineWidthNow = 5;
+// let isRainbow = true;
+
+// const colorChoose = document.querySelector('#colorChoose');
+// const colorView = document.querySelector('#colorView');
+// colorChoose.addEventListener('change', function () {
+//   isRainbow = 0;
+//   rainbowColor.textContent = ('rainbow color : OFF');
+//   ctx[canvasNumPhoto].strokeStyle = colorChoose.value;
+//   colorView.style.backgroundColor = colorChoose.value;
+//   colorNow = colorChoose.value;
+// });
+
+// const lineWidthRange = document.getElementById('lineWidthRange');
+// lineWidthRange.oninput = function () {
+//   ctx[canvasNumPhoto].lineWidth = this.value;
+//   lineWidthNow = this.value;
+// };
+
+// const rainbowColor = document.querySelector('#rainbowColor');
+// rainbowColor.addEventListener('click', function () {
+//   isRainbow = true;
+//   rainbowColor.textContent = ('rainbow color : ON');
+// });
+
+// const eraser = document.querySelector('#eraser');
+// eraser.addEventListener('click', function () {
+//   colorNow = 'white';
+//   isRainbow = false;
+// });
+
+// function draw (e) {
+//   if (!isDrawing) return;
+//   if (isRainbow) {
+//     ctx[canvasNumPhoto].strokeStyle = `hsl(${hue},100%,50%)`;
+//     colorView.style.backgroundColor = `hsl(${hue},100%,50%)`;
+//   } else {
+//     ctx[canvasNumPhoto].strokeStyle = colorNow;
+//   }
+//   ctx[canvasNumPhoto].beginPath();
+//   ctx[canvasNumPhoto].moveTo(lastX, lastY);
+//   ctx[canvasNumPhoto].lineTo(e.offsetX, e.offsetY);
+//   ctx[canvasNumPhoto].stroke();
+//   [lastX, lastY] = [e.offsetX, e.offsetY];
+//   hue <= 360 ? hue++ : hue = 0;
+// }
+// const createCanvas = function () {
+//   canvasNumPhoto++;
+//   const canvas = document.createElement('canvas');
+//   canvas.className = 'draw';
+//   canvas.id = 'draw' + canvasNumPhoto;
+//   canvas.width = '400';
+//   canvas.height = '250';
+//   canvas.style.zIndex = canvasNumPhoto;
+//   ctx[canvasNumPhoto] = canvas.getContext('2d');
+//   canvasDiv.appendChild(canvas);
+// };
+
+// canvasDiv.addEventListener('mouseup', () => {
+//   if (isDrawing) {
+//     createCanvas();
+//   }
+// });
+
+// canvasDiv.addEventListener('mouseout', () => {
+//   if (isDrawing) {
+//     createCanvas();
+//   }
+// });
+
+// canvasDiv.addEventListener('mousedown', (e) => {
+//   isDrawing = true;
+//   [lastX, lastY] = [e.offsetX, e.offsetY];
+
+//   if (isRainbow) {
+//     ctx[canvasNumPhoto].strokeStyle = `hsl(${hue},100%,50%)`;
+//     colorView.style.backgroundColor = `hsl(${hue},100%,50%)`;
+//   } else {
+//     ctx[canvasNumPhoto].strokeStyle = colorNow;
+//   }
+//   ctx[canvasNumPhoto].lineWidth = lineWidthNow;
+//   ctx[canvasNumPhoto].lineJoin = 'round';
+//   ctx[canvasNumPhoto].lineCap = 'round';
+//   ctx[canvasNumPhoto].beginPath();
+//   ctx[canvasNumPhoto].moveTo(lastX, lastY);
+//   ctx[canvasNumPhoto].lineTo(e.offsetX, e.offsetY);
+//   ctx[canvasNumPhoto].stroke();
+//   hue <= 360 ? hue++ : hue = 0;
+// });
+
+// canvasDiv.addEventListener('mousemove', draw);
+// canvasDiv.addEventListener('mousedown', () => isDrawing = true);
+
+// // $('#save').on('click', function () {
+// //   const cavasNow = document.getElementById(`draw${canvasNum - 1}`);
+// //   const _url = cavasNow.toDataURL();
+// //   this.href = _url;
+// //   save.setAttribute('download', 'draw_test.png');
+// // });
+// const socketUrl = function () {
+//   // if (isDrawing) {
+//   //   const cavasNow = document.getElementById(`draw${canvasNumPhoto - 1}`);
+//   //   const _url = cavasNow.toDataURL();
+//   //   socket.emit('canvasData', { room: room, canvasNumPhoto: canvasNumPhoto - 1, url: _url });
+//   // };
+//   isDrawing = false;
+// };
+
+// canvasDiv.addEventListener('mouseout', function () {
+//   socketUrl();
+// });
+// canvasDiv.addEventListener('mouseup', function () {
+//   socketUrl();
+// });
+
+// const undo = function () {
+//   if (canvasNumPhoto > 0) {
+//     const myobjNow = document.getElementById(`draw${canvasNumPhoto}`);
+//     myobjNow.remove();
+//     const myobj = document.getElementById(`draw${canvasNumPhoto - 1}`);
+//     const c = myobj.getContext('2d');
+//     c.clearRect(0, 0, 400, 250);
+//     canvasNumPhoto--;
+//     socket.emit('undo', { room: room, canvasNumPhoto: canvasNumPhoto, data: 1 });
+//   }
+// };
+// const undoBottom = document.querySelector('#undo');
+// undoBottom.addEventListener('click', function () {
+//   undo();
+// });
+
+// function KeyPress () {
+//   const evtobj = window.event;
+//   const Mac = new RegExp('Mac');
+//   const Win = new RegExp('Win');
+//   const computerType = navigator.platform;
+//   if (Win.test(computerType)) {
+//     if (evtobj.keyCode === 90 && evtobj.ctrlKey && evtobj.shiftKey) {
+//       socket.emit('redo', { room: room, canvasNumPhoto: canvasNumPhoto });
+//     } else if (evtobj.keyCode === 90 && evtobj.ctrlKey) {
+//       undo();
+//     }
+//   } else if (Mac.test(computerType)) {
+//     if (evtobj.keyCode === 90 && evtobj.metaKey && evtobj.shiftKey) {
+//       socket.emit('redo', { room: room, canvasNumPhoto: canvasNumPhoto });
+//     } else if (evtobj.keyCode === 90 && evtobj.metaKey) {
+//       undo();
+//     }
+//   }
+// }
+
+// document.onkeydown = KeyPress;
+
+// const redoBotton = document.querySelector('#redo');
+// redoBotton.addEventListener('click', function () {
+//   // socket.emit('redo', { room: room, canvasNumPhoto: canvasNumPhoto });
+// });
+
+// socket.on(`redo url${room}`, async (msg) => {
+//   const myobjNow = document.getElementById(`draw${canvasNumPhoto}`);
+//   const contextNow = myobjNow.getContext('2d');
+//   const img = new Image();
+//   img.src = msg;
+//   img.onload = function () {
+//     contextNow.drawImage(img, 0, 0);
+//     contextNow.stroke();
+//     createCanvas();
+//   };
+// });

@@ -19,7 +19,7 @@ const resetInuse = async (id) => {
 };
 
 const getGame = async (questionId, hostId) => {
-  const result = await query('INSERT into game(question_id,host_id) values(?,?)', [questionId, hostId]);
+  const result = await query('INSERT into game(question_id,report,need_check,host_id) values(?,?,?,?)', [questionId, 0, 0, hostId]);
   return result.insertId;
 };
 const getHistory = async (gameId, userId, record) => {
@@ -77,7 +77,6 @@ const checkGameCanvas = async (gameId) => {
     const data = await query('SELECT id from draw.canvas where game_id = ?', gameId);
     if (data[0]) {
     } else {
-      console.log('ok');
       await query('DELETE from draw.game where id = ?', gameId);
       await query('DELETE from draw.history where game_id = ?', gameId);
       return;
@@ -90,6 +89,17 @@ const checkGameCanvas = async (gameId) => {
 const canvasUpdate = async (gameId) => {
   const data = await query('SELECT * from draw.canvas where game_id = ?', gameId);
   return data;
+};
+
+const updateReport = async (gameId) => {
+  const totalList = await query('SELECT * from draw.history where game_id = ? AND record <> "only view"', gameId);
+  const totalCount = totalList.length;
+  await query('UPDATE draw.game SET report = report + 1 where id = ?', gameId);
+  const reportCount = await query('SELECT report from draw.game where id = ?', gameId);
+  if (parseInt(reportCount[0].report) * 2 > totalCount) {
+    await query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
+    return 'need check';
+  }
 };
 
 module.exports = {
@@ -105,5 +115,6 @@ module.exports = {
   getRank,
   getUser,
   checkGameCanvas,
-  canvasUpdate
+  canvasUpdate,
+  updateReport
 };

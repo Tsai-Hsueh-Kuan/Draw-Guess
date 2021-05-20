@@ -6,7 +6,7 @@ const {
 } = require('./cache.js');
 const { core, query, transaction, commit, rollback, end } = require('./mysqlcon.js');
 
-const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate } = require('../server/models/socketcon_model');
+const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport } = require('../server/models/socketcon_model');
 
 const timeCheck = [];
 const question = [];
@@ -21,6 +21,7 @@ const hostDetail = [];
 const roomUserData = [];
 const disconnectTime = [];
 const limitTime = 30;
+const roomType = [];
 let roomList = [];
 let hostDisconnect;
 const socketCon = (io) => {
@@ -28,7 +29,7 @@ const socketCon = (io) => {
     const inToken = socket.handshake.auth.token;
     const inRoom = socket.handshake.auth.room;
     const intype = socket.handshake.auth.type;
-
+    const inRoomType = socket.handshake.auth.roomType;
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (`${intype}` === 'host') {
@@ -37,6 +38,7 @@ const socketCon = (io) => {
         } else {
           roomList.push(inRoom);
         }
+        roomType[inRoom] = inRoomType;
         hostDisconnect = false;
         hostId[inRoom] = verifyHost.id;
         hostDetail[inRoom] = await getUser(verifyHost.id);
@@ -45,6 +47,12 @@ const socketCon = (io) => {
         socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
       } else if (`${intype}` === 'player') {
+        if (!userId[inRoom]) {
+          userId[inRoom] = [verifyHost.id];
+        } else {
+          userId[inRoom].push(verifyHost.id);
+        }
+
         if (roomUserId[inRoom]) {
           roomUserId[inRoom].push(verifyHost.id);
           const userDetail = await getUser(verifyHost.id);
@@ -73,6 +81,7 @@ const socketCon = (io) => {
       const outToken = socket.handshake.auth.token;
       const outRoom = socket.handshake.auth.room;
       const outtype = socket.handshake.auth.type;
+      const outRoomType = socket.handshake.auth.roomType;
       const verifyHost = await verifyTokenSocket(outToken);
       if (outToken) {
         if (`${outtype}` === 'host') {
@@ -106,6 +115,7 @@ const socketCon = (io) => {
                   roomUserId[outRoom] = '';
                   hostDetail[outRoom] = '';
                   roomUserData[outRoom] = '';
+                  roomType[outRoom] = '';
                 }
               }
             }, interval);
@@ -147,12 +157,15 @@ const socketCon = (io) => {
         question[msg.room] = questionData[0].question;
         questionId[msg.room] = questionData[0].id;
         userId[msg.room] = '';
+        gameId[msg.room] = '';
+        if (!gameId[msg.room]) {
+          gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
+        }
         socket.broadcast.emit(`answer${msg.room}`, question[msg.room]);
         socket.emit(`question${msg.room}`, question[msg.room]);
       });
 
       socket.on('checkPlayerInGame', async (msg) => {
-        gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
         getHistory(gameId[msg.room], roomUserId[inRoom], 'fail');
         userId[msg.room] = '';
         gameTime[msg.room] = 1; // 倒數計時任務執行次數
@@ -202,12 +215,20 @@ const socketCon = (io) => {
           console.log('timeout');
         }
       });
-      socket.on('checkPlayer', async (msg) => {
-        if (!userId[msg.room]) {
-          userId[msg.room] = [msg.userId];
-        } else {
-          userId[msg.room].push(msg.userId);
+
+      socket.on('report', async (msg) => {
+        const report = await updateReport(gameId[msg.room]);
+        if (report) {
+          console.log('123');
+          socket.emit(`reportOk${msg.room}`, { data: 'need check' });
+          socket.broadcast.emit(`reportOk${msg.room}`, { data: 'need check' });
         }
+      });
+
+      socket.on('roomMsg', async (msg) => {
+        socket.emit(`roomMsgShow${msg.room}`, msg);
+        socket.broadcast.emit(`roomMsgShow${msg.room}`, msg);
+      //  { room: room, userName: userName, roomMsg: roomMsg }
       });
 
       socket.on('canvasData', async (msg) => {
@@ -266,7 +287,7 @@ const socketCon = (io) => {
       socket.on('roomData', async (msg) => {
         socket.emit('roomList', { roomList: roomList });
         for (const i in roomList) {
-          socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[roomList[i]], hostDetail: hostDetail[roomList[i]], roomUserId: roomUserId[roomList[i]], roomUserData: roomUserData[roomList[i]] });
+          socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[roomList[i]], hostDetail: hostDetail[roomList[i]], roomType: roomType[roomList[i]], roomUserId: roomUserId[roomList[i]], roomUserData: roomUserData[roomList[i]] });
         }
       });
 

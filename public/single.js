@@ -227,8 +227,6 @@ answer.addEventListener('submit', function (ev) {
         return getAnswer;
       }
     }).then((data) => {
-      console.log(data);
-      console.log(answerCheck);
       if (answerCheck === getAnswer) {
         message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
         title.textContent = `正確答案！ ${getAnswer}`;
@@ -238,7 +236,6 @@ answer.addEventListener('submit', function (ev) {
           record: countIndex,
           gameId: gameId
         };
-        console.log(historyData);
         fetch('/api/1.0/game/history', {
           method: 'post',
           body: JSON.stringify(historyData),
@@ -269,3 +266,25 @@ answer.addEventListener('submit', function (ev) {
 
   ev.preventDefault();
 }, false);
+
+const leave = document.getElementById('leave');
+leave.addEventListener('click', function () {
+  sweetAlert('確定要離開嗎？', `親愛的 ${userName} 玩家`, 'warning', {
+    buttons: {
+      cancel: {
+        text: '取消',
+        visible: true,
+        value: 'cancel'
+      },
+      confirm: {
+        text: 'Confirm',
+        visible: true,
+        value: 'check'
+      }
+    }
+  }).then((value) => {
+    if (value === 'check') {
+      return window.location.assign('/');
+    }
+  });
+});

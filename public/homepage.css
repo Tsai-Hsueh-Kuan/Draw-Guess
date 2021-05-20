@@ -30,6 +30,7 @@ display: flex;
 .userinfoScore{
  border: solid black 1px
 } */
+.userPhoto,
 .hostPhoto,
 .gamerPhoto,
 .userinfoPhoto{
@@ -71,4 +72,18 @@ display: flex;
 .tableDiv{
  height: 400px;
  overflow: scroll;
+}
+
+.draw {
+ border: 1px solid #999;
+ /* float: left; */
+ position: absolute;
+}
+
+#addCanvas {
+ /* display: flex;
+ position: absolute; */
+ align-items: center;
+ width: 500px;
+ height: 300px;
 }

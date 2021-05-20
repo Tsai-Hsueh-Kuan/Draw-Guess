@@ -23,6 +23,7 @@ const socket = io((''), {
     type: 'player'
   }
 });
+
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -48,6 +49,7 @@ fetch('/api/1.0/user/profile', {
     userName = data.data.name;
     userPhoto = data.data.photo;
     userScore = data.data.score;
+
     socket.on(`canvasUpdate${room}id${token}`, (msg) => {
       const canvasAll = msg.canvas;
       for (const i in canvasAll) {
@@ -66,10 +68,11 @@ fetch('/api/1.0/user/profile', {
           img[finalNum - 1].remove();
         }
       }
+      //
     });
-    const info = document.getElementById('info');
+    const info = document.getElementById('tr');
 
-    const name = document.createElement('div');
+    const name = document.createElement('td');
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
 
@@ -79,8 +82,13 @@ fetch('/api/1.0/user/profile', {
     } else {
       photo.setAttribute('src', './images/member.png');
     }
-    photo.style.width = '5%';
+    photo.className = 'userPhoto';
     info.appendChild(photo);
+
+    const gameMsg = document.createElement('td');
+    gameMsg.className = 'msg';
+    gameMsg.id = 'msg' + userName;
+    info.appendChild(gameMsg);
   })
   .catch(function (err) {
     return err;
@@ -107,6 +115,7 @@ function startCountdown (interval) {
       // 下一次倒數計時
       startCountdown(timeout - deviation);
     } else {
+      reportStatus = 0;
       gameStatus = 0;
       message.textContent = '請等待下一局';
     }
@@ -116,6 +125,8 @@ socket.on(`answerGet${room}`, (msg) => {
   gameDone = true;
   answerData = msg.answer;
   title.textContent = (`時間到 正確答案:${answerData}`);
+  // const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
+  // userinfoArea.removeClass('correct');
 });
 const title = document.getElementById('title');
 socket.on(`answer${room}`, (msg) => {
@@ -123,6 +134,7 @@ socket.on(`answer${room}`, (msg) => {
   imgs.innerHTML = '';
   canvasNum = 0;
   gameStatus = 1;
+  reportStatus = 1;
   countIndex = 1; // 倒數計時任務執行次數
   timeout = 1000; // 觸發倒數計時任務的時間間隙
   startTime = new Date().getTime();
@@ -176,9 +188,48 @@ answer.addEventListener('submit', function (ev) {
   } else if (gameStatus === 0) {
     message.textContent = 'please wait for next game';
   } else if (gameStatus === 2) {
-    message.textContent = `您已答對 答案就是${answerGet} please wait for next game`;
+    message.textContent = '您已答對 please wait for next game';
   }
 
+  ev.preventDefault();
+}, false);
+
+const roomMsgButton = document.getElementById('roomMsgButton');
+roomMsgButton.addEventListener('click', function (ev) {
+  const roomMsg = document.getElementById('roomMsg').value;
+  if (roomMsg.length < 15) {
+    socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+  } else {
+    alert('別打太多字啊');
+  }
+
+  ev.preventDefault();
+}, false);
+
+socket.on(`roomMsgShow${room}`, (msg) => {
+  const msgArea = document.getElementById(`msg${msg.userName}`);
+  const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
+  msgArea.textContent = msg.roomMsg;
+  msgArea.style.backgroundColor = '#ccffff';
+  setTimeout(() => {
+    msgArea.style.backgroundColor = '';
+  }, 2000);
+
+  // userinfoArea.style.backgroundColor = '#ccffff';
+});
+
+let reportStatus = 0;
+const report = document.getElementById('report');
+report.addEventListener('click', function (ev) {
+  if (reportStatus === 1) {
+    reportStatus = 2;
+    alert('收到您檢舉 系統將作相應處理...');
+    socket.emit('report', { room: room, userId: userId });
+  } else if (reportStatus === 0) {
+    alert('還沒開始就檢舉人家不好吧...');
+  } else if (reportStatus === 2) {
+    alert('檢舉過了 那你還按屁啊...');
+  }
   ev.preventDefault();
 }, false);
 
@@ -190,6 +241,17 @@ socket.on(`answerShow${room}`, (msg) => {
 socket.on(`userCorrect${room}`, (msg) => {
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
+  const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
+  msgArea.textContent = '答對摟！';
+  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
+  userinfoArea.className = 'correct';
+  setTimeout(() => {
+    userinfoArea.classList.remove('correct');
+  }, (30 - countIndex) * 1000);
+});
+
+socket.on(`reportOk${room}`, (msg) => {
+  alert('收到過半玩家檢舉 請房主注意');
 });
 
 socket.on(`closeRoom${room}`, () => {
@@ -206,9 +268,8 @@ socket.on(`closeRoom${room}`, () => {
   });
 });
 
-// window.addEventListener('load', function () {
-//   socket.emit('checkPlayer', { userId: userId, room: room });
-// });
+// socket.emit('checkPlayer', { userId: userId, room: room });
+
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
@@ -219,34 +280,42 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
-      const userinfo = document.createElement('div');
+      const userinfo = document.createElement('tr');
       userinfo.className = 'userinfo';
+      userinfo.id = 'userinfo' + gamerName;
       playerList.appendChild(userinfo);
-      const name = document.createElement('div');
+
+      const name = document.createElement('td');
       name.textContent = `NAME: ${gamerName}`;
       userinfo.appendChild(name);
-      const score = document.createElement('div');
+
+      const score = document.createElement('td');
       score.textContent = `SCORE: ${gamerScore}`;
       score.id = 'score' + gamerName;
       userinfo.appendChild(score);
+
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
         photo.setAttribute('src', './images/member.png');
       }
-      photo.style.width = '5%';
+      photo.className = 'userPhoto';
       userinfo.appendChild(photo);
+      const gameMsg = document.createElement('td');
+      gameMsg.className = 'msg';
+      gameMsg.id = 'msg' + gamerName;
+      userinfo.appendChild(gameMsg);
     }
   }
   host.innerHTML = '';
   if (msg.hostDetail) {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
-    const hostinfo = document.createElement('div');
+    const hostinfo = document.createElement('tr');
     hostinfo.className = 'hostinfo';
     host.appendChild(hostinfo);
-    const name = document.createElement('div');
+    const name = document.createElement('td');
     name.textContent = `NAME: ${hostName}`;
     hostinfo.appendChild(name);
     const photo = document.createElement('img');
@@ -255,8 +324,12 @@ socket.on(`roomUserId${room}`, (msg) => {
     } else {
       photo.setAttribute('src', './images/member.png');
     }
-    photo.style.width = '5%';
+    photo.className = 'userPhoto';
     hostinfo.appendChild(photo);
+    const gameMsg = document.createElement('td');
+    gameMsg.className = 'msg';
+    gameMsg.id = 'msg' + hostName;
+    hostinfo.appendChild(gameMsg);
   }
 });
 

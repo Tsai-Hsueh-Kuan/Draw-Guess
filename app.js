@@ -17,12 +17,31 @@ app.use(express.urlencoded({ extended: true }));
 // CORS allow all
 app.use(cors());
 
+// const cheerio = require('cheerio');
+// app.get('/testgetdata', (req, res) => {
+//   const request = require('request');
+//   const url = 'https://dict.idioms.moe.edu.tw/idiomView.jsp?ID=549&q=1';
+//   request(url, (err, res, body) => {
+//     try {
+//       const $ = cheerio.load(body);
+//       const weathers = [];
+//       $('#idiomTab tbody tr td').each(function (i, elem) {
+//         weathers.push($(this).text().split('\n'));
+//       });
+//       console.log(weathers[0][0]);
+//       res.status(200).send('123');
+//       return;
+//     } catch {
+//       return err;
+//     }
+//   });
+// });
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/homepage.html'), (err) => {
     if (err) res.send(404);
   });
 });
-
 // API routes
 app.use('/api/' + API_VERSION,
   [

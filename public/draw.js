@@ -37,9 +37,9 @@ fetch('/api/1.0/user/profile', {
     userName = data.data.name;
     userPhoto = data.data.photo;
     userScore = data.data.score;
-    const info = document.getElementById('info');
+    const info = document.getElementById('tr');
 
-    const name = document.createElement('div');
+    const name = document.createElement('td');
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
 
@@ -49,8 +49,13 @@ fetch('/api/1.0/user/profile', {
     } else {
       photo.setAttribute('src', './images/member.png');
     }
-    photo.style.width = '5%';
+    photo.className = 'userPhoto';
     info.appendChild(photo);
+
+    const gameMsg = document.createElement('td');
+    gameMsg.className = 'msg';
+    gameMsg.id = 'msg' + userName;
+    info.appendChild(gameMsg);
   })
   .catch(function (err) {
     return err;
@@ -61,7 +66,8 @@ const socket = io((''), {
   auth: {
     token: token,
     room: room,
-    type: 'host'
+    type: 'host',
+    roomType: type
   }
 });
 
@@ -353,6 +359,10 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
 });
 
+socket.on(`reportOk${room}`, (msg) => {
+  alert('收到過半玩家檢舉 請房主注意');
+});
+
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
@@ -362,23 +372,32 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
-      const userinfo = document.createElement('div');
+      const userinfo = document.createElement('tr');
       userinfo.className = 'userinfo';
       playerList.appendChild(userinfo);
-      const name = document.createElement('div');
+
+      const name = document.createElement('td');
       name.textContent = `NAME: ${gamerName}`;
       userinfo.appendChild(name);
-      const score = document.createElement('div');
+
+      const score = document.createElement('td');
       score.textContent = `SCORE: ${gamerScore}`;
+      score.id = 'score' + gamerName;
       userinfo.appendChild(score);
+
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
         photo.setAttribute('src', './images/member.png');
       }
-      photo.style.width = '5%';
+      photo.className = 'userPhoto';
       userinfo.appendChild(photo);
+
+      const gameMsg = document.createElement('td');
+      gameMsg.className = 'msg';
+      gameMsg.id = 'msg' + gamerName;
+      userinfo.appendChild(gameMsg);
     }
   }
 
@@ -386,10 +405,10 @@ socket.on(`roomUserId${room}`, (msg) => {
   if (msg.hostDetail) {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
-    const hostinfo = document.createElement('div');
+    const hostinfo = document.createElement('tr');
     hostinfo.className = 'hostinfo';
     host.appendChild(hostinfo);
-    const name = document.createElement('div');
+    const name = document.createElement('td');
     name.textContent = `NAME: ${hostName}`;
     hostinfo.appendChild(name);
     const photo = document.createElement('img');
@@ -398,13 +417,43 @@ socket.on(`roomUserId${room}`, (msg) => {
     } else {
       photo.setAttribute('src', './images/member.png');
     }
-    photo.style.width = '5%';
+    photo.className = 'userPhoto';
     hostinfo.appendChild(photo);
+
+    const gameMsg = document.createElement('td');
+    gameMsg.className = 'msg';
+    gameMsg.id = 'msg' + hostName;
+    hostinfo.appendChild(gameMsg);
   }
   if (msg.roomUserId) {
     roomId = msg.roomUserId;
   }
 });
+
+const roomMsgButton = document.getElementById('roomMsgButton');
+roomMsgButton.addEventListener('click', function (ev) {
+  const roomMsg = document.getElementById('roomMsg').value;
+  if (roomMsg.length < 15) {
+    socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+  } else {
+    alert('別打太多字啊');
+  }
+
+  ev.preventDefault();
+}, false);
+
+socket.on(`roomMsgShow${room}`, (msg) => {
+  const msgArea = document.getElementById(`msg${msg.userName}`);
+  const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
+  msgArea.textContent = msg.roomMsg;
+  msgArea.style.backgroundColor = '#ccffff';
+  setTimeout(() => {
+    msgArea.style.backgroundColor = '';
+  }, 2000);
+
+  // userinfoArea.style.backgroundColor = '#ccffff';
+});
+
 const copy = document.getElementById('example');
 copy.value = urlAll;
 

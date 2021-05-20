@@ -5,7 +5,7 @@ const { TOKEN_EXPIRE, TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 
 const getSingleGame = async (id, type) => {
   // const gameIdList = await query('SELECT id from draw.game where host_id <> ?', id);
-  const gameIdList = await query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ?', [id, type]);
+  const gameIdList = await query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ? AND draw.game.need_check = 0', [id, type]);
 
   const gameIdListArray = gameIdList.map(x => x.id);
   const gameIdCheck = await query('SELECT game_id from draw.history where user_id = ?', id);
@@ -56,9 +56,18 @@ const getAnswer = async (answerId) => {
   return { answer: answer };
 };
 
+const getcrawler = async (all) => {
+  try {
+    await query('INSERT into draw.question(question,type,inuse) values (?,?,?)', [all, 'idiom', 0]);
+  } catch {
+    console.log('err');
+  }
+};
+
 module.exports = {
   getSingleGame,
   updateHistory,
   checkAnswer,
-  getAnswer
+  getAnswer,
+  getcrawler
 };
