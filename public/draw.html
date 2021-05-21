@@ -23,11 +23,11 @@
      
     </div>
   </header>
-  <input id="example" value="need del">
+  <!-- <input id="example" value="need del">
   <button id="copy" data-clipboard-target="#example">複製</button>
   <script>
   	new Clipboard( "#copy" );
-  </script>
+  </script> -->
 <br>
 <div class="container-fluid main">
   <div class="row rowMain">
@@ -35,7 +35,7 @@
         
         <br>
         <div>
-          <table class="table">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">HOST</th>
@@ -93,7 +93,7 @@
     </div>
     <div class="rankPart col-5" id="rankShow"><div">
         <div>
-          <table class="table">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">NAME</th>
@@ -120,5 +120,6 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/draw.js"></script>
-
+<link rel="stylesheet" href="/reset.css">
+<link rel="stylesheet" href="/homepage.css">
 </html>

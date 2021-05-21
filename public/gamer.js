@@ -209,9 +209,9 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   const msgArea = document.getElementById(`msg${msg.userName}`);
   const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
   msgArea.textContent = msg.roomMsg;
-  msgArea.style.backgroundColor = '#ccffff';
+  userinfoArea.style.backgroundColor = '#ccffff';
   setTimeout(() => {
-    msgArea.style.backgroundColor = '';
+    userinfoArea.style.backgroundColor = '';
   }, 2000);
 
   // userinfoArea.style.backgroundColor = '#ccffff';
@@ -317,7 +317,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       } else {
         photo.setAttribute('src', './images/member.png');
       }
-      photo.className = 'userPhoto';
+      photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
       const gameMsg = document.createElement('td');
       gameMsg.className = 'msg';
@@ -330,7 +330,8 @@ socket.on(`roomUserId${room}`, (msg) => {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
     const hostinfo = document.createElement('tr');
-    hostinfo.className = 'hostinfo';
+    hostinfo.className = 'userinfo';
+    hostinfo.id = `userinfo${hostName}`;
     host.appendChild(hostinfo);
     const name = document.createElement('td');
     name.textContent = `NAME: ${hostName}`;
@@ -343,7 +344,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     } else {
       photo.setAttribute('src', './images/member.png');
     }
-    photo.className = 'userPhoto';
+    photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
     const gameMsg = document.createElement('td');
     gameMsg.className = 'msg';

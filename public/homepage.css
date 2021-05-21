@@ -101,7 +101,11 @@ header.index .member-container .signup-form-btn:hover {
 .userPhoto{
  width: 100px;
  height: 100px;
+ border-radius:50%;
  object-fit: cover;
+ padding: 3px;
+ border:2px gray solid;
+ box-shadow:3px 3px 12px gray;padding:3px
 }
 .userName{
  display: none;
@@ -127,33 +131,25 @@ header.index .member-container .signup-form-btn:hover {
  margin:  1%;
 }
 #rankShow{
-
+padding-top: 20px;
+padding-left: 30px;
 }
 
 .container{
  width: 100%;
 }
 
-/* .userinfo{
- display: flex;
- flex-direction: row
-}
 
-.userinfoName,
-.userinfoScore{
- border: solid black 1px
-} */
 
 .hostPhoto,
 .gamerPhoto,
 .userinfoPhoto{
- width: 100px;
- height: 100px;
- /* object-fit: cover; */
- /* padding: 0rem;
- border-radius: 50%; */
-padding: 0%;
-margin: 0%;
+width: 100px;
+height: 100px;
+
+padding: 3px;
+
+box-shadow:3px 3px 12px gray;padding:3px
  /* box-shadow:1px 1px 12px black */
 }
 
@@ -197,6 +193,20 @@ margin: 0%;
  overflow: scroll;
 }
 
+
+
+/* .userinfo{
+ height:900px;
+ overflow: auto;
+
+  text-align: center;
+  padding: 0;
+  background: linear-gradient(white, transparent),radial-gradient(at top, rgba(0,0,0, .6),transparent 70%);
+  background-repeat:  no-repeat;
+  background-size: 100% 100px, 100% 15px;
+  background-attachment: local, scroll;
+} */
+
 .draw {
  border: 1px solid #999;
  /* float: left; */
@@ -220,5 +230,7 @@ margin: 0%;
 }
 td{
  font-size: 20px;
+ padding: -5px;
 }
+
 

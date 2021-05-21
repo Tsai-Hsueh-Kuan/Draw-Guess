@@ -44,13 +44,11 @@ fetch('/api/1.0/user/profile', {
     userPhoto = data.data.photo;
     userScore = data.data.score;
     const info = document.getElementById('info');
-    info.id = `userinfo${userName}`;
+
     const name = document.createElement('td');
     name.className = 'userName';
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
-    const photoTd = document.createElement('td');
-    info.appendChild(photoTd);
     const photo = document.getElementById('userPhoto');
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
@@ -400,7 +398,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       } else {
         photo.setAttribute('src', './images/member.png');
       }
-      photo.className = 'userPhoto';
+      photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
 
       const gameMsg = document.createElement('td');
@@ -415,7 +413,8 @@ socket.on(`roomUserId${room}`, (msg) => {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
     const hostinfo = document.createElement('tr');
-    hostinfo.className = 'hostinfo';
+    hostinfo.className = 'userinfo';
+    hostinfo.id = `userinfo${hostName}`;
     host.appendChild(hostinfo);
     const name = document.createElement('td');
     name.textContent = `NAME: ${hostName}`;
@@ -423,10 +422,11 @@ socket.on(`roomUserId${room}`, (msg) => {
 
     const photoTd = document.createElement('td');
     hostinfo.appendChild(photoTd);
-    const photo = document.getElementById('userPhoto');
+    const photo = document.createElement('img');
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
     }
+    photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
 
     const gameMsg = document.createElement('td');
@@ -455,16 +455,16 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   const msgArea = document.getElementById(`msg${msg.userName}`);
   const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
   msgArea.textContent = msg.roomMsg;
-  msgArea.style.backgroundColor = '#ccffff';
+  userinfoArea.style.backgroundColor = '#ccffff';
   setTimeout(() => {
-    msgArea.style.backgroundColor = '';
+    userinfoArea.style.backgroundColor = '';
   }, 2000);
 
   // userinfoArea.style.backgroundColor = '#ccffff';
 });
 
-const copy = document.getElementById('example');
-copy.value = urlAll;
+// const copy = document.getElementById('example');
+// copy.value = urlAll;
 
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
