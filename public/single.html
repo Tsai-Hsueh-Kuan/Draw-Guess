@@ -20,27 +20,84 @@
     </div>
     <div class="member-container">
       <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM</button>    
-      <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member.png"></div>
+      <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
      
     </div>
   </header>
 
+
+  <div class="container-fluid main">
+    <div class="row rowMain">
+      <div class="mainPart col-6 container-fluid" id="mainPart">
+          
+          <br>
+   
+          <div>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">HOST</th>
+                  <th scope="col">PHOTO</th>
+                  <th scope="col">MSG</th>
+                </tr>
+              </thead>
+              <tbody id="host" class="host">
+              
+              </tbody>
+            </table>
+
+          </div>
+     
+          <br>
+
+          <h1 id="title">準備開始</h1>
+          <h4 id="message">please wait next game</h1>
+            <input type="text" id="roomMsg">
+            <button id="roomMsgButton">聊天訊息送出</button>
+            <div id="imgs"></div>
+            <form id="answer">
+              <input type="text" id="answerCheck">
+              <input type="submit">
+            </form>
+
+            
   <br>
   <div>record</div>
   <div class="record" id="record"></div>
-  <h1 id="title">準備開始</h1>
-  <h4 id="message">please wait next game</h1>
-    <button id="start">START GAME</button>
-    <div id="imgs"></div>
-   
-    <form id="answer">
-      <input type="text" id="answerCheck">
-      <input type="submit">
-    </form>
+
+  <button id="start">START GAME</button>
+
+              
+            
+        </div>
+      <div class="rankPart col-5" id="rankShow"><div">
+          <div class="tableDiv">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">NAME</th>
+                  <th scope="col">SCORE</th>
+                  <th scope="col">PHOTO</th>
+                  <th scope="col">MSG</th>
+                </tr>
+              </thead>
+              <tbody class="playerList" id="playerList"></tbody>
+            </table>
+
+          </div>
+
+        </div></div>
+      </div>
+        </div>
+
+
+
+ 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- <a id="save" href="#" class="color-btn-green">Save Canvas</a> -->
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/single.js"></script>
-
+<link rel="stylesheet" href="/reset.css">
+<link rel="stylesheet" href="/homepage.css">
 </html>

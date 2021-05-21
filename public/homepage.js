@@ -39,10 +39,16 @@ if (token) {
       const photoTd = document.createElement('td');
       info.appendChild(photoTd);
       const photo = document.getElementById('userPhoto');
+      photo.remove();
+      const newPhoto = document.createElement('img');
+      newPhoto.id = 'userPhoto';
+      newPhoto.className = 'userPhoto';
       if (userPhoto) {
-        photo.setAttribute('src', `${userPhoto}`);
+        newPhoto.setAttribute('src', `${userPhoto}`);
+      } else {
+        newPhoto.setAttribute('src', './images/member2.png');
       }
-      photoTd.appendChild(photo);
+      photoTd.appendChild(newPhoto);
     })
     .catch(function (err) {
       return err;
@@ -89,6 +95,10 @@ signUpButton.addEventListener('click', function (ev) {
 
 const signInForm = document.forms.namedItem('signInForm');
 const signInButton = document.getElementById('signInButton');
+const photoButton = document.getElementById('userPhoto');
+photoButton.addEventListener('click', function () {
+
+});
 signInButton.addEventListener('click', function (ev) {
   const signIpFormData = new FormData(signInForm);
   fetch('/api/1.0/user/signin', {
