@@ -1,10 +1,3 @@
-/* #canvas {
-  border: 1px solid #999;
-  width: 400px;
-  height: 400px;
-  max-width: 860px;
-} */
-
 .lineWidthRange {
   visibility: visible;
   width: 0;
@@ -87,13 +80,7 @@
   height: 50px;
 }
 
-.navbar-brand{
-display: flex;
-}
 
-.btn{
- margin-left: 3%;
-}
 
 
 .mainPart,
@@ -101,9 +88,6 @@ display: flex;
 .rankPart{
  border: 1px solid rgb(201, 205, 209);
  margin:  1%;
-}
-#rankShow{
-
 }
 
 .container{
@@ -119,6 +103,7 @@ display: flex;
 .userinfoScore{
  border: solid black 1px
 } */
+.userPhoto,
 .hostPhoto,
 .gamerPhoto,
 .userinfoPhoto{
@@ -176,14 +161,7 @@ display: flex;
  height: 300px;
 }
 /* === */
-.navbar-brand{
-  display: flex;
-  }
-  
-  .btn{
-   margin-left: 3%;
-  }
-  
+
   
   .mainPart,
   .playerPart,
@@ -191,15 +169,13 @@ display: flex;
    border: 1px solid rgb(201, 205, 209);
    margin:  1%;
   }
-  #rankShow{
-  
-  }
+ 
   
   .container{
    width: 100%;
   }
   
-  /* .userinfo{
+  /* .userinfo
    display: flex;
    flex-direction: row
   }
@@ -208,7 +184,7 @@ display: flex;
   .userinfoScore{
    border: solid black 1px
   } */
-  .userPhoto,
+
   .hostPhoto,
   .gamerPhoto,
   .userinfoPhoto{
@@ -247,14 +223,10 @@ display: flex;
    display: flex;
   }
   
-  .tableDiv{
-   height: 400px;
-   overflow: scroll;
-  }
-  
   .draw {
    border: 1px solid #999;
-   /* float: left; */
+   width: 800px;
+   height: 500px;
    position: absolute;
   }
   
@@ -280,6 +252,3 @@ display: flex;
   .correct{
     border: 2px solid red;
   }
-  /* #hostPhoto{
-    width: 100px;
-  } */

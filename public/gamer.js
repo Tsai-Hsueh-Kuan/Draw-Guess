@@ -13,6 +13,13 @@ let userPhoto;
 let userScore;
 let answerLimit = true;
 let answerGet;
+let limitTime;
+if (type === 'english') {
+  limitTime = 30;
+} else if (type === 'idiom') {
+  limitTime = 50;
+}
+
 const imgs = document.querySelector('#imgs');
 
 const token = localStorage.getItem('token');
@@ -20,7 +27,8 @@ const socket = io((''), {
   auth: {
     token: token,
     room: room,
-    type: 'player'
+    type: 'player',
+    limitTime: limitTime
   }
 });
 
@@ -68,27 +76,18 @@ fetch('/api/1.0/user/profile', {
           img[finalNum - 1].remove();
         }
       }
-      //
     });
-    const info = document.getElementById('tr');
-
+    const info = document.getElementById('info');
     const name = document.createElement('td');
     name.textContent = `NAME: ${userName}`;
+    name.className = 'userName';
     info.appendChild(name);
 
-    const photo = document.createElement('img');
+    const photo = document.getElementById('userPhoto');
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
-    } else {
-      photo.setAttribute('src', './images/member.png');
     }
-    photo.className = 'userPhoto';
     info.appendChild(photo);
-
-    const gameMsg = document.createElement('td');
-    gameMsg.className = 'msg';
-    gameMsg.id = 'msg' + userName;
-    info.appendChild(gameMsg);
   })
   .catch(function (err) {
     return err;
@@ -101,7 +100,7 @@ let gameDone = true;
 let countIndex = 1; // 倒數計時任務執行次數
 let timeout = 1000; // 觸發倒數計時任務的時間間隙
 let startTime = new Date().getTime();
-const limitTime = 30;
+
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
@@ -247,7 +246,7 @@ socket.on(`userCorrect${room}`, (msg) => {
   userinfoArea.className = 'correct';
   setTimeout(() => {
     userinfoArea.classList.remove('correct');
-  }, (30 - countIndex) * 1000);
+  }, (limitTime - countIndex) * 1000);
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -268,7 +267,24 @@ socket.on(`closeRoom${room}`, () => {
   });
 });
 
-// socket.emit('checkPlayer', { userId: userId, room: room });
+// socket.on(`repeat${room}`, (msg) => {
+//   setTimeout(() => {
+//     if (msg.id === userId) {
+//       sweetAlert('你已是房主了！', '將跳轉回到首頁', 'error', {
+//         buttons: {
+//           error: {
+//             text: 'ok',
+//             visible: true,
+//             value: 'check'
+//           }
+//         },
+//         timer: 3000
+//       }).then(() => {
+//         return window.location.assign('/');
+//       });
+//     }
+//   }, 1000);
+// });
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
@@ -293,7 +309,8 @@ socket.on(`roomUserId${room}`, (msg) => {
       score.textContent = `SCORE: ${gamerScore}`;
       score.id = 'score' + gamerName;
       userinfo.appendChild(score);
-
+      const photoTd = document.createElement('td');
+      userinfo.appendChild(photoTd);
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
@@ -301,7 +318,7 @@ socket.on(`roomUserId${room}`, (msg) => {
         photo.setAttribute('src', './images/member.png');
       }
       photo.className = 'userPhoto';
-      userinfo.appendChild(photo);
+      photoTd.appendChild(photo);
       const gameMsg = document.createElement('td');
       gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
@@ -318,6 +335,8 @@ socket.on(`roomUserId${room}`, (msg) => {
     const name = document.createElement('td');
     name.textContent = `NAME: ${hostName}`;
     hostinfo.appendChild(name);
+    const photoTd = document.createElement('td');
+    hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
@@ -325,7 +344,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       photo.setAttribute('src', './images/member.png');
     }
     photo.className = 'userPhoto';
-    hostinfo.appendChild(photo);
+    photoTd.appendChild(photo);
     const gameMsg = document.createElement('td');
     gameMsg.className = 'msg';
     gameMsg.id = 'msg' + hostName;

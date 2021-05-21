@@ -17,25 +17,37 @@ app.use(express.urlencoded({ extended: true }));
 // CORS allow all
 app.use(cors());
 
-// const cheerio = require('cheerio');
-// app.get('/testgetdata', (req, res) => {
-//   const request = require('request');
-//   const url = 'https://dict.idioms.moe.edu.tw/idiomView.jsp?ID=549&q=1';
-//   request(url, (err, res, body) => {
-//     try {
-//       const $ = cheerio.load(body);
-//       const weathers = [];
-//       $('#idiomTab tbody tr td').each(function (i, elem) {
-//         weathers.push($(this).text().split('\n'));
-//       });
-//       console.log(weathers[0][0]);
-//       res.status(200).send('123');
-//       return;
-//     } catch {
-//       return err;
-//     }
-//   });
-// });
+const { core, query, transaction, commit, rollback, end } = require('./util/mysqlcon.js');
+const cheerio = require('cheerio');
+app.get('/testgetdata', async (req, res) => {
+  const aa = await query('SELECT question from draw.question where id = 2084');
+  console.log(aa);
+  const a = await query('DELETE from draw.question where question = ?', aa[0].question);
+  console.log(a);
+  // const request = require('request');
+  // const url = 'https://lingokids.com/english-for-kids/animals';
+  // request(url, (err, res, body) => {
+  //   const englishList = [];
+  //   try {
+  //     const $ = cheerio.load(body);
+  //     const weathers = [];
+  //     $('.elementor-13514 .elementor-element.elementor-element-b3e5474').each(function (i, elem) {
+  //       weathers.push($(this).text().split('\n'));
+  //     });
+  //     for (let i = 0; i < 300; i++) {
+  //       if (weathers[0][48 + (i)] && weathers[0][48 + (i)] !== ' ') {
+  //         try {
+  //           query('INSERT into question(question,type,inuse) values (?,?,?)', [weathers[0][48 + (i)], 'english', 0]);
+  //         } catch {
+  //           console.log('err');
+  //         }
+  //       }
+  //     }
+  //   } catch {
+  //     return err;
+  //   }
+  // });
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/homepage.html'), (err) => {

@@ -10,15 +10,17 @@
   <title>game</title>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light navbar navbar-dark bg-dark nav justify-content-end">
-    <div class="justify-content-end">
-    <div class="navbar-brand">
 
-          <div class="info" id="info"></div>
-          <button type="button" class="btn btn-primary test" id="leave">LEAVE ROOM</button>      
+  <header class="index">
+    <div class="title-container">
+      <a href="/" class="title">Draw</a href="/">
     </div>
-  </div>
-  </nav>
+    <div class="member-container">
+      <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM</button>    
+      <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member.png"></div>
+     
+    </div>
+  </header>
   <div class="container-fluid main">
     <div class="row rowMain">
       <div class="mainPart col-6 container-fluid" id="mainPart">
@@ -58,8 +60,8 @@
             
         </div>
       <div class="rankPart col-5" id="rankShow"><div">
-          <div>
-            <table class="table">
+          <div class="tableDiv">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th scope="col">NAME</th>
@@ -68,20 +70,20 @@
                   <th scope="col">MSG</th>
                 </tr>
               </thead>
-              <tbody class="playerList" id="playerList">
-              
-              </tbody>
+              <tbody class="playerList" id="playerList"></tbody>
             </table>
 
           </div>
 
         </div></div>
-        </div>
+      </div>
         </div>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/gamer.js"></script>
+<link rel="stylesheet" href="/reset.css">
+<link rel="stylesheet" href="/homepage.css">
 
 </html>

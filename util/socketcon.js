@@ -20,7 +20,7 @@ const roomUserId = [];
 const hostDetail = [];
 const roomUserData = [];
 const disconnectTime = [];
-const limitTime = 30;
+
 const roomType = [];
 let roomList = [];
 let hostDisconnect;
@@ -30,6 +30,8 @@ const socketCon = (io) => {
     const inRoom = socket.handshake.auth.room;
     const intype = socket.handshake.auth.type;
     const inRoomType = socket.handshake.auth.roomType;
+    const limitTime = socket.handshake.auth.limitTime;
+
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (`${intype}` === 'host') {
@@ -47,6 +49,10 @@ const socketCon = (io) => {
         socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
       } else if (`${intype}` === 'player') {
+        if (verifyHost.id === hostId[inRoom]) {
+          socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
+          socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
+        }
         if (!userId[inRoom]) {
           userId[inRoom] = [verifyHost.id];
         } else {
@@ -219,7 +225,6 @@ const socketCon = (io) => {
       socket.on('report', async (msg) => {
         const report = await updateReport(gameId[msg.room]);
         if (report) {
-          console.log('123');
           socket.emit(`reportOk${msg.room}`, { data: 'need check' });
           socket.broadcast.emit(`reportOk${msg.room}`, { data: 'need check' });
         }

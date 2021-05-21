@@ -44,14 +44,10 @@ fetch('/api/1.0/user/profile', {
     const name = document.createElement('div');
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
-
-    const photo = document.createElement('img');
+    const photo = document.getElementById('userPhoto');
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
-    } else {
-      photo.setAttribute('src', './images/member.png');
     }
-    photo.style.width = '5%';
     info.appendChild(photo);
   })
   .catch(function (err) {

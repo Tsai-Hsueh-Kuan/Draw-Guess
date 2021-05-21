@@ -2,8 +2,8 @@ let userId;
 let userName;
 let userPhoto;
 let userScore;
-
-const button = document.getElementsByClassName('btn');
+const signUp = document.getElementById('signUp');
+const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
 if (token) {
   fetch('/api/1.0/user/profile', {
@@ -25,29 +25,33 @@ if (token) {
       userName = data.data.name;
       userPhoto = data.data.photo;
       userScore = data.data.score;
-      button[0].style = 'display:none;';
-      button[1].style = 'display:none;';
+      signIn.style = 'display:none;';
+      signUp.style = 'display:none;';
       signOutButton.style = 'display:block;';
+      createGame.style = 'display:block;';
+      singlePlay.style = 'display:block;';
       const info = document.getElementById('info');
 
       const name = document.createElement('div');
       name.textContent = `NAME: ${userName}`;
+      name.className = 'userName';
       info.appendChild(name);
-
-      const photo = document.createElement('img');
+      const photoTd = document.createElement('td');
+      info.appendChild(photoTd);
+      const photo = document.getElementById('userPhoto');
       if (userPhoto) {
         photo.setAttribute('src', `${userPhoto}`);
-      } else {
-        photo.setAttribute('src', './images/member.png');
       }
-      photo.className = 'userPhoto';
-      info.appendChild(photo);
+      photoTd.appendChild(photo);
     })
     .catch(function (err) {
       return err;
     });
 }
+// const userPhotoImg = document.getElementById('userPhoto')
+// userPhotoImg.addEventListener('mouse over',function(){
 
+// })
 const signUpForm = document.forms.namedItem('signUpForm');
 const signUpButton = document.getElementById('signUpButton');
 signUpButton.addEventListener('click', function (ev) {
@@ -119,7 +123,9 @@ signInButton.addEventListener('click', function (ev) {
 }, false);
 
 const signOutButton = document.getElementById('exampleModal2');
-signOutButton.style = 'display:none';
+const createGame = document.getElementById('createGame');
+const singlePlay = document.getElementById('singlePlay');
+
 signOutButton.addEventListener('click', function () {
   sweetAlert('確定要登出嗎？', `親愛的 ${userName} 玩家`, 'warning', {
     buttons: {
@@ -166,7 +172,7 @@ socket.on('getRank', async (msg) => {
     userinfo.className = 'userinfo';
     rank.appendChild(userinfo);
 
-    const scope = document.createElement('th');
+    const scope = document.createElement('td');
     scope.scope = 'row';
     scope.textContent = parseInt(i) + 1;
     userinfo.appendChild(scope);
@@ -180,7 +186,8 @@ socket.on('getRank', async (msg) => {
     score.className = 'userinfoScore';
     score.textContent = `${rankScore}`;
     userinfo.appendChild(score);
-
+    const photoTd = document.createElement('td');
+    userinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     photo.className = 'userinfoPhoto';
     if (rankPhoto) {
@@ -188,7 +195,7 @@ socket.on('getRank', async (msg) => {
     } else {
       photo.setAttribute('src', './images/member.png');
     }
-    userinfo.appendChild(photo);
+    photoTd.appendChild(photo);
   }
 });
 
@@ -262,6 +269,8 @@ socket.on('mainPageView', async (msg) => {
       const name = document.createElement('td');
       name.textContent = `NAME: ${gamerName}`;
       userinfo.appendChild(name);
+      const photoTd = document.createElement('td');
+      userinfo.appendChild(photoTd);
       const photo = document.createElement('img');
       photo.className = 'gamerPhoto';
       if (gamerPhoto) {
@@ -270,7 +279,7 @@ socket.on('mainPageView', async (msg) => {
         photo.setAttribute('src', './images/member.png');
       }
 
-      userinfo.appendChild(photo);
+      photoTd.appendChild(photo);
     }
   }
   tbodyHost.innerHTML = '';
@@ -283,6 +292,8 @@ socket.on('mainPageView', async (msg) => {
     const name = document.createElement('td');
     name.textContent = `HOST: ${hostName}`;
     hostinfo.appendChild(name);
+    const photoTd = document.createElement('td');
+    hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     photo.className = 'hostPhoto';
     if (hostPhoto) {
@@ -291,7 +302,7 @@ socket.on('mainPageView', async (msg) => {
       photo.setAttribute('src', './images/member.png');
     }
 
-    hostinfo.appendChild(photo);
+    photoTd.appendChild(photo);
   }
   // { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: intype }
 });
@@ -362,7 +373,6 @@ socket.on('canvasUpdate', (msg) => {
   // }
 });
 
-const singlePlay = document.getElementById('singlePlay');
 singlePlay.addEventListener('click', function () {
   swal('準備開始單人模式', '請選擇您喜歡的題型', {
     buttons: {
@@ -380,7 +390,7 @@ singlePlay.addEventListener('click', function () {
           return window.location.assign('/single.html?type=idiom');
 
         default:
-          swal("Don't evade!", {
+          swal('取消!', {
             buttons: false,
             timer: 1000
           });
@@ -391,7 +401,6 @@ singlePlay.addEventListener('click', function () {
   // return window.location.assign(`/single.html?type=${type}`);
 });
 
-const createGame = document.getElementById('createGame');
 createGame.addEventListener('click', function () {
   let room;
   for (let j = 0; j < 10000; j++) {

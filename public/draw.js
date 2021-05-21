@@ -9,7 +9,13 @@ let userId;
 let userName;
 let userPhoto;
 let userScore;
+let limitTime;
 let roomId = [];
+if (type === 'english') {
+  limitTime = 30;
+} else if (type === 'idiom') {
+  limitTime = 50;
+}
 
 const token = localStorage.getItem('token');
 fetch('/api/1.0/user/profile', {
@@ -37,25 +43,19 @@ fetch('/api/1.0/user/profile', {
     userName = data.data.name;
     userPhoto = data.data.photo;
     userScore = data.data.score;
-    const info = document.getElementById('tr');
-
+    const info = document.getElementById('info');
+    info.id = `userinfo${userName}`;
     const name = document.createElement('td');
+    name.className = 'userName';
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
-
-    const photo = document.createElement('img');
+    const photoTd = document.createElement('td');
+    info.appendChild(photoTd);
+    const photo = document.getElementById('userPhoto');
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
-    } else {
-      photo.setAttribute('src', './images/member.png');
     }
-    photo.className = 'userPhoto';
     info.appendChild(photo);
-
-    const gameMsg = document.createElement('td');
-    gameMsg.className = 'msg';
-    gameMsg.id = 'msg' + userName;
-    info.appendChild(gameMsg);
   })
   .catch(function (err) {
     return err;
@@ -67,7 +67,8 @@ const socket = io((''), {
     token: token,
     room: room,
     type: 'host',
-    roomType: type
+    roomType: type,
+    limitTime: limitTime
   }
 });
 
@@ -273,7 +274,7 @@ socket.on(`question${room}`, (msg) => {
     time.textContent = ('遊戲開始');
   }
 });
-const limitTime = 30;
+
 const time = document.getElementById('time');
 function startCountdown (interval) {
   setTimeout(() => {
@@ -354,9 +355,15 @@ socket.on(`answerShow${room}`, (msg) => {
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
-  console.log(`score${msg.userData[0].name}`);
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
+  const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
+  msgArea.textContent = '答對摟！';
+  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
+  userinfoArea.className = 'correct';
+  setTimeout(() => {
+    userinfoArea.classList.remove('correct');
+  }, (limitTime - countIndex) * 1000);
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -374,6 +381,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
       userinfo.className = 'userinfo';
+      userinfo.id = `userinfo${gamerName}`;
       playerList.appendChild(userinfo);
 
       const name = document.createElement('td');
@@ -384,7 +392,8 @@ socket.on(`roomUserId${room}`, (msg) => {
       score.textContent = `SCORE: ${gamerScore}`;
       score.id = 'score' + gamerName;
       userinfo.appendChild(score);
-
+      const photoTd = document.createElement('td');
+      userinfo.appendChild(photoTd);
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
@@ -392,7 +401,7 @@ socket.on(`roomUserId${room}`, (msg) => {
         photo.setAttribute('src', './images/member.png');
       }
       photo.className = 'userPhoto';
-      userinfo.appendChild(photo);
+      photoTd.appendChild(photo);
 
       const gameMsg = document.createElement('td');
       gameMsg.className = 'msg';
@@ -411,14 +420,14 @@ socket.on(`roomUserId${room}`, (msg) => {
     const name = document.createElement('td');
     name.textContent = `NAME: ${hostName}`;
     hostinfo.appendChild(name);
-    const photo = document.createElement('img');
-    if (hostPhoto) {
-      photo.setAttribute('src', `${hostPhoto}`);
-    } else {
-      photo.setAttribute('src', './images/member.png');
+
+    const photoTd = document.createElement('td');
+    hostinfo.appendChild(photoTd);
+    const photo = document.getElementById('userPhoto');
+    if (userPhoto) {
+      photo.setAttribute('src', `${userPhoto}`);
     }
-    photo.className = 'userPhoto';
-    hostinfo.appendChild(photo);
+    photoTd.appendChild(photo);
 
     const gameMsg = document.createElement('td');
     gameMsg.className = 'msg';

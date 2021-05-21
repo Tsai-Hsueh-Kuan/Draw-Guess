@@ -1,11 +1,124 @@
-.navbar-brand{
-display: flex;
+@import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@font-face {
+  font-family: 'cwTeXYen';
+  font-style: normal;
+  font-weight: 500;
+  src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot);
+  src: url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.eot?#iefix) format('embedded-opentype'),
+       url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
+       url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
+       url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
 }
 
-.btn{
- margin-left: 3%;
+a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+}
+/* for fontawesome */
+i.fas, i.far {
+  user-select: none;
 }
 
+body {
+  /* font-family: 'Chivo', 'cwTeXYen', Verdana;   */
+  font-family: 'Josefin Sans', 'cwTeXYen', Verdana;
+  position: relative;
+  padding: 0 80px;
+}
+header.index {
+ height: 150px;
+ width: 100%;
+ background-color: #FFFFFF;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ top: 0;
+ position: fixed;
+ z-index: 500;
+}
+
+
+header.index .title-container .title {
+ display: block;
+ text-align: center;
+ font-size: 3rem;  /*   need check */
+ color: #000000;  /*   need check */
+ font-family: 'Kalam', Verdana;  /*   need check */
+ font-weight: 600;  /*   need check */
+}
+
+header.index .member-container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ font-size: 18px;
+}
+
+header.index .member-container .item {
+ margin-right: 0%
+
+}
+.signup-form-btn{
+ margin-right: 30px;
+}
+
+.item{
+ padding-right: 150px;
+}
+#info{
+ padding-top: 0px;
+ padding-right: 90px;
+ padding-left: 20px;
+}
+header.index .member-container .item:hover {
+ color: #3f53d9;
+ cursor: pointer;
+}
+
+header.index .member-container .signup-form-btn {
+ padding: 10px 20px;
+ border-radius: 30px;
+ background-color: #3f53d9;
+ transition: linear 0.3s;
+ color: #FFFFFF;
+}
+
+header.index .member-container .signup-form-btn:hover {
+ background-color: #2234AA;
+ cursor: pointer;
+}
+.button{
+ margin-top: 30px;
+}
+#exampleModal2,
+#createGame,
+#singlePlay{
+   display: none;
+}
+
+ 
+.userPhoto{
+ width: 100px;
+ height: 100px;
+ object-fit: cover;
+}
+.userName{
+ display: none;
+ z-index: 9999999;
+}
+
+
+
+
+
+
+
+
+.rowMain,
+.main{
+ margin-top:152px
+}
 
 .mainPart,
 .playerPart,
@@ -30,13 +143,18 @@ display: flex;
 .userinfoScore{
  border: solid black 1px
 } */
-.userPhoto,
+
 .hostPhoto,
 .gamerPhoto,
 .userinfoPhoto{
  width: 100px;
  height: 100px;
- object-fit: cover;
+ /* object-fit: cover; */
+ /* padding: 0rem;
+ border-radius: 50%; */
+padding: 0%;
+margin: 0%;
+ /* box-shadow:1px 1px 12px black */
 }
 
 
@@ -73,6 +191,11 @@ display: flex;
  height: 400px;
  overflow: scroll;
 }
+#mainPart,
+.mainTableDiv{
+ height: 900px;
+ overflow: scroll;
+}
 
 .draw {
  border: 1px solid #999;
@@ -87,3 +210,15 @@ display: flex;
  width: 500px;
  height: 300px;
 }
+.tableTitle{
+ position: fixed;
+}
+.userinfo{
+ justify-content: center;
+ align-items: center;
+ position: relative;
+}
+td{
+ font-size: 20px;
+}
+
