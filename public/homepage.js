@@ -15,7 +15,7 @@ if (token) {
         return response.json(); // 內建promise , send type need json
       } else if (response.status === 403) {
         localStorage.removeItem('token');
-        sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
+        Swal.fire('登入逾期！', '請重新登入', 'error')
           .then(() => {
             return window.location.assign('/');
           });
@@ -34,7 +34,7 @@ if (token) {
 
       const name = document.createElement('div');
       name.textContent = `NAME: ${userName}`;
-      name.className = 'userName';
+      name.className = 'userName hover';
       info.appendChild(name);
       const photoTd = document.createElement('td');
       info.appendChild(photoTd);
@@ -81,88 +81,168 @@ signUpButton.addEventListener('click', function (ev) {
     })
     .then(data => {
       if (data.error) {
-        sweetAlert('OOPS！', `${data.error}`, 'error', { button: { text: '確認' } });
+        Swal.fire('OOPS！', `${data.error}`, 'error');
       } else if (data.data) {
         localStorage.setItem('token', `${data.data.access_token}`);
-        sweetAlert('註冊成功！', `歡迎${data.data.user.name}`, 'success', { button: { text: 'Click Me!' } })
-          .then((value) => {
-            return window.location.assign('/');
-          });
+        Swal.fire({
+          title: '註冊成功',
+          text: `歡迎${data.data.user.name}玩家`,
+          icon: 'success'
+        }).then(() => {
+          return window.location.assign('/');
+        });
       }
     });
   ev.preventDefault();
 }, false);
 
-const signInForm = document.forms.namedItem('signInForm');
-const signInButton = document.getElementById('signInButton');
+const signin = document.getElementById('signIn');
+signin.addEventListener('click', async function () {
+  // swal({
+  //   title: '输入你的密码',
+  //   input: 'password',
+  //   inputAttributes: {
+  //     maxlength: 10,
+  //     autocapitalize: 'off',
+  //     autocorrect: 'off'
+  //   }
+  // }).then(function (password) {
+  //   if (password) {
+  //     swal({
+  //       type: 'success',
+  //       html: '输入的密码是：' + password
+  //     });
+  //   }
+  // });
+
+  Swal.fire({
+    title: '已有帳號 請登入',
+    html:
+    '<div>NAME</div>' +
+    '<input id="swal-input1" type="text" class="swal2-input">' +
+    '<div>PASSWORD</div>' +
+    '<input id="swal-input2" type="password" class="swal2-input">',
+
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input1').val(),
+          $('#swal-input2').val()
+        ]);
+      });
+    }
+    // onOpen: function () {
+    //   $('#swal-input1').focus();
+    // }
+  }).then(function (result) {
+    if (!result.value[0]) {
+      alert('NAME不能為空');
+    } else if (!result.value[1]) {
+      alert('PASSWORD不能為空');
+    } else {
+      const signInData = {
+        name: result.value[0],
+        password: result.value[1]
+      };
+      fetch('/api/1.0/user/signin', {
+        method: 'POST',
+        body: JSON.stringify(signInData),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(function (response) {
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 429) {
+          alert('Too Many Requests');
+        } else if (response.status === 400) {
+          return response.json();
+        } else if (response.status === 403) {
+          return response.json();
+        } else if (response.status === 500) {
+          return response.json();
+        }
+      }).then(data => {
+        if (data.error) {
+          Swal.fire('OOPS！', `${data.error}`, 'error');
+        } else if (data.data) {
+          localStorage.setItem('token', `${data.data.access_token}`);
+          Swal.fire({
+            title: '登入成功',
+            text: `歡迎${data.data.user.name}玩家`,
+            icon: 'success'
+          }).then(() => {
+            return window.location.assign('/');
+          });
+        }
+      });
+    }
+  }).catch(Swal.fire.noop);
+});
+
 const photoButton = document.getElementById('userPhoto');
 photoButton.addEventListener('click', function () {
 
 });
-signInButton.addEventListener('click', function (ev) {
-  const signIpFormData = new FormData(signInForm);
-  fetch('/api/1.0/user/signin', {
-    method: 'POST',
-    body: signIpFormData
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        alert('Too Many Requests');
-      } else if (response.status === 400) {
-        return response.json();
-      } else if (response.status === 403) {
-        return response.json();
-      } else if (response.status === 500) {
-        return response.json();
-      }
-    })
-    .then(data => {
-      if (data.error) {
-        sweetAlert('OOPS！', `${data.error}`, 'error', { button: { text: '確認' } });
-      } else if (data.data) {
-        localStorage.setItem('token', `${data.data.access_token}`);
-        sweetAlert('登入成功！', `歡迎${data.data.user.name}`, 'success', { button: { text: 'Click Me!' } })
-          .then((value) => {
-            return window.location.assign('/');
-          });
-      }
-    });
-  ev.preventDefault();
-}, false);
+// const signInForm = document.forms.namedItem('signInForm');
+// const signInButton = document.getElementById('signInButton');
+// signInButton.addEventListener('click', function (ev) {
+//   const signIpFormData = new FormData(signInForm);
+//   fetch('/api/1.0/user/signin', {
+//     method: 'POST',
+//     body: signIpFormData
+//   }).then(function (response) {
+//     if (response.status === 200) {
+//       return response.json();
+//     } else if (response.status === 429) {
+//       alert('Too Many Requests');
+//     } else if (response.status === 400) {
+//       return response.json();
+//     } else if (response.status === 403) {
+//       return response.json();
+//     } else if (response.status === 500) {
+//       return response.json();
+//     }
+//   }).then(data => {
+//     if (data.error) {
+//       Swal.fire('OOPS！', `${data.error}`, 'error');
+//     } else if (data.data) {
+//       localStorage.setItem('token', `${data.data.access_token}`);
+//       Swal.fire({
+//         title: '登入成功',
+//         text: `歡迎${data.data.user.name}玩家`,
+//         icon: 'success'
+//       }).then(() => {
+//         return window.location.assign('/');
+//       });
+//     }
+//   });
+//   ev.preventDefault();
+// }, false);
 
 const signOutButton = document.getElementById('exampleModal2');
 const createGame = document.getElementById('createGame');
 const singlePlay = document.getElementById('singlePlay');
 
 signOutButton.addEventListener('click', function () {
-  sweetAlert('確定要登出嗎？', `親愛的 ${userName} 玩家`, 'warning', {
-    buttons: {
-      cancel: {
-        text: 'cancel',
-        visible: true,
-        value: 'cancel'
-      },
-      confirm: {
-        text: 'Sign Out',
-        visible: true,
-        value: 'check'
+  Swal.fire({
+    title: '確定要登出嗎？',
+    text: `親愛的 ${userName} 玩家`,
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: '繼續遊戲',
+    confirmButtonText: '確認登出'
+  })
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (token) {
+          localStorage.removeItem('token');
+        }
+        return window.location.assign('/');
       }
-    }
-  }).then((value) => {
-    if (value === 'check') {
-      if (token) {
-        localStorage.removeItem('token');
-      }
-      return window.location.assign('/');
-    }
-  });
+    });
 });
 
 const socket = io((''), {
   auth: {
-    token: 'homePage',
     room: 'homePage',
     type: 'homePage'
   }
@@ -180,15 +260,17 @@ socket.on('getRank', async (msg) => {
     const rankScore = msg.data[i].score;
     const userinfo = document.createElement('tr');
     userinfo.className = 'userinfo';
+
     rank.appendChild(userinfo);
 
     const scope = document.createElement('td');
     scope.scope = 'row';
-    scope.textContent = parseInt(i) + 1;
+    scope.textContent = (parseInt(i) + 1);
     userinfo.appendChild(scope);
 
     const name = document.createElement('td');
     name.className = 'userinfoName';
+
     name.textContent = `${rankName}`;
     userinfo.appendChild(name);
 
@@ -226,12 +308,12 @@ socket.on('mainPageView', async (msg) => {
   }
   const imgs = document.createElement('a');
   imgs.id = `imgs${roomId}`;
-  imgs.className = 'imgs';
+  imgs.className = 'imgs col-10';
   imgs.setAttribute('href', `/gamer.html?room=${roomId}&type=${roomType}`);
   room.appendChild(imgs);
 
   const tableDiv = document.createElement('div');
-  tableDiv.className = 'tableDiv';
+  tableDiv.className = 'tableDiv col-2';
   room.appendChild(tableDiv);
 
   const table = document.createElement('table');
@@ -250,17 +332,18 @@ socket.on('mainPageView', async (msg) => {
   const th = document.createElement('th');
   th.scope = 'col';
   th.textContent = 'NAME';
+  th.className = 'thName';
   tr.appendChild(th);
 
   const th2 = document.createElement('th');
   th2.scope = 'col';
-  th2.textContent = 'PHOTO';
+  th2.textContent = '目前玩家';
   tr.appendChild(th2);
 
   const tbodyHost = document.createElement('tbody');
   tbodyHost.id = `tbodyHost${roomId}`;
   tbodyHost.className = 'tbodyHost';
-  table.appendChild(tbodyHost);
+  imgs.appendChild(tbodyHost);
 
   const tbodyPlayerList = document.createElement('tbody');
   tbodyPlayerList.id = `tbodyPlayerList${roomId}`;
@@ -269,6 +352,8 @@ socket.on('mainPageView', async (msg) => {
 
   tbodyPlayerList.innerHTML = '';
   if (msg.roomUserData && msg.roomUserData[0]) {
+    const playlistCount = msg.roomUserData.length;
+    th2.textContent = `目前玩家 共${playlistCount}位`;
     for (const i in msg.roomUserData) {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
@@ -278,8 +363,10 @@ socket.on('mainPageView', async (msg) => {
       tbodyPlayerList.appendChild(userinfo);
       const name = document.createElement('td');
       name.textContent = `NAME: ${gamerName}`;
-      userinfo.appendChild(name);
+      name.className = 'userName hover';
+
       const photoTd = document.createElement('td');
+      photoTd.className = 'gamerTd';
       userinfo.appendChild(photoTd);
       const photo = document.createElement('img');
       photo.className = 'gamerPhoto';
@@ -288,7 +375,7 @@ socket.on('mainPageView', async (msg) => {
       } else {
         photo.setAttribute('src', './images/member.png');
       }
-
+      photoTd.appendChild(name);
       photoTd.appendChild(photo);
     }
   }
@@ -300,12 +387,13 @@ socket.on('mainPageView', async (msg) => {
     hostinfo.className = 'hostinfo';
     tbodyHost.appendChild(hostinfo);
     const name = document.createElement('td');
-    name.textContent = `HOST: ${hostName}`;
+    name.textContent = `房主: ${hostName}`;
+    name.className = 'hostName';
     hostinfo.appendChild(name);
     const photoTd = document.createElement('td');
     hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
-    photo.className = 'hostPhoto';
+    photo.className = 'hostPhoto hostPhotoMainPage';
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
@@ -375,40 +463,32 @@ socket.on('canvasUpdate', (msg) => {
       }
     }
   }
-  // else {
-  //   const img = document.createElement('img');
-  //   img.src = '/images/member.png';
-  //   img.className = `img img${roomId}`;
-  //   imgs.appendChild(img);
-  // }
 });
 
 singlePlay.addEventListener('click', function () {
-  swal('準備開始單人模式', '請選擇您喜歡的題型', {
-    buttons: {
-      English: true,
-      四字成語: true
-    }
-  })
-    .then((value) => {
-      switch (value) {
-        case 'English':
-
-          return window.location.assign('/single.html?type=english');
-
-        case '四字成語':
-          return window.location.assign('/single.html?type=idiom');
-
-        default:
-          swal('取消!', {
-            buttons: false,
-            timer: 1000
-          });
+  Swal.fire({
+    title: '準備開始單人模式',
+    input: 'select',
+    inputOptions: {
+      english: 'ENGLISH',
+      idiom: '四字成語'
+    },
+    inputPlaceholder: '選擇您喜歡的題型',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (value === 'english') {
+        return window.location.assign('/single.html?type=english');
+      } else if (value === 'idiom') {
+        return window.location.assign('/single.html?type=idiom');
+      } else {
+        Swal.fire({
+          timer: 2000,
+          title: '未選擇 取消！',
+          showConfirmButton: false
+        });
       }
-    });
-
-  // const type = 'english';
-  // return window.location.assign(`/single.html?type=${type}`);
+    }
+  });
 });
 
 createGame.addEventListener('click', function () {
@@ -420,29 +500,29 @@ createGame.addEventListener('click', function () {
       break;
     }
   }
-  swal('準備開始連線模式', '請選擇您喜歡的題型', {
-    buttons: {
-      English: true,
-      四字成語: true
-    }
-    // timer: 1000
-  })
-    .then((value) => {
-      switch (value) {
-        case 'English':
-
-          return window.location.assign(`/draw.html?room=${room}&type=english`);
-
-        case '四字成語':
-          return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-
-        default:
-          swal('取消!', {
-            buttons: false,
-            timer: 1000
-          });
+  Swal.fire({
+    title: '準備開始連線模式',
+    input: 'select',
+    inputOptions: {
+      english: 'ENGLISH',
+      idiom: '四字成語'
+    },
+    inputPlaceholder: '選擇您喜歡的題型',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (value === 'english') {
+        return window.location.assign(`/draw.html?room=${room}&type=english`);
+      } else if (value === 'idiom') {
+        return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+      } else {
+        Swal.fire({
+          timer: 2000,
+          title: '未選擇 取消！',
+          showConfirmButton: false
+        });
       }
-    });
+    }
+  });
 });
 
 // const canvasDiv = document.querySelector('#addCanvas');

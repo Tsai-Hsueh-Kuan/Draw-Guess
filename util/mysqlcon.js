@@ -1,6 +1,6 @@
 require('dotenv').config();
-const mysql = require('mysql');
-const { promisify } = require('util');
+const mysql = require('mysql2/promise');
+const multipleStatements = (process.env.NODE_ENV === 'test');
 const { NODE_ENV, DB_HOST, DB_USER, DB_PWD, DB_DB } = process.env;
 const env = NODE_ENV || 'production';
 
@@ -11,7 +11,7 @@ const mysqlConfig = {
     password: DB_PWD,
     database: DB_DB,
     waitForConnections: true,
-    connectionLimit: 5000
+    connectionLimit: 100
   },
   development: {
     host: DB_HOST,
@@ -19,7 +19,7 @@ const mysqlConfig = {
     password: DB_PWD,
     database: DB_DB,
     waitForConnections: true,
-    connectionLimit: 5000
+    connectionLimit: 100
   },
   test: {
     host: DB_HOST,
@@ -27,7 +27,7 @@ const mysqlConfig = {
     password: DB_PWD,
     database: DB_DB,
     waitForConnections: true,
-    connectionLimit: 5000
+    connectionLimit: 100
   }
 };
 // const mysqlCon = mysql.createPool(mysqlConfig[env]);
@@ -48,18 +48,22 @@ const mysqlConfig = {
 //   return promisify(mysqlCon.promiseEnd).bind(mysqlCon)(promiseEnd, bindings);
 // };
 
-const mysqlCon = mysql.createConnection(mysqlConfig[env]);
-const promiseQuery = promisify(mysqlCon.query).bind(mysqlCon);
-const promiseTransaction = promisify(mysqlCon.beginTransaction).bind(mysqlCon);
-const promiseCommit = promisify(mysqlCon.commit).bind(mysqlCon);
-const promiseRollback = promisify(mysqlCon.rollback).bind(mysqlCon);
-const promiseEnd = promisify(mysqlCon.end).bind(mysqlCon);
+// const mysqlCon = mysql.createConnection(mysqlConfig[env]);
+// const promiseQuery = promisify(mysqlCon.query).bind(mysqlCon);
+// const promiseTransaction = promisify(mysqlCon.beginTransaction).bind(mysqlCon);
+// const promiseCommit = promisify(mysqlCon.commit).bind(mysqlCon);
+// const promiseRollback = promisify(mysqlCon.rollback).bind(mysqlCon);
+// const promiseEnd = promisify(mysqlCon.end).bind(mysqlCon);
 
+const pool = mysql.createPool(mysqlConfig[env]);
+// const promisePool = pool.promise();
+// async function main () {
+//   const a = await promisePool.query('SELECT * from draw.user where id = 1');
+//   console.log(a[0][0].name);
+// }
+// main();
 module.exports = {
-  core: mysql,
-  query: promiseQuery,
-  transaction: promiseTransaction,
-  commit: promiseCommit,
-  rollback: promiseRollback,
-  end: promiseEnd
+  mysql,
+  pool
+  // promisePool
 };

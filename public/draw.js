@@ -5,6 +5,7 @@ const urlhost = window.location.host;
 const type = url.get('type');
 const room = url.get('room');
 const urlAll = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
+
 let userId;
 let userName;
 let userPhoto;
@@ -24,16 +25,16 @@ fetch('/api/1.0/user/profile', {
 })
   .then(function (response) {
     if (response.status === 200) {
-      return response.json(); // 內建promise , send type need json
+      return response.json();
     } else if (response.status === 403) {
       localStorage.removeItem('token');
-      sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
+      Swal.fire('登入逾期！', '請重新登入', 'error')
         .then(() => {
           return window.location.assign('/');
         });
     } else if (response.status === 401) {
       localStorage.removeItem('token');
-      sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
+      Swal.fire('尚未登入！', '請先登入', 'error')
         .then(() => {
           return window.location.assign('/');
         });
@@ -44,9 +45,8 @@ fetch('/api/1.0/user/profile', {
     userPhoto = data.data.photo;
     userScore = data.data.score;
     const info = document.getElementById('info');
-
     const name = document.createElement('td');
-    name.className = 'userName';
+    name.className = 'userName hover';
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
     const photo = document.getElementById('userPhoto');
@@ -100,32 +100,6 @@ colorChoose.addEventListener('change', function () {
   colorNow = colorChoose.value;
 });
 
-// $('.color input').change(function () {
-//   r = $('#red').val();
-//   g = $('#green').val();
-//   b = $('#blue').val();
-//   RB = 0;
-//   eraserOn = 0;
-//   changeColor(r, g, b);
-//   // 取出input中的數值
-// });
-// const colorView = document.querySelector('#color_view');
-// function changeColor (r, g, b) {
-//   const colors = {
-//     red: r,
-//     green: g,
-//     blue: b
-//   };
-//   $.each(colors, function (_color, _value) {
-//     $('#v' + _color).val(_value);
-//   });
-//   ctx[canvasNum].strokeStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-//   colorNow = 'rgb(' + r + ',' + g + ',' + b + ')';
-//   RB = 0;
-//   eraserOn = 0;
-//   colorView.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
-// };
-
 const lineWidthRange = document.getElementById('lineWidthRange');
 lineWidthRange.oninput = function () {
   ctx[canvasNum].lineWidth = this.value;
@@ -164,8 +138,8 @@ const createCanvas = function () {
   const canvas = document.createElement('canvas');
   canvas.className = 'draw';
   canvas.id = 'draw' + canvasNum;
-  canvas.width = '800';
-  canvas.height = '500';
+  canvas.width = '640';
+  canvas.height = '400';
   canvas.style.zIndex = canvasNum;
   ctx[canvasNum] = canvas.getContext('2d');
   canvasDiv.appendChild(canvas);
@@ -206,18 +180,10 @@ canvasDiv.addEventListener('mousedown', (e) => {
 canvasDiv.addEventListener('mousemove', draw);
 canvasDiv.addEventListener('mousedown', () => isDrawing = true);
 
-// $('#save').on('click', function () {
-//   const cavasNow = document.getElementById(`draw${canvasNum - 1}`);
-//   const _url = cavasNow.toDataURL();
-//   this.href = _url;
-//   save.setAttribute('download', 'draw_test.png');
-// });
 const socketUrl = function () {
   if (isDrawing) {
     const cavasNow = document.getElementById(`draw${canvasNum - 1}`);
     const _url = cavasNow.toDataURL();
-    // this.href = _url;
-    // 再把href載入上面的Data:image
     socket.emit('canvasData', { room: room, canvasNum: canvasNum - 1, url: _url });
   };
   isDrawing = false;
@@ -234,11 +200,23 @@ const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
 getQuestion.addEventListener('click', function () {
   if (!roomId[0]) {
-    alert('你也等一下人吧');
+    Swal.fire({
+      title: '房內尚無其他玩家',
+      html:
+      '請稍作等待 或是邀請朋友加入 房間連結：' +
+      `<input type="text" id="text" value=${urlAll} style="width: 200px;" >` +
+    '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>',
+      icon: 'error'
+    });
   } else if (gameDone) {
     socket.emit('getQuestion', { room: room, type: type, hostId: userId });
   } else {
-    sweetAlert('這場遊戲尚未結束！', '試著 讓作品更豐富', 'error', { button: { text: '繼續畫！!' } });
+    Swal.fire({
+      timer: 3000,
+      title: '時間尚未結束',
+      text: '試著讓您作品更豐富！',
+      icon: 'warning'
+    });
   }
 });
 
@@ -260,8 +238,8 @@ socket.on(`question${room}`, (msg) => {
     const canvas = document.createElement('canvas');
     canvas.className = 'draw';
     canvas.id = 'draw' + canvasNum;
-    canvas.width = '800';
-    canvas.height = '500';
+    canvas.width = '640';
+    canvas.height = '400';
     canvas.style.zIndex = canvasNum;
     ctx[canvasNum] = canvas.getContext('2d');
     canvasDiv.appendChild(canvas);
@@ -282,7 +260,6 @@ function startCountdown (interval) {
     if (countIndex < limitTime) {
       time.textContent = (`剩 ${limitTime - countIndex} 秒鐘！`);
       countIndex++;
-
       // 下一次倒數計時
       startCountdown(timeout - deviation);
     } else {
@@ -298,7 +275,7 @@ const undo = function () {
     myobjNow.remove();
     const myobj = document.getElementById(`draw${canvasNum - 1}`);
     const c = myobj.getContext('2d');
-    c.clearRect(0, 0, 800, 500);
+    c.clearRect(0, 0, 640, 400);
     canvasNum--;
     socket.emit('undo', { room: room, canvasNum: canvasNum, data: 1 });
   }
@@ -365,7 +342,15 @@ socket.on(`userCorrect${room}`, (msg) => {
 });
 
 socket.on(`reportOk${room}`, (msg) => {
-  alert('收到過半玩家檢舉 請房主注意');
+  Swal.fire({
+    title: '過半玩家檢舉了您！',
+    text: '良好的遊戲體驗需要您我共能維護',
+    icon: 'warning',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    confirmButtonText: '我會改進'
+  });
 });
 
 const playerList = document.getElementById('playerList');
@@ -383,11 +368,11 @@ socket.on(`roomUserId${room}`, (msg) => {
       playerList.appendChild(userinfo);
 
       const name = document.createElement('td');
-      name.textContent = `NAME: ${gamerName}`;
+      name.textContent = `${gamerName}`;
       userinfo.appendChild(name);
 
       const score = document.createElement('td');
-      score.textContent = `SCORE: ${gamerScore}`;
+      score.textContent = `${gamerScore}`;
       score.id = 'score' + gamerName;
       userinfo.appendChild(score);
       const photoTd = document.createElement('td');
@@ -417,7 +402,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     hostinfo.id = `userinfo${hostName}`;
     host.appendChild(hostinfo);
     const name = document.createElement('td');
-    name.textContent = `NAME: ${hostName}`;
+    name.textContent = `${hostName}`;
     hostinfo.appendChild(name);
 
     const photoTd = document.createElement('td');
@@ -439,17 +424,46 @@ socket.on(`roomUserId${room}`, (msg) => {
   }
 });
 
+const roomElement = document.getElementById('roomMsg');
 const roomMsgButton = document.getElementById('roomMsgButton');
 roomMsgButton.addEventListener('click', function (ev) {
   const roomMsg = document.getElementById('roomMsg').value;
-  if (roomMsg.length < 15) {
+
+  roomElement.value = '';
+  if (roomMsg.length === 0) {
+
+  } else if (roomMsg.length < 3) {
     socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
   } else {
-    alert('別打太多字啊');
+    Swal.fire({
+      timer: 2000,
+      title: '輸入太多字',
+      icon: 'error',
+      showConfirmButton: false
+    });
   }
-
   ev.preventDefault();
 }, false);
+
+$('#roomMsg').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const roomMsg = document.getElementById('roomMsg').value;
+    const roomElement = document.getElementById('roomMsg');
+    roomElement.value = '';
+    if (roomMsg.length === 0) {
+
+    } else if (roomMsg.length < 3) {
+      socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+    } else {
+      Swal.fire({
+        timer: 2000,
+        title: '輸入太多字',
+        icon: 'error',
+        showConfirmButton: false
+      });
+    }
+  }
+});
 
 socket.on(`roomMsgShow${room}`, (msg) => {
   const msgArea = document.getElementById(`msg${msg.userName}`);
@@ -459,31 +473,21 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   setTimeout(() => {
     userinfoArea.style.backgroundColor = '';
   }, 2000);
-
-  // userinfoArea.style.backgroundColor = '#ccffff';
 });
-
-// const copy = document.getElementById('example');
-// copy.value = urlAll;
 
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
-  sweetAlert('確定要離開嗎？', `親愛的 ${userName} 玩家`, 'warning', {
-    buttons: {
-      cancel: {
-        text: '取消',
-        visible: true,
-        value: 'cancel'
-      },
-      confirm: {
-        text: 'Confirm',
-        visible: true,
-        value: 'check'
+  Swal.fire({
+    title: '確定要離開嗎？',
+    text: `親愛的 ${userName} 玩家`,
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: '繼續遊戲',
+    confirmButtonText: '確認離開'
+  })
+    .then((result) => {
+      if (result.isConfirmed) {
+        return window.location.assign('/');
       }
-    }
-  }).then((value) => {
-    if (value === 'check') {
-      return window.location.assign('/');
-    }
-  });
+    });
 });

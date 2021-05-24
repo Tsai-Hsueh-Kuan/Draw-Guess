@@ -1246,7 +1246,29 @@ footer .copyright {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.1);
 }
-
+.hover-text {
+	display: inline-block;
+	position: absolute;
+	background: #222;
+	border-radius: .4em;
+	padding: 12px;
+	font-size: .85em;
+	color: #fff;
+}
+.hover-text:after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-top-color: #222;
+	border-bottom: 0;
+	border-left: 0;
+	margin-left: -10px;
+	margin-bottom: -20px;
+}
 .room-container .chatbox .msg-container .msg-notification .msg-notification-container .whiteboard-image {
   max-width: 100%;
   padding: 10px;

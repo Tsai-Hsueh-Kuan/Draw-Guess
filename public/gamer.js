@@ -1,6 +1,5 @@
 
 const url = new URLSearchParams(window.location.search);
-
 const protocol = window.location.protocol;
 const urlhost = window.location.host;
 const type = url.get('type');
@@ -20,6 +19,39 @@ if (type === 'english') {
   limitTime = 50;
 }
 
+// Swal.fire({
+//   title: 'Submit your Github username',
+//   input: 'text',
+//   inputAttributes: {
+//     autocapitalize: 'off'
+//   },
+//   showCancelButton: true,
+//   confirmButtonText: 'Look up',
+//   showLoaderOnConfirm: true,
+//   preConfirm: (login) => {
+//     return fetch(`//api.github.com/users/${login}`)
+//       .then(response => {
+//         if (!response.ok) {
+//           throw new Error(response.statusText);
+//         }
+//         return response.json();
+//       })
+//       .catch(error => {
+//         Swal.showValidationMessage(
+//           `Request failed: ${error}`
+//         );
+//       });
+//   },
+//   allowOutsideClick: () => !Swal.isLoading()
+// }).then((result) => {
+//   if (result.isConfirmed) {
+//     Swal.fire({
+//       title: `${result.value.login}'s avatar`,
+//       imageUrl: result.value.avatar_url
+//     });
+//     console.log(result.value);
+//   }
+// });
 const imgs = document.querySelector('#imgs');
 
 const token = localStorage.getItem('token');
@@ -38,16 +70,16 @@ fetch('/api/1.0/user/profile', {
 })
   .then(function (response) {
     if (response.status === 200) {
-      return response.json(); // 內建promise , send type need json
+      return response.json();
     } else if (response.status === 403) {
       localStorage.removeItem('token');
-      sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
+      Swal.fire('登入逾期！', '請重新登入', 'error')
         .then(() => {
           return window.location.assign('/');
         });
     } else if (response.status === 401) {
       localStorage.removeItem('token');
-      sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
+      Swal.fire('尚未登入！', '請先登入', 'error')
         .then(() => {
           return window.location.assign('/');
         });
@@ -80,7 +112,7 @@ fetch('/api/1.0/user/profile', {
     const info = document.getElementById('info');
     const name = document.createElement('td');
     name.textContent = `NAME: ${userName}`;
-    name.className = 'userName';
+    name.className = 'userName hover';
     info.appendChild(name);
 
     const photo = document.getElementById('userPhoto');
@@ -161,10 +193,13 @@ socket.on(`undo msg${room}`, (msg) => {
   }
 });
 
-const answer = document.getElementById('answer');
+const answerCheckButton = document.getElementById('answerCheckButton');
+
 const message = document.getElementById('message');
-answer.addEventListener('submit', function (ev) {
+answerCheckButton.addEventListener('click', function (ev) {
   const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
+  const answerElement = document.getElementById('answerCheck');
+  answerElement.value = '';
   if (gameStatus === 1 && answerLimit) {
     const time = new Date();
     answerLimit = false;
@@ -193,41 +228,93 @@ answer.addEventListener('submit', function (ev) {
   ev.preventDefault();
 }, false);
 
-const roomMsgButton = document.getElementById('roomMsgButton');
-roomMsgButton.addEventListener('click', function (ev) {
-  const roomMsg = document.getElementById('roomMsg').value;
-  if (roomMsg.length < 15) {
-    socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
-  } else {
-    alert('別打太多字啊');
+$('#answerCheck').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
+    const answerElement = document.getElementById('answerCheck');
+    answerElement.value = '';
+    if (gameStatus === 1 && answerLimit) {
+      const time = new Date();
+      answerLimit = false;
+      setTimeout(() => {
+        answerLimit = true;
+      }, 2000);
+      socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
+
+      socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
+        if (msg.check) {
+          message.textContent = `正確答案！ ${answerCheck}`;
+          answerGet = answerCheck;
+          gameStatus = 2;
+        } else {
+          message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        }
+      });
+    } else if (!answerLimit) {
+      message.textContent = '作答時間間隔太短';
+    } else if (gameStatus === 0) {
+      message.textContent = 'please wait for next game';
+    } else if (gameStatus === 2) {
+      message.textContent = '您已答對 please wait for next game';
+    }
   }
-
-  ev.preventDefault();
-}, false);
-
-socket.on(`roomMsgShow${room}`, (msg) => {
-  const msgArea = document.getElementById(`msg${msg.userName}`);
-  const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
-  msgArea.textContent = msg.roomMsg;
-  userinfoArea.style.backgroundColor = '#ccffff';
-  setTimeout(() => {
-    userinfoArea.style.backgroundColor = '';
-  }, 2000);
-
-  // userinfoArea.style.backgroundColor = '#ccffff';
 });
 
 let reportStatus = 0;
 const report = document.getElementById('report');
-report.addEventListener('click', function (ev) {
+report.addEventListener('click', async function (ev) {
   if (reportStatus === 1) {
-    reportStatus = 2;
-    alert('收到您檢舉 系統將作相應處理...');
-    socket.emit('report', { room: room, userId: userId });
+    const report = function () {
+      Swal.fire({
+        title: '請告訴我們檢舉原因',
+        input: 'select',
+        inputOptions: {
+          writeAnswer: '畫布上寫答案',
+          publishAnser: '訊息洩漏答案',
+          noAction: '消極作畫',
+          indecent: '不雅繪圖',
+          other: '其他'
+        },
+        inputPlaceholder: '選擇違規事由',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          if (value) {
+            Swal.fire({
+              timer: 2000,
+              title: '已收到您的檢舉',
+              text: '系統將做相應處理',
+              icon: 'success',
+              showConfirmButton: false
+            });
+            reportStatus = 2;
+            socket.emit('report', { room: room, userId: userId, reason: value });
+          } else {
+            Swal.fire({
+              timer: 2000,
+              title: '未選擇事由！',
+              icon: 'warning',
+              showConfirmButton: false
+            });
+          }
+        }
+      });
+    };
+    report();
   } else if (reportStatus === 0) {
-    alert('還沒開始就檢舉人家不好吧...');
+    Swal.fire({
+      title: '遊戲尚未開始',
+      text: '遊戲中才能檢舉！',
+      icon: 'warning',
+      confirmButtonText: '瞭解',
+      showConfirmButton: false
+    });
   } else if (reportStatus === 2) {
-    alert('檢舉過了 那你還按屁啊...');
+    Swal.fire({
+      timer: 2000,
+      title: '已收到您檢舉！',
+      icon: 'warning',
+      showConfirmButton: false
+    });
   }
   ev.preventDefault();
 }, false);
@@ -250,35 +337,32 @@ socket.on(`userCorrect${room}`, (msg) => {
 });
 
 socket.on(`reportOk${room}`, (msg) => {
-  alert('收到過半玩家檢舉 請房主注意');
+  Swal.fire({
+    timer: 3000,
+    title: '過半玩家提出檢舉！',
+    text: '已通知房主要求改進！',
+    icon: 'warning'
+  });
 });
 
 socket.on(`closeRoom${room}`, () => {
-  sweetAlert('房主已離開房間！', '將回到首頁 請重新選擇房間', 'info', {
-    buttons: {
-      confirm: {
-        text: 'click me',
-        visible: true,
-        value: 'check'
-      }
-    }
+  Swal.fire({
+    timer: 3000,
+    title: '房主已離開房間！',
+    text: '將回到首頁 請重新選擇遊戲',
+    icon: 'info'
   }).then(() => {
     return window.location.assign('/');
   });
 });
-
 // socket.on(`repeat${room}`, (msg) => {
 //   setTimeout(() => {
 //     if (msg.id === userId) {
-//       sweetAlert('你已是房主了！', '將跳轉回到首頁', 'error', {
-//         buttons: {
-//           error: {
-//             text: 'ok',
-//             visible: true,
-//             value: 'check'
-//           }
-//         },
-//         timer: 3000
+//       Swal.fire({
+//         timer: 3000,
+//         title: '您已是房主！',
+//         text: '將回到首頁 請勿重複加入',
+//         icon: 'error'
 //       }).then(() => {
 //         return window.location.assign('/');
 //       });
@@ -302,11 +386,11 @@ socket.on(`roomUserId${room}`, (msg) => {
       playerList.appendChild(userinfo);
 
       const name = document.createElement('td');
-      name.textContent = `NAME: ${gamerName}`;
+      name.textContent = `${gamerName}`;
       userinfo.appendChild(name);
 
       const score = document.createElement('td');
-      score.textContent = `SCORE: ${gamerScore}`;
+      score.textContent = `${gamerScore}`;
       score.id = 'score' + gamerName;
       userinfo.appendChild(score);
       const photoTd = document.createElement('td');
@@ -319,6 +403,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
+
       const gameMsg = document.createElement('td');
       gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
@@ -334,7 +419,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     hostinfo.id = `userinfo${hostName}`;
     host.appendChild(hostinfo);
     const name = document.createElement('td');
-    name.textContent = `NAME: ${hostName}`;
+    name.textContent = `${hostName}`;
     hostinfo.appendChild(name);
     const photoTd = document.createElement('td');
     hostinfo.appendChild(photoTd);
@@ -353,24 +438,69 @@ socket.on(`roomUserId${room}`, (msg) => {
   }
 });
 
+const roomElement = document.getElementById('roomMsg');
+const roomMsgButton = document.getElementById('roomMsgButton');
+roomMsgButton.addEventListener('click', function (ev) {
+  const roomMsg = document.getElementById('roomMsg').value;
+  roomElement.value = '';
+  if (roomMsg.length === 0) {
+
+  } else if (roomMsg.length < 3) {
+    socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+  } else {
+    Swal.fire({
+      timer: 2000,
+      title: '輸入太多字',
+      icon: 'error',
+      showConfirmButton: false
+    });
+  }
+  ev.preventDefault();
+}, false);
+
+$('#roomMsg').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const roomMsg = document.getElementById('roomMsg').value;
+    const roomElement = document.getElementById('roomMsg');
+    roomElement.value = '';
+    if (roomMsg.length === 0) {
+
+    } else if (roomMsg.length < 3) {
+      socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+    } else {
+      Swal.fire({
+        timer: 2000,
+        title: '輸入太多字',
+        icon: 'error',
+        showConfirmButton: false
+      });
+    }
+  }
+});
+
+socket.on(`roomMsgShow${room}`, (msg) => {
+  const msgArea = document.getElementById(`msg${msg.userName}`);
+  const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
+  msgArea.textContent = msg.roomMsg;
+  userinfoArea.style.backgroundColor = '#ccffff';
+  setTimeout(() => {
+    userinfoArea.style.backgroundColor = '';
+  }, 2000);
+});
+
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
-  sweetAlert('確定要離開嗎？', `親愛的 ${userName} 玩家`, 'warning', {
-    buttons: {
-      cancel: {
-        text: '取消',
-        visible: true,
-        value: 'cancel'
-      },
-      confirm: {
-        text: 'Confirm',
-        visible: true,
-        value: 'check'
+  Swal.fire({
+    title: '確定要離開嗎？',
+    text: `親愛的 ${userName} 玩家`,
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: '繼續遊戲',
+    confirmButtonText: '確認離開'
+  })
+    .then((result) => {
+      if (result.isConfirmed) {
+        return window.location.assign('/');
       }
-    }
-  }).then((value) => {
-    if (value === 'check') {
-      return window.location.assign('/');
-    }
-  });
+    });
 });

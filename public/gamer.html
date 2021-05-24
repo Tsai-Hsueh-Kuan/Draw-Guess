@@ -5,28 +5,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-  <link rel="stylesheet" href="/draw.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
-  <title>game</title>
+  <link rel="stylesheet" href="/reset.css">
+  <link rel="stylesheet" href="/homepage.css">
+  <title>GAMER</title>
 </head>
 <body>
+  <div class="padding2">
 
-  <header class="index">
-    <div class="title-container">
-      <a href="/" class="title">Draw</a href="/">
-    </div>
-    <div class="member-container">
-      <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM</button>    
-      <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
-     
-    </div>
-  </header>
-  <div class="container-fluid main">
-    <div class="row rowMain">
-      <div class="mainPart col-6 container-fluid" id="mainPart">
-          
-          <br>
-   
+    <header class="index">
+      <div class="title-container">
+        <a href="/" class="title">Draw & Guess</a href="/">
+      </div>
+      <div class="member-container">
+        <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM</button>    
+        <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
+      </div>
+    </header>
+
+    <div class="container-fluid main mainpart" id="main">
+      <div class="row rowMain">
+        <div class="mainPart col-7" id="mainPart">
           <div>
             <table class="table table-striped">
               <thead>
@@ -36,54 +37,48 @@
                   <th scope="col">MSG</th>
                 </tr>
               </thead>
-              <tbody id="host" class="host">
-              
-              </tbody>
+              <tbody id="host" class="host"></tbody>
             </table>
-
           </div>
-     
-          <br>
-
           <h1 id="title">準備開始</h1>
           <h4 id="message">please wait next game</h1>
-            <input type="text" id="roomMsg">
-            <button id="roomMsgButton">聊天訊息送出</button>
-            <div id="imgs"></div>
-            <form id="answer">
-              <input type="text" id="answerCheck">
-              <input type="submit">
-            </form>
-            <button id="report">report</button>
-            
-              
-            
+          <input type="text" id="roomMsg">
+          <button id="roomMsgButton">聊天訊息送出</button>
+          <div id="imgs"></div>
+          <input type="text" id="answerCheck">
+          <button id="answerCheckButton">確認答案</button>
+          <button id="report">report</button>
         </div>
-      <div class="rankPart col-5" id="rankShow"><div">
-          <div class="tableDiv">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">NAME</th>
-                  <th scope="col">SCORE</th>
-                  <th scope="col">PHOTO</th>
-                  <th scope="col">MSG</th>
-                </tr>
-              </thead>
-              <tbody class="playerList" id="playerList"></tbody>
-            </table>
-
+        <div class="rankPart col-5" id="rankShow">
+          <div>
+            <div class="tableDiv">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">NAME</th>
+                    <th scope="col">SCORE</th>
+                    <th scope="col">PHOTO</th>
+                    <th scope="col">MSG</th>
+                  </tr>
+                </thead>
+                <tbody class="playerList" id="playerList"></tbody>
+              </table>
+            </div>
           </div>
-
-        </div></div>
-      </div>
         </div>
-
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="index">
+    <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+  </footer>
+  
+    <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/gamer.js"></script>
 </body>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/gamer.js"></script>
-<link rel="stylesheet" href="/reset.css">
-<link rel="stylesheet" href="/homepage.css">
-
 </html>

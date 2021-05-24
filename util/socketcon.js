@@ -4,7 +4,6 @@ const {
   promisifyset,
   promisifydel
 } = require('./cache.js');
-const { core, query, transaction, commit, rollback, end } = require('./mysqlcon.js');
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport } = require('../server/models/socketcon_model');
 
@@ -31,7 +30,6 @@ const socketCon = (io) => {
     const intype = socket.handshake.auth.type;
     const inRoomType = socket.handshake.auth.roomType;
     const limitTime = socket.handshake.auth.limitTime;
-
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (`${intype}` === 'host') {
@@ -225,8 +223,8 @@ const socketCon = (io) => {
       socket.on('report', async (msg) => {
         const report = await updateReport(gameId[msg.room]);
         if (report) {
-          socket.emit(`reportOk${msg.room}`, { data: 'need check' });
-          socket.broadcast.emit(`reportOk${msg.room}`, { data: 'need check' });
+          socket.emit(`reportOk${msg.room}`, { reason: msg.reason });
+          socket.broadcast.emit(`reportOk${msg.room}`, { reason: msg.reason });
         }
       });
 

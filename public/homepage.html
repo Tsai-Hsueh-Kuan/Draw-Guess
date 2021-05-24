@@ -4,72 +4,78 @@
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>User sign up</title>
+      <title>HOME PAGE</title>
       <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
       <!-- <a href='https://zh.pngtree.com/so/水彩背景'>水彩背景 png來自 zh.pngtree.com</a> -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+      <link rel="stylesheet" href="/reset.css">
+      <link rel="stylesheet" href="/homepage.css">
 </head>
 <body>
-  <header class="index">
-    <div class="title-container">
-      <a href="/" class="title">Draw</a href="/">
-    </div>
-    <div class="member-container">
-      <button type="button" class="signUpButton signup-form-btn button" data-bs-toggle="modal" data-bs-target="#exampleModal" id="signUp">Sign up</button>
-      <button type="button" class="signInButton signin-form-btn button" data-bs-toggle="modal" data-bs-target="#exampleModal1" id="signIn">Sign in</button>
-      <button type="button" class="createButton signup-form-btn button" id="createGame">CREATE GAME</button>
-      <button type="button" class="singleButton signup-form-btn button" id="singlePlay">SINGLE PLAY</button>
-      <button type="button" class="signOutButton signout-btn button" id="exampleModal2">Sign out</button>
-      <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto"  data-bs-toggle="modal" data-bs-target="#exampleModal1" src="./images/member2.png"></div>
-
-    </div>
-  </header>
-
-<div class="container-fluid main">
-  <div class="row rowMain">
-    <div class="mainPart col-8 container-fluid" id="mainPart">
-
-    <!-- <div class="room">
-      <div class="imgs"></div>
-      <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">NAME</th>
-                <th scope="col">PHOTO</th>
-              </tr>
-            </thead>
-            <tbody class="host" id="host">
-            </tbody>
-            <tbody class="playerList" id="playerList">
-            </tbody>
-      </table>
-    </div> -->
-
-    </div>
-    <div class="rankPart col-3" id="rankShow"><div">
-      <div class="mainTableDiv">
-        <table class="table">
-          <thead>
-            <tr class="trTop">
-              <div class="tableTitle">
-                <th scope="col" >#RANK</th>
-                <th scope="col" >NAME</th>
-                <th scope="col" >SCORE</th>
-                <th scope="col" >PHOTO</th>
-              </div>
-              
-            </tr>
-          </thead>
-          <tbody class="rank" id="rank">
-           
-          </tbody>
-        </table>
-
+  <div class="padding2">
+    <header class="index">
+      <div class="title-container">
+        <a href="/" class="title">Draw & Guess</a href="/">
       </div>
-    
-    </div></div>
-  </div>
-</div>
+      <div class="member-container">
+        <!-- <button id="signin">signin</button> -->
+        <button type="button" class="signUpButton signup-form-btn button" data-bs-toggle="modal" data-bs-target="#exampleModal" id="signUp">Sign up <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="signInButton signin-form-btn button" id="signIn">Sign in <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="createButton signup-form-btn button" id="createGame">CREATE GAME <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="singleButton signup-form-btn button" id="singlePlay">SINGLE PLAY <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="signOutButton signout-btn button" id="exampleModal2">Sign out</button>
+        <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto"  data-bs-toggle="modal" data-bs-target="#exampleModal1" src="./images/member2.png"></div>
+      </div>
+    </header>
+
+    <div class="container-fluid main mainpart">
+      <div class="row rowMain">
+        <div class="mainPart col-8 container-fluid">
+          <div class="mainTableDiv">
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link active" id="room-tab" data-bs-toggle="tab" href="#room" role="tab" aria-controls="room" aria-selected="true">ROOM LIST</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link" id="roles-tab" data-bs-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="false">GAME ROLES</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">START GAME</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                      <div class="tab-pane fade show active" id="room" role="tabpanel" aria-labelledby="room-tab">
+                       <div id="join">Click to join a GAME</div> 
+                        <div id="mainPart"></div>
+                      </div>
+                  <div class="tab-pane fade" id="roles" role="tabpanel" aria-labelledby="roles-tab">wait some roles & img</div>
+                  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">?????</div>
+                </div>
+          </div>
+      </div>
+        
+        <div class="rankPart col-3" id="rankShow"><div">
+          <div class="mainTableDiv">
+            <table class="table">
+              <thead>
+                <tr class="trTop">
+                  <div class="tableTitle">
+                    <th scope="col" id="thRank" >#RANK</th>
+                    <th scope="col" id="thName">NAME</th>
+                    <th scope="col" id="thScore">SCORE</th>
+                    <th scope="col" id="thPhoto">PHOTO</th>
+                  </div>
+                  
+                </tr>
+              </thead>
+              <tbody class="rank" id="rank"></tbody>
+            </table>
+          </div>
+        </div></div>
+      </div>
+    </div>
 
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -91,25 +97,8 @@
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">PHOTO:</label>
                   <br>
-                  <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
-      <div >
-        <div class="lineWidthRange"></div>
-        <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
-      </div>
-
-      <button id="rainbowColor">rainbow color : ON</button>
-      <br>
-      <div id="colorView">color view</div>
-      <br>
-      <button id="eraser">eraser</button>
-      <br>
-                  <button id="undo">undo</button>
-                  <div id="addCanvas">
-                    <canvas class="draw" id="draw0" width="400" height="250" style="z-index: 0;">
-                    </canvas>
-                  </div>
-                  <input type="file" name="photo" name="photo" class="form-control" id="photo"></textarea>
-                </div>
+                  <input type="file" name="photo" name="photo" class="form-control" id="photo"></textarea> 
+                </div> 
               </form>
             </div>
             <div class="modal-footer">
@@ -121,36 +110,44 @@
       </div>
 
       <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">登入</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">登入</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form name="signInForm">
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">NAME:</label>
+                  <input type="text" name="name" class="form-control" id="recipient-name">
                 </div>
-                <div class="modal-body">
-                  <form name="signInForm">
-                    <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">NAME:</label>
-                      <input type="text" name="name" class="form-control" id="recipient-name">
-                    </div>
-                    <div class="mb-3">
-                      <label for="message-text" class="col-form-label">PASSWORD:</label>
-                      <input type="password" class="form-control" name="password" id="message-text"></textarea>
-                    </div>
-                  </form>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">PASSWORD:</label>
+                  <input type="password" class="form-control" name="password" id="message-text"></textarea>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" id="signInButton" class="btn btn-primary">Sign In</button>
-                </div>
-              </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" id="signInButton" class="btn btn-primary">Sign In</button>
             </div>
           </div>
-          <script src="/socket.io/socket.io.js"></script>
-      <script src="homepage.js"></script>
+        </div>
+      </div>
+  </div>
+      
+  <footer class="index">
+    <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+  </footer>
+      
+      <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-</body>
-<link rel="stylesheet" href="/reset.css">
-<link rel="stylesheet" href="/homepage.css">
+      <script src="/socket.io/socket.io.js"></script>
+      <script src="homepage.js"></script>
+  
+    </body>
+
 </html>

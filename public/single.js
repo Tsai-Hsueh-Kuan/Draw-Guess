@@ -17,57 +17,60 @@ const token = localStorage.getItem('token');
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
-})
-  .then(function (response) {
-    if (response.status === 200) {
-      return response.json(); // 內建promise , send type need json
-    } else if (response.status === 403) {
-      localStorage.removeItem('token');
-      sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
-        .then(() => {
-          return window.location.assign('/');
-        });
-    } else if (response.status === 401) {
-      localStorage.removeItem('token');
-      sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
-        .then(() => {
-          return window.location.assign('/');
-        });
-    }
-  }).then(data => {
-    userId = data.data.id;
-    userName = data.data.name;
-    userPhoto = data.data.photo;
-    userScore = data.data.score;
-    const info = document.getElementById('info');
+}).then(function (response) {
+  if (response.status === 200) {
+    return response.json();
+  } else if (response.status === 403) {
+    localStorage.removeItem('token');
+    Swal.fire('登入逾期！', '請重新登入', 'error')
+      .then(() => {
+        return window.location.assign('/');
+      });
+  } else if (response.status === 401) {
+    localStorage.removeItem('token');
+    Swal.fire('尚未登入！', '請先登入', 'error')
+      .then(() => {
+        return window.location.assign('/');
+      });
+  }
+}).then(data => {
+  userId = data.data.id;
+  userName = data.data.name;
+  userPhoto = data.data.photo;
+  userScore = data.data.score;
+  const info = document.getElementById('info');
 
-    const name = document.createElement('div');
-    name.textContent = `NAME: ${userName}`;
-    info.appendChild(name);
-    const photo = document.getElementById('userPhoto');
-    if (userPhoto) {
-      photo.setAttribute('src', `${userPhoto}`);
-    }
-    info.appendChild(photo);
-  })
-  .catch(function (err) {
-    return err;
-  });
+  const name = document.createElement('div');
+  name.textContent = `NAME: ${userName}`;
+  name.className = 'userName hover';
+  info.appendChild(name);
+  const photo = document.getElementById('userPhoto');
+  if (userPhoto) {
+    photo.setAttribute('src', `${userPhoto}`);
+  }
+  info.appendChild(photo);
+}).catch(function (err) {
+  return err;
+});
+
 const title = document.getElementById('title');
 const message = document.getElementById('message');
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
 start.addEventListener('click', function () {
   if (!gameDone) {
-    alert('欣賞完作品 再準備下一題');
+    Swal.fire({
+      timer: 3000,
+      title: '欣賞完作品 再準備下一題',
+      showConfirmButton: false
+    });
     return;
   }
   gameDone = false;
   const typeData = {
     type: type
   };
-  // const imgs = document.querySelector('#imgs');
-  // imgs.innerHTML = '';
+
   fetch('/api/1.0/game/single', {
     method: 'post',
     body: JSON.stringify(typeData),
@@ -76,25 +79,17 @@ start.addEventListener('click', function () {
     .then(function (response) {
       if (response.status === 200) {
         return response.json(); // 內建promise , send type need json
-      } else if (response.status === 403) {
-        localStorage.removeItem('token');
-        sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
-          .then(() => {
-            return window.location.assign('/');
-          });
-      } else if (response.status === 401) {
-        localStorage.removeItem('token');
-        sweetAlert('尚未登入！', '請先登入', 'error', { button: { text: 'Click Me!' } })
-          .then(() => {
-            return window.location.assign('/');
-          });
       }
     }).then(data => {
       if (data.error) {
-        sweetAlert('已無更多題目！', '何不試試連線模式？', 'warning', { button: { text: 'Click Me!' } })
-          .then(() => {
-            return window.location.assign('/');
-          });
+        Swal.fire({
+          timer: 5000,
+          title: '已無更多題目！',
+          text: '何不試試連線模式？',
+          icon: 'warning'
+        }).then(() => {
+          return window.location.assign('/');
+        });
       } else {
         canvasAll = data.data.game;
         gameId = canvasAll[0].game_id;
@@ -104,7 +99,7 @@ start.addEventListener('click', function () {
           startTime = new Date().getTime();
           startCountdown(timeout);
         } else {
-          alert('不好意思 爛題目 請再按下一題');
+          alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
         }
         gameStatus = 1;
         title.textContent = ('遊戲開始');
@@ -194,10 +189,12 @@ function startCountdown (interval) {
     }
   }, interval);
 }
+const answerCheckButton = document.getElementById('answerCheckButton');
 
-const answer = document.getElementById('answer');
-answer.addEventListener('submit', function (ev) {
+answerCheckButton.addEventListener('click', function (ev) {
   const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
+  const answerElement = document.getElementById('answerCheck');
+  answerElement.value = '';
   if (gameStatus === 1 && answerLimit) {
     answerLimit = false;
     setTimeout(() => {
@@ -232,6 +229,7 @@ answer.addEventListener('submit', function (ev) {
           record: countIndex,
           gameId: gameId
         };
+
         fetch('/api/1.0/game/history', {
           method: 'post',
           body: JSON.stringify(historyData),
@@ -255,32 +253,98 @@ answer.addEventListener('submit', function (ev) {
     message.textContent = 'please wait for next game';
   } else if (gameStatus === 2) {
     message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
+
     start.textContent = 'NEXT GAME';
   } else if (!answerLimit) {
     message.textContent = '作答時間間隔太短';
   }
-
   ev.preventDefault();
 }, false);
 
+$('#answerCheck').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
+    const answerElement = document.getElementById('answerCheck');
+    answerElement.value = '';
+    if (gameStatus === 1 && answerLimit) {
+      answerLimit = false;
+      setTimeout(() => {
+        answerLimit = true;
+      }, 2000);
+      const data = {
+        answerId: getAnswerId,
+        answerCheck: answerCheck
+      };
+      fetch('/api/1.0/game/answer', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+      }).then(function (response) {
+        if (response.status === 200) {
+          return response.json(); // 內建promise , send type need json
+        }
+      }).then((data) => {
+        if (data.answer) {
+          getAnswer = data.answer[0].question;
+          return getAnswer;
+        } else {
+          return getAnswer;
+        }
+      }).then((data) => {
+        if (answerCheck === getAnswer) {
+          message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
+          title.textContent = `正確答案！ ${getAnswer}`;
+          gameStatus = 2;
+          start.textContent = 'NEXT GAME';
+          const historyData = {
+            record: countIndex,
+            gameId: gameId
+          };
+
+          fetch('/api/1.0/game/history', {
+            method: 'post',
+            body: JSON.stringify(historyData),
+            headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+          })
+            .then(function (response) {
+              if (response.status === 200) {
+                return response.json(); // 內建promise , send type need json
+              }
+            }).then(data => {
+              console.log('update record ok');
+            })
+            .catch(function (err) {
+              return err;
+            });
+        } else {
+          message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        }
+      });
+    } else if (gameStatus === 0) {
+      message.textContent = 'please wait for next game';
+    } else if (gameStatus === 2) {
+      message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
+
+      start.textContent = 'NEXT GAME';
+    } else if (!answerLimit) {
+      message.textContent = '作答時間間隔太短';
+    }
+  }
+});
+
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
-  sweetAlert('確定要離開嗎？', `親愛的 ${userName} 玩家`, 'warning', {
-    buttons: {
-      cancel: {
-        text: '取消',
-        visible: true,
-        value: 'cancel'
-      },
-      confirm: {
-        text: 'Confirm',
-        visible: true,
-        value: 'check'
+  Swal.fire({
+    title: '確定要離開嗎？',
+    text: `親愛的 ${userName} 玩家`,
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: '繼續遊戲',
+    confirmButtonText: '確認離開'
+  })
+    .then((result) => {
+      if (result.isConfirmed) {
+        return window.location.assign('/');
       }
-    }
-  }).then((value) => {
-    if (value === 'check') {
-      return window.location.assign('/');
-    }
-  });
+    });
 });

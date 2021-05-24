@@ -24,10 +24,19 @@ body {
   /* font-family: 'Chivo', 'cwTeXYen', Verdana;   */
   font-family: 'Josefin Sans', 'cwTeXYen', Verdana;
   position: relative;
-  padding: 0 80px;
+  
+  
+}
+/* .padding2{
+ padding: 0 2%;
+} */
+
+.main{
+ width: 1250px;
+ margin: 0 auto;
 }
 header.index {
- height: 150px;
+ height: 120px;
  width: 100%;
  background-color: #FFFFFF;
  display: flex;
@@ -46,6 +55,7 @@ header.index .title-container .title {
  color: #000000;  /*   need check */
  font-family: 'Kalam', Verdana;  /*   need check */
  font-weight: 600;  /*   need check */
+ margin-left: 50px;
 }
 
 header.index .member-container {
@@ -55,21 +65,14 @@ header.index .member-container {
  font-size: 18px;
 }
 
-header.index .member-container .item {
- margin-right: 0%
-
-}
 .signup-form-btn{
  margin-right: 30px;
 }
 
-.item{
- padding-right: 150px;
-}
 #info{
  padding-top: 0px;
- padding-right: 90px;
- padding-left: 20px;
+ padding-right: 80px;
+ padding-left: 30px;
 }
 header.index .member-container .item:hover {
  color: #3f53d9;
@@ -98,19 +101,8 @@ header.index .member-container .signup-form-btn:hover {
 }
 
  
-.userPhoto{
- width: 100px;
- height: 100px;
- border-radius:50%;
- object-fit: cover;
- padding: 3px;
- border:2px gray solid;
- box-shadow:3px 3px 12px gray;padding:3px
-}
-.userName{
- display: none;
- z-index: 9999999;
-}
+
+
 
 
 
@@ -121,61 +113,46 @@ header.index .member-container .signup-form-btn:hover {
 
 .rowMain,
 .main{
- margin-top:152px
+ margin-top:100px;
 }
-
+.mainpart{
+ margin-top: 120px;
+}
 .mainPart,
 .playerPart,
 .rankPart{
  border: 1px solid rgb(201, 205, 209);
- margin:  1%;
+ /* margin:  1%; */
 }
+#addCanvas{
+  height: 400px;
+}
+#mainPart,
 #rankShow{
 padding-top: 20px;
-padding-left: 30px;
+padding-left: 10px;
+display: flex;
+flex-direction: column;
 }
 
-.container{
- width: 100%;
-}
 
-
-
-.hostPhoto,
-.gamerPhoto,
-.userinfoPhoto{
-width: 100px;
-height: 100px;
-
-padding: 3px;
-
-box-shadow:3px 3px 12px gray;padding:3px
- /* box-shadow:1px 1px 12px black */
-}
 
 
 .row{
  justify-content: space-between;
+ height: 950px;
+
  /* align-items: center; */
 }
+.mainPart,
 .rankPart{
  flex-grow: 1;
-}
-
-.imgs{
- border: 1px solid #999;
- min-width: 640px;
- min-height: 400px;
- max-height: 400px;
+ height: 950px
 }
 
 
-.img{
- position: absolute;
- min-width: 640px;
- min-height: 400px;
- max-height: 400px;
-}
+
+
 
 .room{
  padding: 2%;
@@ -183,29 +160,16 @@ box-shadow:3px 3px 12px gray;padding:3px
  display: flex;
 }
 
-.tableDiv{
- height: 400px;
- overflow: scroll;
-}
-#mainPart,
+
+/* #mainPart, */
 .mainTableDiv{
- height: 900px;
+ height: 950px;
  overflow: scroll;
 }
 
 
 
-/* .userinfo{
- height:900px;
- overflow: auto;
 
-  text-align: center;
-  padding: 0;
-  background: linear-gradient(white, transparent),radial-gradient(at top, rgba(0,0,0, .6),transparent 70%);
-  background-repeat:  no-repeat;
-  background-size: 100% 100px, 100% 15px;
-  background-attachment: local, scroll;
-} */
 
 .draw {
  border: 1px solid #999;
@@ -213,26 +177,385 @@ box-shadow:3px 3px 12px gray;padding:3px
  position: absolute;
 }
 
-#addCanvas {
- /* display: flex;
- position: absolute; */
- align-items: center;
- width: 500px;
- height: 300px;
-}
 .tableTitle{
  position: fixed;
 }
-.userinfo{
+
+.hostinfo,
+.userinfo,
+#info{
  justify-content: center;
  align-items: center;
- position: relative;
 }
+
+
+.hostinfo{
+ display: flex;
+ flex-direction: column;
+}
+
+
+.hostinfo:hover .hover{
+ display: block;
+}
+
+#info:hover .hover{
+ display: block;
+}
+.userinfo:hover .hover{
+ display: block;
+}
+.hover{
+ display: none;
+}
+
+.hover{
+	display: inline-block;
+	position: absolute;
+	background: #222;
+	border-radius: .4em;
+	padding: 10px;
+	font-size: .85em;
+	color: #fff;
+}
+.hover:after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-top-color: #222;
+	border-bottom: 0;
+	border-left: 0;
+	margin-left: -10px;
+	margin-bottom: -20px;
+}
+
+.thName,
+.userName{
+  display: none;
+  z-index: 49;
+ }
+/* .photoTd{
+ position: relative;
+} */
+
+
 td{
  font-size: 20px;
- padding: -5px;
+ padding: -20px;
 }
 .swal-button,
 .swal-text{
  font-size: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.lineWidthRange {
+ visibility: visible;
+ width: 0;
+ height: 0;
+ border-style: solid;
+ border-width: 0 0 25px 200px;
+ border-color: transparent transparent #5B5B5B transparent;
+}
+
+#lineWidthRange {
+ width: 200px;
+}
+
+
+#colorChoose{
+width: 32px;
+height: 32px;
+}
+.demo {
+ display: flex;
+ flex-direction: column;
+}
+
+#eraser,
+#rainbowColor,
+#undo,
+#redo,
+#getQuestion,
+#skip{
+ width: 200px;
+ height: 30px;
+}
+
+.draw {
+ border: 1px solid #999;
+ position: absolute;
+}
+
+#join{
+ font-size: 20px;
+ margin-top: 2%;
+ margin-left: 2%;
+}
+
+
+
+#colorView {
+ border: 1px solid #999;
+ width: 100px;
+}
+
+#questionData {
+ max-width: 40%;
+ display: flex;
+ justify-content: space-between;
+}
+
+#question {
+ border: 1px solid #999;
+ border-radius: 5px;
+ width: 200px;
+ height: 40px;
+ display: flex;
+ justify-content: space-around;
+ align-items: center;
+}
+
+
+.gameMsg{
+ font-size: 20px;
+ border: 1px solid #999;
+ width: 100px;
+ height: 50px;
+}
+
+.mainPart,
+.playerPart,
+.rankPart{
+border: 1px solid rgb(201, 205, 209);
+/* margin:  1%; */
+}
+
+.container{
+width: 100%;
+}
+
+.userPhoto,
+.hostPhoto,
+.gamerPhoto,
+.userinfoPhoto{
+width: 100px;
+height: 100px;
+object-fit: cover;
+
+}
+
+.gamerPhoto{
+ margin: 0 auto;
+}
+
+.row{
+justify-content: space-between;
+}
+.rankPart{
+flex-grow: 1;
+}
+
+.room{
+padding: 2%;
+justify-content:flex-start;
+display: flex;
+}
+
+.tableDiv{
+/* border: 1px solid #999; */
+height: 400px;
+overflow: scroll;
+/* margin-right: 0%; */
+position: relative;
+}
+
+.draw {
+border: 1px solid #999;
+
+position: absolute;
+}
+
+.table{
+align-items: center;
+justify-content: center;
+}
+
+
+
+
+ 
+ .container{
+  width: 100%;
+ }
+
+
+ .hostPhoto,
+ .gamerPhoto,
+ .userinfoPhoto{
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+ }
+ 
+
+
+ 
+ .row{
+  justify-content: space-between;
+
+ }
+ .rankPart{
+  flex-grow: 1;
+ }
+ 
+
+ 
+
+ 
+ 
+ 
+ .room{
+  padding: 2%;
+  justify-content:flex-start;
+  display: flex;
+ }
+ 
+ .draw {
+  border: 1px solid #999;
+  /* width: 800px;
+  height: 500px; */
+  position: absolute;
+ }
+ 
+ #addCanvas {
+  align-items: center;
+  /* width: 800px;
+  height: 500px; */
+  display: block;
+ }
+
+
+
+ /* .main{
+   justify-content: center;
+   align-items: center;
+ } */
+
+ .correct{
+   border: 2px solid red;
+ }
+
+
+ #thRank{
+  padding-left: 0%;
+ }
+
+
+.hostPhotoMainPage,
+.userPhoto{
+ width: 100px;
+ height: 100px;
+ border-radius:50%;
+ object-fit: cover;
+ padding: 3px;
+ border:2px gray solid;
+ box-shadow:3px 3px 12px gray;padding:3px
+}
+
+ 
+
+
+
+
+
+
+.hostPhoto,
+.gamerPhoto,
+.userinfoPhoto{
+width: 80px;
+height: 80px;
+padding: 3px;
+box-shadow:3px 3px 12px gray;padding:3px
+}
+
+.imgs{
+ border: 1px solid #999;
+ width: 640px ;
+ height: 400px;
+ position: relative;
+}
+ 
+
+#imgs{
+ border: 1px solid #999;
+ width: 640px ;
+ height: 400px;
+ min-width: 400px;
+ position: relative;
+ z-index: 100;
+ padding: 0%;
+}
+.img{
+ top: 0%;
+ position: absolute;
+ min-width: 640px;
+ min-height: 400px;
+ max-height: 400px;
+}
+
+
+
+footer{
+ z-index: 999;
+ position: sticky;
+}
+footer.index {
+ height: 51px;
+ background-color: #3f53d9;
+ color: #FFFFFF;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ width: 100%;
+ 
+}
+
+footer .copyright {
+  text-align: center;
+}
+
+
+#myTab{
+ margin-top: 2%;
+}
+
+#main{
+ width: 1250px;
+
+}
+
+#text{
+  margin-top: 20px;
+}
+
+#copyButton{
+  border: 1px solid #999;
+  margin-left: 20px;
 }
