@@ -53,7 +53,6 @@ if (type === 'english') {
 //   }
 // });
 const imgs = document.querySelector('#imgs');
-
 const token = localStorage.getItem('token');
 const socket = io((''), {
   auth: {
@@ -264,42 +263,40 @@ let reportStatus = 0;
 const report = document.getElementById('report');
 report.addEventListener('click', async function (ev) {
   if (reportStatus === 1) {
-    const report = function () {
-      Swal.fire({
-        title: '請告訴我們檢舉原因',
-        input: 'select',
-        inputOptions: {
-          writeAnswer: '畫布上寫答案',
-          publishAnser: '訊息洩漏答案',
-          noAction: '消極作畫',
-          indecent: '不雅繪圖',
-          other: '其他'
-        },
-        inputPlaceholder: '選擇違規事由',
-        showCancelButton: true,
-        inputValidator: (value) => {
-          if (value) {
-            Swal.fire({
-              timer: 2000,
-              title: '已收到您的檢舉',
-              text: '系統將做相應處理',
-              icon: 'success',
-              showConfirmButton: false
-            });
-            reportStatus = 2;
-            socket.emit('report', { room: room, userId: userId, reason: value });
-          } else {
-            Swal.fire({
-              timer: 2000,
-              title: '未選擇事由！',
-              icon: 'warning',
-              showConfirmButton: false
-            });
-          }
-        }
-      });
-    };
-    report();
+    Swal.fire({
+      title: '請告訴我們檢舉原因',
+      input: 'select',
+      inputOptions: {
+        writeAnswer: '畫布上寫答案',
+        publishAnser: '訊息洩漏答案',
+        noAction: '消極作畫',
+        indecent: '不雅繪圖',
+        other: '其他'
+      },
+      inputPlaceholder: '選擇違規事由',
+      showCancelButton: true
+
+    }).then(function (result) {
+      if (result.value) {
+        console.log(result);
+        Swal.fire({
+          timer: 2000,
+          title: '已收到您的檢舉',
+          text: '系統將做相應處理',
+          icon: 'success',
+          showConfirmButton: false
+        });
+        reportStatus = 2;
+        socket.emit('report', { room: room, userId: userId, reason: result.value });
+      } else {
+        Swal.fire({
+          timer: 2000,
+          title: '未選擇事由！',
+          icon: 'warning',
+          showConfirmButton: false
+        });
+      }
+    });
   } else if (reportStatus === 0) {
     Swal.fire({
       title: '遊戲尚未開始',
@@ -399,7 +396,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member.png');
+        photo.setAttribute('src', './images/member2.png');
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
@@ -427,7 +424,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member.png');
+      photo.setAttribute('src', './images/member2.png');
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);

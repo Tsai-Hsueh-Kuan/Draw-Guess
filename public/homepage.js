@@ -41,80 +41,129 @@ if (token) {
       const photo = document.getElementById('userPhoto');
       photo.remove();
       const newPhoto = document.createElement('img');
-      newPhoto.id = 'userPhoto';
+      newPhoto.id = 'userPhotoSignIn';
       newPhoto.className = 'userPhoto';
       if (userPhoto) {
         newPhoto.setAttribute('src', `${userPhoto}`);
       } else {
-        newPhoto.setAttribute('src', './images/member2.png');
+        newPhoto.setAttribute('src', './images/member.png');
       }
       photoTd.appendChild(newPhoto);
+
+      newPhoto.addEventListener('click', async function () {
+        const inputOptions = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({
+              'member2.png': '<img src="./images/member2.png" class="userPhoto" >',
+              'chipmunk.jpeg': '<img src="./images/chipmunk.jpeg" class="userPhoto" >',
+              'cow.jpeg': '<img src="./images/cow.jpeg" class="userPhoto" >',
+              'dog.jpeg': '<img src="./images/dog.jpeg" class="userPhoto" >',
+              'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhoto" >',
+              'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhoto" >',
+              'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhoto" >',
+              upload: '<div id="uploadText" >上傳照片</div>'
+            });
+          }, 1000);
+        });
+
+        const { value: photo } = await Swal.fire({
+          title: 'CHANGE PHOTO',
+          input: 'radio',
+          width: '1100px',
+          inputOptions: inputOptions,
+          inputValidator: (value) => {
+            if (!value) {
+              return 'You need to choose something!';
+            }
+          }
+        });
+
+        if (photo) {
+          if (photo === 'upload') {
+            Swal.fire({
+              title: '上傳新的頭像',
+              html:
+              '<form enctype="multipart/form-data" method="POST" name="file">' +
+              '<input type="file" name="photo">' +
+              '</form>'
+
+            }).then(function (result) {
+              const file = document.forms.namedItem('file');
+              const formData = new FormData(file);
+              if (file) {
+                fetch('/api/1.0/user/uploadPhoto', {
+                  method: 'POST',
+                  body: formData,
+                  headers: { authorization: `Bearer ${token}` }
+                }).then(function (response) {
+                  if (response.status === 200) {
+                    return response.json();
+                  } else if (response.status === 429) {
+                    alert('Too Many Requests');
+                  } else if (response.status === 400) {
+                    return response.json();
+                  } else if (response.status === 403) {
+                    return response.json();
+                  } else if (response.status === 500) {
+                    return response.json();
+                  }
+                }).then(data => {
+                  if (data.ok) {
+                    Swal.fire({
+                      position: 'top-end',
+                      icon: 'success',
+                      title: '您頭像已更新',
+                      showConfirmButton: false,
+                      timer: 1500
+                    });
+                    newPhoto.setAttribute('src', `${data.photo}`);
+                  }
+                });
+              }
+            });
+          } else {
+            const data = {
+              photo: photo
+            };
+            fetch('/api/1.0/user/replacePhoto', {
+              method: 'POST',
+              body: JSON.stringify(data),
+              headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+            }).then(function (response) {
+              if (response.status === 200) {
+                return response.json();
+              } else if (response.status === 429) {
+                alert('Too Many Requests');
+              } else if (response.status === 400) {
+                return response.json();
+              } else if (response.status === 403) {
+                return response.json();
+              } else if (response.status === 500) {
+                return response.json();
+              }
+            }).then(data => {
+              if (data.ok) {
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: '您頭像已更新',
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+                newPhoto.setAttribute('src', `./images/${photo}`);
+              }
+            });
+          }
+        }
+      });
     })
     .catch(function (err) {
       return err;
     });
 }
-// const userPhotoImg = document.getElementById('userPhoto')
-// userPhotoImg.addEventListener('mouse over',function(){
 
-// })
-const signUpForm = document.forms.namedItem('signUpForm');
-const signUpButton = document.getElementById('signUpButton');
-signUpButton.addEventListener('click', function (ev) {
-  const signUpFormData = new FormData(signUpForm);
-  fetch('/api/1.0/user/signup', {
-    method: 'POST',
-    body: signUpFormData
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        alert('Too Many Requests');
-      } else if (response.status === 400) {
-        return response.json();
-      } else if (response.status === 403) {
-        return response.json();
-      } else if (response.status === 500) {
-        return response.json();
-      }
-    })
-    .then(data => {
-      if (data.error) {
-        Swal.fire('OOPS！', `${data.error}`, 'error');
-      } else if (data.data) {
-        localStorage.setItem('token', `${data.data.access_token}`);
-        Swal.fire({
-          title: '註冊成功',
-          text: `歡迎${data.data.user.name}玩家`,
-          icon: 'success'
-        }).then(() => {
-          return window.location.assign('/');
-        });
-      }
-    });
-  ev.preventDefault();
-}, false);
-
-const signin = document.getElementById('signIn');
-signin.addEventListener('click', async function () {
-  // swal({
-  //   title: '输入你的密码',
-  //   input: 'password',
-  //   inputAttributes: {
-  //     maxlength: 10,
-  //     autocapitalize: 'off',
-  //     autocorrect: 'off'
-  //   }
-  // }).then(function (password) {
-  //   if (password) {
-  //     swal({
-  //       type: 'success',
-  //       html: '输入的密码是：' + password
-  //     });
-  //   }
-  // });
-
+const userPhotoImg = document.getElementById('userPhoto');
+userPhotoImg.addEventListener('click', function () {
   Swal.fire({
     title: '已有帳號 請登入',
     html:
@@ -131,49 +180,218 @@ signin.addEventListener('click', async function () {
         ]);
       });
     }
-    // onOpen: function () {
-    //   $('#swal-input1').focus();
-    // }
+
   }).then(function (result) {
-    if (!result.value[0]) {
-      alert('NAME不能為空');
-    } else if (!result.value[1]) {
-      alert('PASSWORD不能為空');
-    } else {
-      const signInData = {
-        name: result.value[0],
-        password: result.value[1]
-      };
-      fetch('/api/1.0/user/signin', {
-        method: 'POST',
-        body: JSON.stringify(signInData),
-        headers: { 'Content-Type': 'application/json' }
-      }).then(function (response) {
-        if (response.status === 200) {
-          return response.json();
-        } else if (response.status === 429) {
-          alert('Too Many Requests');
-        } else if (response.status === 400) {
-          return response.json();
-        } else if (response.status === 403) {
-          return response.json();
-        } else if (response.status === 500) {
-          return response.json();
-        }
-      }).then(data => {
-        if (data.error) {
-          Swal.fire('OOPS！', `${data.error}`, 'error');
-        } else if (data.data) {
-          localStorage.setItem('token', `${data.data.access_token}`);
-          Swal.fire({
-            title: '登入成功',
-            text: `歡迎${data.data.user.name}玩家`,
-            icon: 'success'
-          }).then(() => {
-            return window.location.assign('/');
-          });
-        }
+    if (result.value) {
+      if (!result.value[0]) {
+        alert('NAME不能為空');
+      } else if (!result.value[1]) {
+        alert('PASSWORD不能為空');
+      } else {
+        const signInData = {
+          name: result.value[0],
+          password: result.value[1]
+        };
+        fetch('/api/1.0/user/signin', {
+          method: 'POST',
+          body: JSON.stringify(signInData),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 429) {
+            alert('Too Many Requests');
+          } else if (response.status === 400) {
+            return response.json();
+          } else if (response.status === 403) {
+            return response.json();
+          } else if (response.status === 500) {
+            return response.json();
+          }
+        }).then(data => {
+          if (data.error) {
+            Swal.fire('OOPS！', `${data.error}`, 'error');
+          } else if (data.data) {
+            localStorage.setItem('token', `${data.data.access_token}`);
+            Swal.fire({
+              timer: 5000,
+              title: '登入成功',
+              text: `歡迎${data.data.user.name}玩家`,
+              icon: 'success'
+            }).then(() => {
+              return window.location.assign('/');
+            });
+          }
+        });
+      }
+    }
+  }).catch(Swal.fire.noop);
+});
+
+// const signUpForm = document.forms.namedItem('signUpForm');
+// const signUpButton = document.getElementById('signUpButton');
+// signUpButton.addEventListener('click', function (ev) {
+//   const signUpFormData = new FormData(signUpForm);
+//   fetch('/api/1.0/user/signup', {
+//     method: 'POST',
+//     body: signUpFormData
+//   })
+//     .then(function (response) {
+//       if (response.status === 200) {
+//         return response.json();
+//       } else if (response.status === 429) {
+//         alert('Too Many Requests');
+//       } else if (response.status === 400) {
+//         return response.json();
+//       } else if (response.status === 403) {
+//         return response.json();
+//       } else if (response.status === 500) {
+//         return response.json();
+//       }
+//     })
+//     .then(data => {
+//       if (data.error) {
+//         Swal.fire('OOPS！', `${data.error}`, 'error');
+//       } else if (data.data) {
+//         localStorage.setItem('token', `${data.data.access_token}`);
+//         Swal.fire({
+//           title: '註冊成功',
+//           text: `歡迎${data.data.user.name}玩家`,
+//           icon: 'success'
+//         }).then(() => {
+//           return window.location.assign('/');
+//         });
+//       }
+//     });
+//   ev.preventDefault();
+// }, false);
+
+signUp.addEventListener('click', async function () {
+  Swal.fire({
+    title: '尚未擁有帳號 這邊註冊',
+    html:
+
+    '<div>NAME*</div>' +
+    '<input id="swal-input3" type="text" name="name" class="swal2-input">' +
+    '<div>PASSWORD*</div>' +
+    '<input id="swal-input4" type="password" name="password" class="swal2-input">',
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input3').val(),
+          $('#swal-input4').val()
+        ]);
       });
+    }
+
+  }).then(function (result) {
+    if (result.value) {
+      if (!result.value[0]) {
+        alert('NAME不能為空');
+      } else if (!result.value[1]) {
+        alert('PASSWORD不能為空');
+      } else {
+        const signUpData = {
+          name: result.value[0],
+          password: result.value[1]
+        };
+        fetch('/api/1.0/user/signup', {
+          method: 'POST',
+          body: JSON.stringify(signUpData),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 429) {
+            alert('Too Many Requests');
+          } else if (response.status === 400) {
+            return response.json();
+          } else if (response.status === 403) {
+            return response.json();
+          } else if (response.status === 500) {
+            return response.json();
+          }
+        }).then(data => {
+          if (data.error) {
+            Swal.fire('OOPS！', `${data.error}`, 'error');
+          } else if (data.data) {
+            localStorage.setItem('token', `${data.data.access_token}`);
+            Swal.fire({
+              timer: 5000,
+              title: '註冊成功',
+              text: `歡迎${data.data.user.name}玩家`,
+              icon: 'success'
+            }).then(() => {
+              return window.location.assign('/');
+            });
+          }
+        });
+      }
+    }
+  }).catch(Swal.fire.noop);
+});
+
+signIn.addEventListener('click', async function () {
+  Swal.fire({
+    title: '已有帳號 請登入',
+    html:
+    '<div>NAME</div>' +
+    '<input id="swal-input1" type="text" class="swal2-input">' +
+    '<div>PASSWORD</div>' +
+    '<input id="swal-input2" type="password" class="swal2-input">',
+
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input1').val(),
+          $('#swal-input2').val()
+        ]);
+      });
+    }
+
+  }).then(function (result) {
+    if (result.value) {
+      if (!result.value[0]) {
+        alert('NAME不能為空');
+      } else if (!result.value[1]) {
+        alert('PASSWORD不能為空');
+      } else {
+        const signInData = {
+          name: result.value[0],
+          password: result.value[1]
+        };
+        fetch('/api/1.0/user/signin', {
+          method: 'POST',
+          body: JSON.stringify(signInData),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 429) {
+            alert('Too Many Requests');
+          } else if (response.status === 400) {
+            return response.json();
+          } else if (response.status === 403) {
+            return response.json();
+          } else if (response.status === 500) {
+            return response.json();
+          }
+        }).then(data => {
+          if (data.error) {
+            Swal.fire('OOPS！', `${data.error}`, 'error');
+          } else if (data.data) {
+            localStorage.setItem('token', `${data.data.access_token}`);
+            Swal.fire({
+              timer: 5000,
+              title: '登入成功',
+              text: `歡迎${data.data.user.name}玩家`,
+              icon: 'success'
+            }).then(() => {
+              return window.location.assign('/');
+            });
+          }
+        });
+      }
     }
   }).catch(Swal.fire.noop);
 });
@@ -285,7 +503,7 @@ socket.on('getRank', async (msg) => {
     if (rankPhoto) {
       photo.setAttribute('src', `${rankPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member.png');
+      photo.setAttribute('src', './images/player.png');
     }
     photoTd.appendChild(photo);
   }
@@ -373,7 +591,7 @@ socket.on('mainPageView', async (msg) => {
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member.png');
+        photo.setAttribute('src', './images/member2.png');
       }
       photoTd.appendChild(name);
       photoTd.appendChild(photo);
@@ -397,7 +615,7 @@ socket.on('mainPageView', async (msg) => {
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member.png');
+      photo.setAttribute('src', './images/member2.png');
     }
 
     photoTd.appendChild(photo);

@@ -110,25 +110,25 @@ start.addEventListener('click', function () {
           const recordName = data.data.history[i].name;
           const recordPhoto = data.data.history[i].photo;
           const recordRecord = data.data.history[i].record;
-          const recordInfo = document.createElement('div');
+          const recordInfo = document.createElement('tr');
           recordInfo.className = 'recordInfo';
           recordDiv.appendChild(recordInfo);
 
-          const name = document.createElement('div');
-          name.textContent = `NAME: ${recordName}`;
+          const name = document.createElement('td');
+          name.textContent = `${recordName}`;
           recordInfo.appendChild(name);
 
-          const record = document.createElement('div');
-          record.textContent = `RECORD: ${recordRecord}`;
+          const record = document.createElement('td');
+          record.textContent = `${recordRecord}`;
           recordInfo.appendChild(record);
 
           const photo = document.createElement('img');
           if (recordPhoto) {
             photo.setAttribute('src', `${recordPhoto}`);
           } else {
-            photo.setAttribute('src', './images/member.png');
+            photo.setAttribute('src', './images/member2.png');
           }
-          photo.style.width = '5%';
+          photo.className = 'gamerPhoto';
           recordInfo.appendChild(photo);
         }
       }

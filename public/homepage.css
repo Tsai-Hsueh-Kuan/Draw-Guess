@@ -12,6 +12,8 @@
        url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
 }
 
+@import '~@sweetalert2/theme-borderless/borderless.scss';
+
 a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
@@ -558,4 +560,18 @@ footer .copyright {
 #copyButton{
   border: 1px solid #999;
   margin-left: 20px;
+}
+
+#uploadText{
+  width: 100px;
+  height: 100px;
+background-color: khaki;
+  border-radius: 50%;
+  padding: 3px;
+ border:2px gray solid;
+ justify-content: center;
+ align-items: center;
+ display: flex;
+ flex-direction: column;
+ font-size: 22px;
 }

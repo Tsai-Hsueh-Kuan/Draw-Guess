@@ -381,7 +381,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member.png');
+        photo.setAttribute('src', './images/member2.png');
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);

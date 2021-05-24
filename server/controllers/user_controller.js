@@ -15,7 +15,7 @@ const signUp = async (req, res) => {
     res.status(400).send({ error: 'Name and password need to be entered completely' });
     return;
   }
-  console.log('photo');
+
   name = validator.escape(name);
   const result = await User.signUp(name, password, photo);
   if (result.error) {
@@ -79,8 +79,31 @@ const getUserProfile = async (req, res) => {
   });
 };
 
+const replacePhoto = async (req, res) => {
+  const id = req.user.id;
+  const photo = req.body.photo;
+  await User.replacePhoto(id, photo);
+  res.status(200).send({ ok: 'ok' });
+};
+const uploadPhoto = async (req, res) => {
+  const id = req.user.id;
+  if (req.file) {
+    const photo = req.file.originalname;
+    if (photo) {
+      const photoUrl = await User.uploadPhoto(id, photo);
+      res.status(200).send({ ok: 'ok', photo: photoUrl });
+    } else {
+      res.status(200).send({ none: 'none' });
+    }
+  } else {
+    res.status(200).send({ none: 'none' });
+  }
+};
+
 module.exports = {
   signIn,
   signUp,
-  getUserProfile
+  getUserProfile,
+  replacePhoto,
+  uploadPhoto
 };

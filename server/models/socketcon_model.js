@@ -91,12 +91,13 @@ const canvasUpdate = async (gameId) => {
   return data[0];
 };
 
-const updateReport = async (gameId) => {
+const updateReport = async (gameId, reason, userId) => {
   const totalList = await pool.query('SELECT * from draw.history where game_id = ? AND record <> "only view"', gameId);
   const totalCount = totalList[0].length;
   await pool.query('UPDATE draw.game SET report = report + 1 where id = ?', gameId);
+  await pool.query('INSERT into draw.report(game_id,reason,report_user_id) values (?,?,?)', [gameId, reason, userId]);
   const reportCount = await pool.query('SELECT report from draw.game where id = ?', gameId);
-  if (parseInt(reportCount[0][0].report) * 2 > totalCount[0]) {
+  if (parseInt(reportCount[0][0].report) * 2 > totalCount) {
     await pool.query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
     return 'need check';
   }

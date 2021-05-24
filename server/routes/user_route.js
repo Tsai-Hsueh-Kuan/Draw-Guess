@@ -9,7 +9,9 @@ const {
 const {
   signUp,
   signIn,
-  getUserProfile
+  getUserProfile,
+  replacePhoto,
+  uploadPhoto
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
@@ -20,5 +22,11 @@ router.route('/user/signin')
 
 router.route('/user/profile')
   .get(verifyToken, wrapAsync(getUserProfile));
+
+router.route('/user/replacePhoto')
+  .post(verifyToken, cpUpload, wrapAsync(replacePhoto));
+
+router.route('/user/uploadPhoto')
+  .post(verifyToken, cpUpload, wrapAsync(uploadPhoto));
 
 module.exports = router;

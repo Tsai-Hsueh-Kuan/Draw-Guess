@@ -94,8 +94,28 @@ const getUserDetail = async (userId) => {
   }
 };
 
+const replacePhoto = async (id, photo) => {
+  try {
+    await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
+  } catch (error) {
+    return null;
+  }
+};
+
+const uploadPhoto = async (id, photo) => {
+  try {
+    await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
+    photo = IP + photo;
+    return photo;
+  } catch (error) {
+    return null;
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
-  getUserDetail
+  getUserDetail,
+  replacePhoto,
+  uploadPhoto
 };

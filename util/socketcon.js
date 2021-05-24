@@ -167,9 +167,7 @@ const socketCon = (io) => {
         }
         socket.broadcast.emit(`answer${msg.room}`, question[msg.room]);
         socket.emit(`question${msg.room}`, question[msg.room]);
-      });
 
-      socket.on('checkPlayerInGame', async (msg) => {
         getHistory(gameId[msg.room], roomUserId[inRoom], 'fail');
         userId[msg.room] = '';
         gameTime[msg.room] = 1; // 倒數計時任務執行次數
@@ -198,6 +196,35 @@ const socketCon = (io) => {
         startCountdown(10);
       });
 
+      // socket.on('checkPlayerInGame', async (msg) => {
+      //   getHistory(gameId[msg.room], roomUserId[inRoom], 'fail');
+      //   userId[msg.room] = '';
+      //   gameTime[msg.room] = 1; // 倒數計時任務執行次數
+      //   const timeout = 1000; // 觸發倒數計時任務的時間間隙
+      //   const startTime = new Date().getTime();
+      //   timeCheck[msg.room] = true;
+      //   socket.broadcast.emit('mainPageCanvasClear', { room: msg.room });
+      //   function startCountdown (interval) {
+      //     setTimeout(() => {
+      //       const endTime = new Date().getTime();
+      //       const deviation = endTime - (startTime + gameTime[msg.room] * timeout);
+      //       if (gameTime[msg.room] < limitTime) {
+      //         gameTime[msg.room]++;
+      //         startCountdown(timeout - deviation);
+      //       } else {
+      //         timeCheck[msg.room] = false;
+      //         if (userId[msg.room]) {
+      //           getHistory(gameId[msg.room], userId[msg.room], 'only view');
+      //         }
+      //         checkGameCanvas(gameId[msg.room]);
+      //         socket.broadcast.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
+      //         socket.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
+      //       }
+      //     }, interval);
+      //   }
+      //   startCountdown(10);
+      // });
+
       socket.on('answerCheck', async (msg) => {
         const userData = await getUser(msg.userId);
         if (timeCheck[msg.room]) {
@@ -221,7 +248,7 @@ const socketCon = (io) => {
       });
 
       socket.on('report', async (msg) => {
-        const report = await updateReport(gameId[msg.room]);
+        const report = await updateReport(gameId[msg.room], msg.reason, msg.userId);
         if (report) {
           socket.emit(`reportOk${msg.room}`, { reason: msg.reason });
           socket.broadcast.emit(`reportOk${msg.room}`, { reason: msg.reason });
