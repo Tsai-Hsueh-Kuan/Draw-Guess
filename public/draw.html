@@ -30,6 +30,66 @@
       <div class="row rowMain">
 
         <div class="mainPart col-7" id="mainPart">
+          
+          <div id="roomMsgDiv">
+              <input type="text" id="roomMsg" class="form-control" placeholder="聊天訊息輸入區">
+              <button id="roomMsgButton" class="form-control">送出</button>
+          </div>
+
+          <div id="startDiv">
+            <div id="questionData">
+              <div class="question">題目：</div>
+              <div id="question" class="question"></div>
+            </div>
+            <button id="getQuestion">START</button>
+          </div>
+
+          <div id="dashboardArea">
+              <h1 id="time" class="time">按START開始遊戲</h1>
+              <div id="addCanvas">
+                <canvas class="draw" id="draw0" width="667" height="400" style="z-index: 0;"></canvas>
+              </div>
+          </div>
+
+          <div class="tool">
+            <div class="demo">
+              <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
+              <div >
+                <div class="lineWidthRange"></div>
+                <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
+              </div>
+              <button id="rainbowColor">rainbow</button>
+              <div id="colorView">color view</div>
+<!-- 
+              <i class="fas fa-pen pen color-used">
+
+                <div class="pen-container">
+                  <div class="color-btn-container mb-3">
+                    <div class="color-btn color-btn-black now-color" style="background-color: #000000;"
+                      data-color="#000000">
+                    </div>
+                    <div class="color-btn color-btn-red" style="background-color: #CE0000;" data-color="#CE0000"></div>
+                    <div class="color-btn color-btn-green" style="background-color:	#007500;" data-color="#007500"></div>
+                    <div class="color-btn color-btn-blue" style="background-color:#000093;" data-color="#000093"></div>
+                    <div class="color-btn color-btn-white" style="background-color: #FFFFFF;" data-color="#FFFFFF"></div>
+                  </div>
+    
+                  <div class="width-btn-container mb-3">
+                    <div class="value-range-display"></div>
+                    <input type="range" min="1" max="50" step="1" value="3">
+                  </div>
+                </div>            
+              </i> -->
+              <i class="fas fa-eraser tooli" id="eraser"></i>
+              <i class="fas fa-undo-alt tooli" id="undo"></i>
+              <i class="fas fa-redo-alt tooli" id="redo"></i>
+           
+              
+            </div>       
+          </div>
+        </div>
+
+        <div class="rankPart col-5" id="rankShow">
           <div>
             <table class="table table-striped">
               <thead>
@@ -42,33 +102,7 @@
               <tbody id="host" class="host"></tbody>
             </table>
           </div>
-          <input type="text" id="roomMsg">
-          <button id="roomMsgButton">聊天訊息送出</button>
-          <div id="addCanvas">
-            <canvas class="draw" id="draw0" width="640" height="400" style="z-index: 0;"></canvas>
-          </div>
-          <div class="tool">
-            <div class="demo">
-              <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
-              <div >
-                <div class="lineWidthRange"></div>
-                <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
-              </div>
-              <button id="rainbowColor">rainbow color : ON</button>
-              <div id="colorView">color view</div>
-              <button id="eraser">eraser</button>
-              <button id="undo">undo</button>
-              <button id="redo">redo</button>
-              <button id="getQuestion">New Question</button>
-              <h1 id="time">準備開始</h1>
-            </div>       
-            <div id="questionData">
-              <div id="question"></div>
-            </div>
-          </div>
-        </div>
 
-        <div class="rankPart col-5" id="rankShow">
           <div class="tableDiv">
             <table class="table table-striped">
               <thead>
@@ -85,7 +119,7 @@
         </div>
       </div>
     </div>
-  </div>
+
 
   <script type="text/javascript">
     function copyUrl() {
@@ -94,7 +128,8 @@
         document.execCommand("copy");
     }
   </script>
-
+<div id="footerTop"></div>
+  </div>
   <footer class="index">
     <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
   </footer>

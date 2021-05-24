@@ -29,13 +29,25 @@
       <div class="row rowMain">
 
         <div class="mainPart col-7 container-fluid" id="mainPart">
-          <h1 id="title">準備開始</h1>
-          <h4 id="message">please wait next game</h1>
-          <div id="imgs"></div>
-          <input type="text" id="answerCheck">
-          <button id="answerCheckButton">確認答案</button>
-          <div ></div>
-          <button id="start">START GAME</button>     
+          <div class="singleTopDiv">
+            <h4 id="message">please wait next game</h1>
+            <button id="start" class="singleStart">START</button>  
+          </div>
+         
+   
+        
+          <div id="dashboardArea">
+            <h1 id="title" class="timeSingle">請按START GAME開始遊戲</h1>
+            <div id="imgs"></div>
+          </div>
+      <br>
+          <div id="roomAnsDiv">
+            <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區">
+            <button id="answerCheckButton" class="form-control">確認答案</button>
+            <button id="report" class="form-control">report</button>
+          </div>
+
+           
         </div>
 
         <div class="rankPart col-5" id="rankShow">
@@ -55,7 +67,10 @@
         
       </div>
     </div>
-  </div>
+
+
+  <div id="footerTop"></div>
+   </div> 
 </div>
         <footer class="index">
           <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>

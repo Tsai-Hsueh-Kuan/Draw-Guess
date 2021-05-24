@@ -14,7 +14,7 @@ let answerLimit = true;
 let answerGet;
 let limitTime;
 if (type === 'english') {
-  limitTime = 30;
+  limitTime = 40;
 } else if (type === 'idiom') {
   limitTime = 50;
 }
@@ -139,7 +139,10 @@ function startCountdown (interval) {
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime && !gameDone) {
       // console.log(`${10 - countIndex}: 偏差${deviation}ms`);
-      title.textContent = (`剩 ${limitTime - countIndex} 秒鐘！`);
+      title.textContent = (`剩 ${limitTime - countIndex} 秒`);
+      if ((limitTime - countIndex) === 5) {
+        title.className = 'time5';
+      }
       countIndex++;
 
       // 下一次倒數計時
@@ -147,6 +150,7 @@ function startCountdown (interval) {
     } else {
       reportStatus = 0;
       gameStatus = 0;
+      title.className = 'time';
       message.textContent = '請等待下一局';
     }
   }, interval);
@@ -154,7 +158,8 @@ function startCountdown (interval) {
 socket.on(`answerGet${room}`, (msg) => {
   gameDone = true;
   answerData = msg.answer;
-  title.textContent = (`時間到 正確答案:${answerData}`);
+  title.textContent = ('等待開始下局遊戲');
+  message.textContent = `時間到 正確答案:${answerData}`;
   // const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
   // userinfoArea.removeClass('correct');
 });
@@ -170,6 +175,7 @@ socket.on(`answer${room}`, (msg) => {
   startTime = new Date().getTime();
   startCountdown(50);
   title.textContent = ('遊戲開始');
+  title.className = 'timePlaying';
   gameDone = false;
   message.textContent = '請開始作答';
   socket.emit('checkPlayerInGame', { userId: userId, room: room });
@@ -442,7 +448,7 @@ roomMsgButton.addEventListener('click', function (ev) {
   roomElement.value = '';
   if (roomMsg.length === 0) {
 
-  } else if (roomMsg.length < 3) {
+  } else if (roomMsg.length < 30) {
     socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
   } else {
     Swal.fire({
@@ -462,7 +468,7 @@ $('#roomMsg').on('keypress', function (e) {
     roomElement.value = '';
     if (roomMsg.length === 0) {
 
-    } else if (roomMsg.length < 3) {
+    } else if (roomMsg.length < 30) {
       socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
     } else {
       Swal.fire({

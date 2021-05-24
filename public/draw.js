@@ -13,7 +13,7 @@ let userScore;
 let limitTime;
 let roomId = [];
 if (type === 'english') {
-  limitTime = 30;
+  limitTime = 40;
 } else if (type === 'idiom') {
   limitTime = 50;
 }
@@ -138,7 +138,7 @@ const createCanvas = function () {
   const canvas = document.createElement('canvas');
   canvas.className = 'draw';
   canvas.id = 'draw' + canvasNum;
-  canvas.width = '640';
+  canvas.width = '667';
   canvas.height = '400';
   canvas.style.zIndex = canvasNum;
   ctx[canvasNum] = canvas.getContext('2d');
@@ -238,7 +238,7 @@ socket.on(`question${room}`, (msg) => {
     const canvas = document.createElement('canvas');
     canvas.className = 'draw';
     canvas.id = 'draw' + canvasNum;
-    canvas.width = '640';
+    canvas.width = '667';
     canvas.height = '400';
     canvas.style.zIndex = canvasNum;
     ctx[canvasNum] = canvas.getContext('2d');
@@ -246,8 +246,9 @@ socket.on(`question${room}`, (msg) => {
     gameDone = false;
     isDrawing = false;
     questionSql = msg;
-    question.textContent = `question: ${questionSql}`;
-    time.textContent = ('遊戲開始');
+    question.textContent = `${questionSql}`;
+    time.className = 'timePlaying';
+    getQuestion.textContent = ('PLAYING');
   }
 });
 
@@ -258,13 +259,18 @@ function startCountdown (interval) {
     // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime) {
-      time.textContent = (`剩 ${limitTime - countIndex} 秒鐘！`);
-      countIndex++;
+      time.textContent = (`剩 ${limitTime - countIndex} 秒`);
       // 下一次倒數計時
+      if ((limitTime - countIndex) === 5) {
+        time.className = 'time5';
+      }
+      countIndex++;
       startCountdown(timeout - deviation);
     } else {
       gameDone = true;
-      time.textContent = ('時間到');
+      time.textContent = ('請按START開始遊戲');
+      time.className = 'time';
+      getQuestion.textContent = ('START');
     }
   }, interval);
 }
@@ -275,7 +281,7 @@ const undo = function () {
     myobjNow.remove();
     const myobj = document.getElementById(`draw${canvasNum - 1}`);
     const c = myobj.getContext('2d');
-    c.clearRect(0, 0, 640, 400);
+    c.clearRect(0, 0, 667, 400);
     canvasNum--;
     socket.emit('undo', { room: room, canvasNum: canvasNum, data: 1 });
   }
@@ -432,7 +438,7 @@ roomMsgButton.addEventListener('click', function (ev) {
   roomElement.value = '';
   if (roomMsg.length === 0) {
 
-  } else if (roomMsg.length < 3) {
+  } else if (roomMsg.length < 30) {
     socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
   } else {
     Swal.fire({
@@ -452,7 +458,7 @@ $('#roomMsg').on('keypress', function (e) {
     roomElement.value = '';
     if (roomMsg.length === 0) {
 
-    } else if (roomMsg.length < 3) {
+    } else if (roomMsg.length < 30) {
       socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
     } else {
       Swal.fire({

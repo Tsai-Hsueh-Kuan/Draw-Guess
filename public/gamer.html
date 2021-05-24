@@ -15,7 +15,7 @@
 <body>
   <div class="padding2">
 
-    <header class="index">
+    <header class="index header">
       <div class="title-container">
         <a href="/" class="title">Draw & Guess</a href="/">
       </div>
@@ -28,6 +28,34 @@
     <div class="container-fluid main mainpart" id="main">
       <div class="row rowMain">
         <div class="mainPart col-7" id="mainPart">
+          
+          <div id="roomMsgDiv">
+            <input type="text" id="roomMsg" class="form-control" placeholder="聊天訊息輸入區">
+            <button id="roomMsgButton" class="form-control">送出</button>
+          </div>
+        
+        
+          <h4 id="message">please wait for next game</h1>
+           
+          
+
+          <div id="dashboardArea">
+            <h1 id="title" class="time">等待開始下局遊戲</h1>
+            <div id="imgs"></div>
+          </div>
+
+<br>
+
+          <div id="roomAnsDiv">
+            <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區">
+            <button id="answerCheckButton" class="form-control">確認答案</button>
+            <button id="report" class="form-control">report</button>
+          </div>
+        
+          
+        </div>
+        <div class="rankPart col-5" id="rankShow">
+
           <div>
             <table class="table table-striped">
               <thead>
@@ -40,16 +68,7 @@
               <tbody id="host" class="host"></tbody>
             </table>
           </div>
-          <h1 id="title">準備開始</h1>
-          <h4 id="message">please wait next game</h1>
-          <input type="text" id="roomMsg">
-          <button id="roomMsgButton">聊天訊息送出</button>
-          <div id="imgs"></div>
-          <input type="text" id="answerCheck">
-          <button id="answerCheckButton">確認答案</button>
-          <button id="report">report</button>
-        </div>
-        <div class="rankPart col-5" id="rankShow">
+
           <div>
             <div class="tableDiv">
               <table class="table table-striped">
@@ -68,11 +87,12 @@
         </div>
       </div>
     </div>
+
+    <div id="footerTop"></div>
   </div>
-  
-  <footer class="index">
-    <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
-  </footer>
+    <footer class="index">
+      <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+    </footer>
   
     <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>

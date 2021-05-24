@@ -155,9 +155,7 @@ function startCountdown (interval) {
         imgs.appendChild(img);
       } else if (canvasAll[i].canvas_undo !== '0') {
         const img = document.getElementsByClassName('img');
-
         const finalNum = img.length;
-
         img[finalNum - 1].remove();
       }
       // 下一次倒數計時
@@ -183,7 +181,7 @@ function startCountdown (interval) {
         getAnswer = data.answer[0].question;
         title.textContent = (`遊戲結束 正確答案是${getAnswer}`);
         message.textContent = '請等待下一局';
-        start.textContent = 'NEXT GAME';
+        start.textContent = 'START';
         gameDone = true;
       });
     }
@@ -224,7 +222,7 @@ answerCheckButton.addEventListener('click', function (ev) {
         message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
         title.textContent = `正確答案！ ${getAnswer}`;
         gameStatus = 2;
-        start.textContent = 'NEXT GAME';
+        start.textContent = 'START';
         const historyData = {
           record: countIndex,
           gameId: gameId
@@ -254,7 +252,7 @@ answerCheckButton.addEventListener('click', function (ev) {
   } else if (gameStatus === 2) {
     message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
 
-    start.textContent = 'NEXT GAME';
+    start.textContent = 'START';
   } else if (!answerLimit) {
     message.textContent = '作答時間間隔太短';
   }
@@ -295,7 +293,7 @@ $('#answerCheck').on('keypress', function (e) {
           message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
           title.textContent = `正確答案！ ${getAnswer}`;
           gameStatus = 2;
-          start.textContent = 'NEXT GAME';
+          start.textContent = 'START';
           const historyData = {
             record: countIndex,
             gameId: gameId
@@ -325,7 +323,7 @@ $('#answerCheck').on('keypress', function (e) {
     } else if (gameStatus === 2) {
       message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
 
-      start.textContent = 'NEXT GAME';
+      start.textContent = 'START';
     } else if (!answerLimit) {
       message.textContent = '作答時間間隔太短';
     }

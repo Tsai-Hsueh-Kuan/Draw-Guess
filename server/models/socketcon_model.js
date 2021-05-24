@@ -77,12 +77,11 @@ const checkGameCanvas = async (gameId) => {
     const data = await pool.query('SELECT id from draw.canvas where game_id = ?', gameId);
     if (data[0][0]) {
     } else {
-      await pool.query('DELETE from draw.game where id = ?', gameId);
-      await pool.query('DELETE from draw.history where game_id = ?', gameId);
+      await pool.query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
       return;
     }
   } catch {
-    console.log('del err');
+    console.log('err');
     return 'err';
   }
 };
