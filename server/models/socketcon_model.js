@@ -46,9 +46,8 @@ const verifyTokenSocket = (token) => {
   try {
     const user = jwt.verify(token, TOKEN_SECRET);
     return user;
-  } catch {
-    // console.log('wrong token');
-    return 'err';
+  } catch (err) {
+    return { err: err };
   }
 };
 

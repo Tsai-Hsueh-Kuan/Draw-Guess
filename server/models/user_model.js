@@ -34,7 +34,7 @@ const signUp = async (name, password, photo) => {
     const accessToken = jwt.sign({
       id: user.id,
       name: user.name
-    }, TOKEN_SECRET, { expiresIn: '36000s' });
+    }, TOKEN_SECRET);
     user.access_token = accessToken;
     await conn.query('COMMIT');
     return { user };
@@ -68,7 +68,7 @@ const signIn = async (name, password) => {
     const accessToken = jwt.sign({
       id: nameCheck[0][0].id,
       name: user.name
-    }, TOKEN_SECRET, { expiresIn: '36000s' });
+    }, TOKEN_SECRET);
 
     user.access_token = accessToken;
     await conn.query('COMMIT');

@@ -56,10 +56,9 @@
               <input type="color" id="colorChoose" name="colorChoose" value="#000000"><br><br>
               <div >
                 <div class="lineWidthRange"></div>
-                <input id="lineWidthRange" type="range" min="1" max="50" step="1" value="5">
+                <input id="lineWidthRange" type="range" min="1" max="20" step="1" value="5">
               </div>
-              <button id="rainbowColor">rainbow</button>
-              <div id="colorView">color view</div>
+              <button id="rainbowColor" class="ranbow">rainbow:ON</button>
 
               <i class="fas fa-eraser tooli" id="eraser"></i>
               <i class="fas fa-undo-alt tooli" id="undo"></i>
@@ -75,9 +74,9 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th scope="col">HOST</th>
+                  <th scope="col">房主</th>
                   <th scope="col" id="hostPHOTO">PHOTO</th>
-                  <th scope="col">MSG</th>
+                  <th scope="col">MESSAGE</th>
                 </tr>
               </thead>
               <tbody id="host" class="host"></tbody>
@@ -88,10 +87,10 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th scope="col">NAME</th>
+                  <th scope="col">玩家</th>
                   <th scope="col">SCORE</th>
                   <th scope="col">PHOTO</th>
-                  <th scope="col">MSG</th>
+                  <th scope="col">MESSAGE</th>
                 </tr>
               </thead>
               <tbody class="playerList" id="playerList"></tbody>

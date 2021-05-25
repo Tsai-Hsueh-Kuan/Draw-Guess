@@ -91,12 +91,13 @@ let lineWidthNow = 5;
 let isRainbow = true;
 
 const colorChoose = document.querySelector('#colorChoose');
-const colorView = document.querySelector('#colorView');
+
 colorChoose.addEventListener('change', function () {
   isRainbow = 0;
-  rainbowColor.textContent = ('rainbow color : OFF');
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
   ctx[canvasNum].strokeStyle = colorChoose.value;
-  colorView.style.backgroundColor = colorChoose.value;
+  rainbowColor.style.backgroundColor = colorChoose.value;
   colorNow = colorChoose.value;
 });
 
@@ -109,7 +110,8 @@ lineWidthRange.oninput = function () {
 const rainbowColor = document.querySelector('#rainbowColor');
 rainbowColor.addEventListener('click', function () {
   isRainbow = true;
-  rainbowColor.textContent = ('rainbow color : ON');
+  rainbowColor.textContent = ('rainbow:ON');
+  rainbowColor.className = 'rainbow';
 });
 
 const eraser = document.querySelector('#eraser');
@@ -122,7 +124,7 @@ function draw (e) {
   if (!isDrawing) return;
   if (isRainbow) {
     ctx[canvasNum].strokeStyle = `hsl(${hue},100%,50%)`;
-    colorView.style.backgroundColor = `hsl(${hue},100%,50%)`;
+    rainbowColor.style.backgroundColor = `hsl(${hue},100%,50%)`;
   } else {
     ctx[canvasNum].strokeStyle = colorNow;
   }
@@ -163,7 +165,7 @@ canvasDiv.addEventListener('mousedown', (e) => {
 
   if (isRainbow) {
     ctx[canvasNum].strokeStyle = `hsl(${hue},100%,50%)`;
-    colorView.style.backgroundColor = `hsl(${hue},100%,50%)`;
+    rainbowColor.style.backgroundColor = `hsl(${hue},100%,50%)`;
   } else {
     ctx[canvasNum].strokeStyle = colorNow;
   }

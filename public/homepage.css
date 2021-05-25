@@ -22,17 +22,17 @@ i.fas, i.far {
   user-select: none;
 }
 
+
+
 body {
   /* font-family: 'Chivo', 'cwTeXYen', Verdana;   */
   font-family: 'Josefin Sans', 'cwTeXYen', Verdana;
   position: relative;
-  background-color: #D4FFFF;
-
  /* font-family: 'Kalam', Verdana;    need check */
 
 }
 .padding2{
-  background-color: #D4FFFF;
+  background-color: white
 }
 
 .main{
@@ -119,8 +119,12 @@ header.index .member-container .signup-form-btn:hover {
 .main{
  margin-top:100px;
 }
+.homeMainpart{
+  margin-top: 120px;
+ }
+
 .mainpart{
- margin-top: 120px;
+ margin-top: 270px;
 }
 .mainPart,
 .playerPart,
@@ -294,12 +298,13 @@ td{
  width: 0;
  height: 0;
  border-style: solid;
- border-width: 0 0 25px 200px;
+ border-width: 0 0 25px 100px;
  border-color: transparent transparent #5B5B5B transparent;
+ margin-top: 20px;
 }
 
 #lineWidthRange {
- width: 200px;
+ width: 100px;
 }
 
 
@@ -318,12 +323,10 @@ height: 32px;
 }
 
 .singleStart,
-#rainbowColor,
 #getQuestion{
-
   display: inline-block;
   padding: 10px 10px;
-  font-size: 26px;
+  font-size: 18px;
   cursor: pointer;
   text-align: center;   
   text-decoration: none;
@@ -333,13 +336,33 @@ height: 32px;
   border: none;
   border-radius: 15px;
   box-shadow: 0 8px #999;
-  width: 180px;
-height: 40px;
+  width: 120px;
+  height: 36px;
+  color: #000000;  /*   need check */
+  font-family: 'Kalam', Verdana;  /*   need check */
+  font-weight: 400;  /*   need check */
+}
+
+#rainbowColor{
+  display: inline-block;
+  padding: 10px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;   
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: 	#FF6363;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 8px #999;
+  width: 120px;
+height: 36px;
  color: #000000;  /*   need check */
  font-family: 'Kalam', Verdana;  /*   need check */
- font-weight: 600;  /*   need check */
-
+ font-weight: 400;  /*   need check */
 }
+
 #getQuestion{
   margin-left: auto;
 }
@@ -403,11 +426,16 @@ height: 40px;
   background-color: #4F4FFF;
   margin-left: auto;
 }
-#rainbowColor:hover {background-color: #4F4FFF}
+#rainbowColor:hover {background-color: #FF6363}
 #getQuestion:hover {background-color: #4F4FFF}
 
+#rainbowColor:active{
+  background-color: #FF6363;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
 .singleStart:active,
-#rainbowColor:active,
 #getQuestion:active {
   background-color: #4F4FFF;
   box-shadow: 0 5px #666;
@@ -427,12 +455,6 @@ height: 40px;
 
 
 
-#colorView {
- border: 1px solid #999;
- width: 100px;
- border-radius: 15px;
- background-color: red;
-}
 
 #questionData {
  max-width: 40%;
@@ -481,12 +503,7 @@ height: 40px;
  height: 50px;
 }
 
-.mainPart,
-.playerPart,
-.rankPart{
-border: 1px solid rgb(201, 205, 209);
-/* margin:  1%; */
-}
+
 
 .container{
 width: 100%;
@@ -665,8 +682,9 @@ box-shadow:3px 3px 12px gray;padding:3px
 }
 
 #footerTop{
-  height: 360px;
+  height: 220px;
 }
+
 
 footer{
  z-index: 999;
@@ -674,7 +692,6 @@ footer{
 
 }
 footer.index {
-
  height: 51px;
  background-color: #3f53d9;
  color: #FFFFFF;
@@ -682,7 +699,6 @@ footer.index {
  justify-content: center;
  align-items: center;
  width: 100%;
- 
 }
 
 footer .copyright {
@@ -696,7 +712,7 @@ footer .copyright {
 
 #main{
  width: 1250px;
-background-color: white
+background-color: white;
 }
 
 #text{
@@ -778,10 +794,10 @@ background-color: khaki;
 .tooli{
   width: 50px;
   height: 50px;
-  margin-bottom: -60px;
+  margin-bottom: -80px;
   cursor: pointer;
   transform: scale(2);
-  margin-left: 50px;
+  margin-left: 30px;
 }
 
 .tooli:hover{
@@ -800,4 +816,16 @@ background-color: khaki;
 #startDiv{
   display: flex;
 }
+#footerHomePageTop{
+  height: 360px;
+}
 
+
+@media(max-width: 1280px) {
+  .mainpart{
+    margin-top: 120px;
+   }
+  #footerTop{
+    height: 20px;
+  }
+}

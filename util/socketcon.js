@@ -32,46 +32,50 @@ const socketCon = (io) => {
     const limitTime = socket.handshake.auth.limitTime;
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
-      if (`${intype}` === 'host') {
-        if (!roomList[0]) {
-          roomList[0] = inRoom;
-        } else {
-          roomList.push(inRoom);
-        }
-        roomType[inRoom] = inRoomType;
-        hostDisconnect = false;
-        hostId[inRoom] = verifyHost.id;
-        hostDetail[inRoom] = await getUser(verifyHost.id);
-        socket.broadcast.emit('roomList', { roomList: roomList });
-        socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-        socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-        socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-      } else if (`${intype}` === 'player') {
-        if (verifyHost.id === hostId[inRoom]) {
-          socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
-          socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
-        }
-        if (!userId[inRoom]) {
-          userId[inRoom] = [verifyHost.id];
-        } else {
-          userId[inRoom].push(verifyHost.id);
-        }
+      if (verifyHost.err) {
+        return;
+      } else {
+        if (`${intype}` === 'host') {
+          if (!roomList[0]) {
+            roomList[0] = inRoom;
+          } else {
+            roomList.push(inRoom);
+          }
+          roomType[inRoom] = inRoomType;
+          hostDisconnect = false;
+          hostId[inRoom] = verifyHost.id;
+          hostDetail[inRoom] = await getUser(verifyHost.id);
+          socket.broadcast.emit('roomList', { roomList: roomList });
+          socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+        } else if (`${intype}` === 'player') {
+          if (verifyHost.id === hostId[inRoom]) {
+            socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
+            socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
+          }
+          if (!userId[inRoom]) {
+            userId[inRoom] = [verifyHost.id];
+          } else {
+            userId[inRoom].push(verifyHost.id);
+          }
 
-        if (roomUserId[inRoom]) {
-          roomUserId[inRoom].push(verifyHost.id);
-          const userDetail = await getUser(verifyHost.id);
-          roomUserData[inRoom].push(userDetail);
-          socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-        } else {
-          roomUserId[inRoom] = [verifyHost.id];
-          roomUserData[inRoom] = [];
-          const userDetail = await getUser(verifyHost.id);
-          roomUserData[inRoom] = [userDetail];
-          socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          if (roomUserId[inRoom]) {
+            roomUserId[inRoom].push(verifyHost.id);
+            const userDetail = await getUser(verifyHost.id);
+            roomUserData[inRoom].push(userDetail);
+            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+            socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+            socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          } else {
+            roomUserId[inRoom] = [verifyHost.id];
+            roomUserData[inRoom] = [];
+            const userDetail = await getUser(verifyHost.id);
+            roomUserData[inRoom] = [userDetail];
+            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+            socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+            socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          }
         }
       }
     }

@@ -46,7 +46,7 @@ if (token) {
       if (userPhoto) {
         newPhoto.setAttribute('src', `${userPhoto}`);
       } else {
-        newPhoto.setAttribute('src', './images/member.png');
+        newPhoto.setAttribute('src', './images/member2.png');
       }
       photoTd.appendChild(newPhoto);
 
@@ -620,7 +620,6 @@ socket.on('mainPageView', async (msg) => {
 
     photoTd.appendChild(photo);
   }
-  // { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: intype }
 });
 
 socket.on('mainPageViewClose', async (msg) => {
