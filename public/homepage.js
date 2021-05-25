@@ -116,6 +116,8 @@ if (token) {
                       showConfirmButton: false,
                       timer: 1500
                     });
+                    const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
+                    userinfoPhotoElement.setAttribute('src', `${data.photo}`);
                     newPhoto.setAttribute('src', `${data.photo}`);
                   }
                 });
@@ -150,6 +152,8 @@ if (token) {
                   showConfirmButton: false,
                   timer: 1500
                 });
+                const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
+                userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
                 newPhoto.setAttribute('src', `./images/${photo}`);
               }
             });
@@ -500,6 +504,7 @@ socket.on('getRank', async (msg) => {
     userinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     photo.className = 'userinfoPhoto';
+    photo.id = `userinfoPhoto${rankId}`;
     if (rankPhoto) {
       photo.setAttribute('src', `${rankPhoto}`);
     } else {
