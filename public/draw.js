@@ -50,6 +50,7 @@ fetch('/api/1.0/user/profile', {
     name.textContent = `NAME: ${userName}`;
     info.appendChild(name);
     const photo = document.getElementById('userPhoto');
+
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
     }
@@ -418,6 +419,8 @@ socket.on(`roomUserId${room}`, (msg) => {
     const photo = document.createElement('img');
     if (userPhoto) {
       photo.setAttribute('src', `${userPhoto}`);
+    } else {
+      photo.setAttribute('src', './images/member2.png');
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);

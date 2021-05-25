@@ -54,7 +54,7 @@ fetch('/api/1.0/user/profile', {
 });
 
 const title = document.getElementById('title');
-const message = document.getElementById('message');
+// const message = document.getElementById('message');
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
 start.addEventListener('click', function () {
@@ -103,7 +103,8 @@ start.addEventListener('click', function () {
         }
         gameStatus = 1;
         title.textContent = ('遊戲開始');
-        message.textContent = '請開始作答';
+        title.className = 'timeSinglePlaying';
+        // message.textContent = '請開始作答';
         const recordDiv = document.getElementById('record');
         recordDiv.innerHTML = '';
         for (const i in data.data.history) {
@@ -179,9 +180,17 @@ function startCountdown (interval) {
         }
       }).then((data) => {
         getAnswer = data.answer[0].question;
-        title.textContent = (`遊戲結束 正確答案是${getAnswer}`);
-        message.textContent = '請等待下一局';
-        start.textContent = 'START';
+        title.textContent = ('請按START GAME開始遊戲');
+        title.className = 'timeSingle';
+        // message.textContent = '請等待下一局';
+        Toast.fire({
+          // icon: 'info',
+          title: '遊戲結束',
+          text: `正確答案:${getAnswer}`,
+          width: '400px',
+          padding: '30px',
+          background: '#DEFFFF'
+        });
         gameDone = true;
       });
     }
@@ -219,10 +228,18 @@ answerCheckButton.addEventListener('click', function (ev) {
       }
     }).then((data) => {
       if (answerCheck === getAnswer) {
-        message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
+        // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
         title.textContent = `正確答案！ ${getAnswer}`;
+        Toast.fire({
+          icon: 'success',
+          title: '太厲害了！',
+          text: `您的紀錄是${countIndex}`,
+          width: '400px',
+          padding: '30px',
+          background: '#DEFFFF'
+        });
         gameStatus = 2;
-        start.textContent = 'START';
+
         const historyData = {
           record: countIndex,
           gameId: gameId
@@ -244,17 +261,43 @@ answerCheckButton.addEventListener('click', function (ev) {
             return err;
           });
       } else {
-        message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        Toast2.fire({
+          icon: 'error',
+          title: '猜錯了！',
+          width: '400px',
+          padding: '30px',
+          background: '#DEFFFF'
+        });
       }
     });
   } else if (gameStatus === 0) {
-    message.textContent = 'please wait for next game';
+    // message.textContent = 'please wait for next game';
+    Toast2.fire({
+      icon: 'warning',
+      title: 'please wait for next game',
+      width: '400px',
+      padding: '30px',
+      background: '#DEFFFF'
+    });
   } else if (gameStatus === 2) {
-    message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
-
-    start.textContent = 'START';
+    // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
+    Toast2.fire({
+      icon: 'warning',
+      title: '已經答對囉',
+      width: '400px',
+      padding: '30px',
+      background: '#DEFFFF'
+    });
   } else if (!answerLimit) {
-    message.textContent = '作答時間間隔太短';
+    // message.textContent = '作答時間間隔太短';
+    Toast2.fire({
+      icon: 'warning',
+      title: '作答時間間隔太短',
+      width: '400px',
+      padding: '30px',
+      background: '#DEFFFF'
+    });
   }
   ev.preventDefault();
 }, false);
@@ -290,10 +333,18 @@ $('#answerCheck').on('keypress', function (e) {
         }
       }).then((data) => {
         if (answerCheck === getAnswer) {
-          message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
+          // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
           title.textContent = `正確答案！ ${getAnswer}`;
+          Toast.fire({
+            icon: 'success',
+            title: '太厲害了！',
+            text: `您的紀錄是${countIndex}`,
+            width: '400px',
+            padding: '30px',
+            background: '#DEFFFF'
+          });
           gameStatus = 2;
-          start.textContent = 'START';
+
           const historyData = {
             record: countIndex,
             gameId: gameId
@@ -315,17 +366,43 @@ $('#answerCheck').on('keypress', function (e) {
               return err;
             });
         } else {
-          message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+          // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+          Toast2.fire({
+            icon: 'error',
+            title: '猜錯了！',
+            width: '400px',
+            padding: '30px',
+            background: '#DEFFFF'
+          });
         }
       });
     } else if (gameStatus === 0) {
-      message.textContent = 'please wait for next game';
+      // message.textContent = 'please wait for next game';
+      Toast2.fire({
+        icon: 'warning',
+        title: 'please wait for next game',
+        width: '400px',
+        padding: '30px',
+        background: '#DEFFFF'
+      });
     } else if (gameStatus === 2) {
-      message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
-
-      start.textContent = 'START';
+      // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
+      Toast2.fire({
+        icon: 'warning',
+        title: '已經答對囉',
+        width: '400px',
+        padding: '30px',
+        background: '#DEFFFF'
+      });
     } else if (!answerLimit) {
-      message.textContent = '作答時間間隔太短';
+      // message.textContent = '作答時間間隔太短';
+      Toast2.fire({
+        icon: 'warning',
+        title: '作答時間間隔太短',
+        width: '400px',
+        padding: '30px',
+        background: '#DEFFFF'
+      });
     }
   }
 });
@@ -345,4 +422,30 @@ leave.addEventListener('click', function () {
         return window.location.assign('/');
       }
     });
+});
+
+const Toast2 = Swal.mixin({
+  toast: true,
+  position: 'top',
+  showConfirmButton: false,
+  timer: 5000,
+
+  // timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
+});
+
+const Toast = Swal.mixin({
+  toast: true,
+  // position: 'top-end',
+  showConfirmButton: false,
+  timer: 8000,
+
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
 });

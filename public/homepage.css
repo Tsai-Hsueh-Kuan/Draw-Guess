@@ -40,7 +40,7 @@ body {
  margin: 0 auto;
 }
 header.index {
- height: 120px;
+ height: 110px;
  width: 100%;
  background-color: #FFFFFF;
  display: flex;
@@ -214,6 +214,7 @@ height: 950px;
 #info{
  justify-content: center;
  align-items: center;
+ position: relative;
 }
 
 
@@ -373,6 +374,14 @@ height: 36px;
   margin-bottom: 30px;
 }
 
+#answerShow{
+  position: absolute;
+  color: #000000;  /*   need check */
+  font-size: 28px;
+  font-family: 'Kalam', Verdana;  /*   need check */
+  font-weight: 600;  /*   need check */
+}
+
 .time{
   top: 100px;
   left: 180px;
@@ -405,11 +414,10 @@ height: 36px;
   font-family: 'Kalam', Verdana;  /*   need check */
   font-weight: 600;  /*   need check */
 }
-.time5{
-  right: 30px;
-  top: 10px;
+.timeSinglePlaying{
+  top: -60px;
   position: absolute;
-  color:red;  /*   need check */
+
   font-family: 'Kalam', Verdana;  /*   need check */
   font-weight: 600;  /*   need check */
 }
@@ -423,11 +431,12 @@ height: 36px;
 }
 
 .singleStart{
-  background-color: #4F4FFF;
+
   margin-left: auto;
 }
 #rainbowColor:hover {background-color: #FF6363}
 #getQuestion:hover {background-color: #4F4FFF}
+.singleStart:hover {background-color: #4F4FFF}
 
 #rainbowColor:active{
   background-color: #FF6363;
@@ -688,11 +697,12 @@ box-shadow:3px 3px 12px gray;padding:3px
 
 footer{
  z-index: 999;
- position: sticky;
+ position: fixed;
+ bottom: 0px;
 
 }
 footer.index {
- height: 51px;
+ height: 41px;
  background-color: #3f53d9;
  color: #FFFFFF;
  display: flex;
@@ -802,7 +812,6 @@ background-color: khaki;
 
 .tooli:hover{
   text-decoration: none;
-  transform: scale(3);
 }
 
 
@@ -819,6 +828,16 @@ background-color: khaki;
 #footerHomePageTop{
   height: 360px;
 }
+
+/* 
+.userAnswerArea{
+  height: 80px;
+  width: 200px;
+  background-color: violet;
+  position: absolute;
+
+  z-index: 1000;
+} */
 
 
 @media(max-width: 1280px) {

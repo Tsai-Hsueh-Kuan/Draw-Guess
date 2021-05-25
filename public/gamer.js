@@ -19,39 +19,19 @@ if (type === 'english') {
   limitTime = 50;
 }
 
-// Swal.fire({
-//   title: 'Submit your Github username',
-//   input: 'text',
-//   inputAttributes: {
-//     autocapitalize: 'off'
-//   },
-//   showCancelButton: true,
-//   confirmButtonText: 'Look up',
-//   showLoaderOnConfirm: true,
-//   preConfirm: (login) => {
-//     return fetch(`//api.github.com/users/${login}`)
-//       .then(response => {
-//         if (!response.ok) {
-//           throw new Error(response.statusText);
-//         }
-//         return response.json();
-//       })
-//       .catch(error => {
-//         Swal.showValidationMessage(
-//           `Request failed: ${error}`
-//         );
-//       });
-//   },
-//   allowOutsideClick: () => !Swal.isLoading()
-// }).then((result) => {
-//   if (result.isConfirmed) {
-//     Swal.fire({
-//       title: `${result.value.login}'s avatar`,
-//       imageUrl: result.value.avatar_url
-//     });
-//     console.log(result.value);
-//   }
-// });
+const Toast2 = Swal.mixin({
+  toast: true,
+  position: 'top',
+  showConfirmButton: false,
+  timer: 5000
+
+  // timerProgressBar: true,
+  // didOpen: (toast) => {
+  //   toast.addEventListener('mouseenter', Swal.stopTimer);
+  //   toast.addEventListener('mouseleave', Swal.resumeTimer);
+  // }
+});
+
 const imgs = document.querySelector('#imgs');
 const token = localStorage.getItem('token');
 const socket = io((''), {
@@ -151,15 +131,26 @@ function startCountdown (interval) {
       reportStatus = 0;
       gameStatus = 0;
       title.className = 'time';
-      message.textContent = '請等待下一局';
+      // message.textContent = '請等待下一局';
     }
   }, interval);
 }
+
 socket.on(`answerGet${room}`, (msg) => {
   gameDone = true;
   answerData = msg.answer;
   title.textContent = ('等待開始下局遊戲');
-  message.textContent = `時間到 正確答案:${answerData}`;
+  // message.textContent = `時間到 正確答案:${answerData}`;
+  Toast.fire({
+    // icon: 'info',
+    title: '時間到',
+    text: `正確答案:${answerData}`,
+    width: '400px',
+    padding: '30px',
+    background: '#DEFFFF'
+  });
+  const answerShow = document.getElementById('answerShow');
+  answerShow.textContent = '';
   // const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
   // userinfoArea.removeClass('correct');
 });
@@ -177,7 +168,7 @@ socket.on(`answer${room}`, (msg) => {
   title.textContent = ('遊戲開始');
   title.className = 'timePlaying';
   gameDone = false;
-  message.textContent = '請開始作答';
+  // message.textContent = '請開始作答';
   socket.emit('checkPlayerInGame', { userId: userId, room: room });
 });
 
@@ -200,7 +191,7 @@ socket.on(`undo msg${room}`, (msg) => {
 
 const answerCheckButton = document.getElementById('answerCheckButton');
 
-const message = document.getElementById('message');
+// const message = document.getElementById('message');
 answerCheckButton.addEventListener('click', function (ev) {
   const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
   const answerElement = document.getElementById('answerCheck');
@@ -215,19 +206,56 @@ answerCheckButton.addEventListener('click', function (ev) {
 
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
-        message.textContent = `正確答案！ ${answerCheck}`;
+        // message.textContent = `正確答案！ ${answerCheck}`;
+        Toast2.fire({
+          icon: 'success',
+          title: '答對了！',
+          width: '400px',
+          padding: '30px',
+          background: '#DEFFFF'
+        });
+        const answerShow = document.getElementById('answerShow');
+        answerShow.textContent = `ANSWER: ${answerCheck}`;
         answerGet = answerCheck;
         gameStatus = 2;
       } else {
-        message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        Toast2.fire({
+          icon: 'error',
+          title: '猜錯了！',
+          width: '400px',
+          padding: '30px',
+          background: '#DEFFFF'
+        });
       }
     });
   } else if (!answerLimit) {
-    message.textContent = '作答時間間隔太短';
+    // message.textContent = '作答時間間隔太短';
+    Toast2.fire({
+      icon: 'warning',
+      title: '作答時間間隔太短',
+      width: '400px',
+      padding: '30px',
+      background: '#DEFFFF'
+    });
   } else if (gameStatus === 0) {
-    message.textContent = 'please wait for next game';
+    // message.textContent = 'please wait for next game';
+    Toast2.fire({
+      icon: 'warning',
+      title: 'please wait for next game',
+      width: '400px',
+      padding: '30px',
+      background: '#DEFFFF'
+    });
   } else if (gameStatus === 2) {
-    message.textContent = '您已答對 please wait for next game';
+    // message.textContent = '您已答對 please wait for next game';
+    Toast2.fire({
+      icon: 'warning',
+      title: '已經答對囉',
+      width: '400px',
+      padding: '30px',
+      background: '#DEFFFF'
+    });
   }
 
   ev.preventDefault();
@@ -248,19 +276,56 @@ $('#answerCheck').on('keypress', function (e) {
 
       socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
         if (msg.check) {
-          message.textContent = `正確答案！ ${answerCheck}`;
+          // message.textContent = `正確答案！ ${answerCheck}`;
+          Toast2.fire({
+            icon: 'success',
+            title: '答對了！',
+            width: '400px',
+            padding: '30px',
+            background: '#DEFFFF'
+          });
+          const answerShow = document.getElementById('answerShow');
+          answerShow.textContent = `ANSWER:${answerCheck}`;
           answerGet = answerCheck;
           gameStatus = 2;
         } else {
-          message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+          // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+          Toast2.fire({
+            icon: 'error',
+            title: '猜錯了！',
+            width: '400px',
+            padding: '30px',
+            background: '#DEFFFF'
+          });
         }
       });
     } else if (!answerLimit) {
-      message.textContent = '作答時間間隔太短';
+      // message.textContent = '作答時間間隔太短';
+      Toast2.fire({
+        icon: 'warning',
+        title: '作答時間間隔太短',
+        width: '400px',
+        padding: '30px',
+        background: '#DEFFFF'
+      });
     } else if (gameStatus === 0) {
-      message.textContent = 'please wait for next game';
+      // message.textContent = 'please wait for next game';
+      Toast2.fire({
+        icon: 'warning',
+        title: 'please wait for next game',
+        width: '400px',
+        padding: '30px',
+        background: '#DEFFFF'
+      });
     } else if (gameStatus === 2) {
-      message.textContent = '您已答對 please wait for next game';
+      // message.textContent = '您已答對 please wait for next game';
+      Toast2.fire({
+        icon: 'warning',
+        title: '已經猜對囉 請欣賞並等待下一局！',
+        width: '400px',
+        padding: '30px',
+        background: '#DEFFFF'
+      });
     }
   }
 });
@@ -323,8 +388,13 @@ report.addEventListener('click', async function (ev) {
 }, false);
 
 socket.on(`answerShow${room}`, (msg) => {
-  console.log('answerShow');
-  console.log(msg);
+  const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
+  msgArea.textContent = `猜 :${msg.data}`;
+  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
+  userinfoArea.className = 'inCorrect';
+  setTimeout(() => {
+    userinfoArea.classList.remove('inCorrect');
+  }, (limitTime - countIndex) * 1000);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
@@ -358,20 +428,20 @@ socket.on(`closeRoom${room}`, () => {
     return window.location.assign('/');
   });
 });
-socket.on(`repeat${room}`, (msg) => {
-  setTimeout(() => {
-    if (msg.id === userId) {
-      Swal.fire({
-        timer: 3000,
-        title: '您已是房主！',
-        text: '將回到首頁 請勿重複加入',
-        icon: 'error'
-      }).then(() => {
-        return window.location.assign('/');
-      });
-    }
-  }, 1000);
-});
+// socket.on(`repeat${room}`, (msg) => {
+//   setTimeout(() => {
+//     if (msg.id === userId) {
+//       Swal.fire({
+//         timer: 3000,
+//         title: '您已是房主！',
+//         text: '將回到首頁 請勿重複加入',
+//         icon: 'error'
+//       }).then(() => {
+//         return window.location.assign('/');
+//       });
+//     }
+//   }, 1000);
+// });
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
@@ -387,6 +457,11 @@ socket.on(`roomUserId${room}`, (msg) => {
       userinfo.className = 'userinfo';
       userinfo.id = 'userinfo' + gamerName;
       playerList.appendChild(userinfo);
+
+      // const userAnswerArea = document.createElement('div');
+      // userAnswerArea.className = 'userAnswerArea';
+      // userAnswerArea.id = 'userAnswerArea' + gamerName;
+      // userinfo.appendChild(userAnswerArea);
 
       const name = document.createElement('td');
       name.textContent = `${gamerName}`;
@@ -507,3 +582,39 @@ leave.addEventListener('click', function () {
       }
     });
 });
+
+// Swal.fire({
+//   title: 'Custom width, padding, background.',
+//   width: 600,
+//   padding: '3em',
+//   background: '#fff url(/images/trees.png)',
+//   backdrop: `
+//     rgba(154,196,238,0.4)
+//     url("/images/nyan-cat.gif")
+//     left top
+//     no-repeat
+//   `
+// });
+
+const Toast = Swal.mixin({
+  toast: true,
+  // position: 'top-end',
+  showConfirmButton: false,
+  timer: 8000,
+
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
+});
+
+// Toast.fire({
+//   icon: 'success',
+//   title: 'Signed in successfully',
+//   text: '234',
+//   width: '400px',
+//   height: '500px',
+//   padding: '50px',
+//   background: 'src="./images/member2.png"'
+// });

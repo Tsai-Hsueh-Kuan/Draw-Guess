@@ -669,7 +669,7 @@ socket.on('canvasUpdate', (msg) => {
   const roomId = msg.room;
   const canvasAll = msg.canvas;
   const imgs = document.getElementById(`imgs${roomId}`);
-  if (msg.game) {
+  if (msg.game && imgs) {
     for (const i in canvasAll) {
       if (canvasAll[i].canvas_data !== '0') {
         const img = document.createElement('img');
