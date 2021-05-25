@@ -270,6 +270,11 @@ function startCountdown (interval) {
       countIndex++;
       startCountdown(timeout - deviation);
     } else {
+      const msg = document.getElementsByClassName('msg');
+      for (const i in msg) {
+        msg[i].textContent = '';
+      }
+
       gameDone = true;
       time.textContent = ('請按START開始遊戲');
       time.className = 'time';

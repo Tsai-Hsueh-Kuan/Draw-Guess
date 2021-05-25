@@ -149,6 +149,11 @@ socket.on(`answerGet${room}`, (msg) => {
     padding: '30px',
     background: '#DEFFFF'
   });
+  const msgarea = document.getElementsByClassName('msg');
+
+  for (const i in msgarea) {
+    msgarea[i].textContent = '';
+  }
   const answerShow = document.getElementById('answerShow');
   answerShow.textContent = '';
   // const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
