@@ -358,20 +358,20 @@ socket.on(`closeRoom${room}`, () => {
     return window.location.assign('/');
   });
 });
-// socket.on(`repeat${room}`, (msg) => {
-//   setTimeout(() => {
-//     if (msg.id === userId) {
-//       Swal.fire({
-//         timer: 3000,
-//         title: '您已是房主！',
-//         text: '將回到首頁 請勿重複加入',
-//         icon: 'error'
-//       }).then(() => {
-//         return window.location.assign('/');
-//       });
-//     }
-//   }, 1000);
-// });
+socket.on(`repeat${room}`, (msg) => {
+  setTimeout(() => {
+    if (msg.id === userId) {
+      Swal.fire({
+        timer: 3000,
+        title: '您已是房主！',
+        text: '將回到首頁 請勿重複加入',
+        icon: 'error'
+      }).then(() => {
+        return window.location.assign('/');
+      });
+    }
+  }, 1000);
+});
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
