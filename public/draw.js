@@ -13,9 +13,9 @@ let userScore;
 let limitTime;
 let roomId = [];
 if (type === 'english') {
-  limitTime = 40;
+  limitTime = 60;
 } else if (type === 'idiom') {
-  limitTime = 50;
+  limitTime = 60;
 }
 
 const token = localStorage.getItem('token');

@@ -14,9 +14,9 @@ let answerLimit = true;
 let answerGet;
 let limitTime;
 if (type === 'english') {
-  limitTime = 40;
+  limitTime = 60;
 } else if (type === 'idiom') {
-  limitTime = 50;
+  limitTime = 60;
 }
 
 const Toast2 = Swal.mixin({

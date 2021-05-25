@@ -46,7 +46,7 @@ const socketCon = (io) => {
           hostId[inRoom] = verifyHost.id;
           hostDetail[inRoom] = await getUser(verifyHost.id);
           socket.broadcast.emit('roomList', { roomList: roomList });
-          socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
           socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
           socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         } else if (`${intype}` === 'player') {
@@ -64,7 +64,7 @@ const socketCon = (io) => {
             roomUserId[inRoom].push(verifyHost.id);
             const userDetail = await getUser(verifyHost.id);
             roomUserData[inRoom].push(userDetail);
-            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
             socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
             socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
           } else {
@@ -72,7 +72,7 @@ const socketCon = (io) => {
             roomUserData[inRoom] = [];
             const userDetail = await getUser(verifyHost.id);
             roomUserData[inRoom] = [userDetail];
-            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: inRoomType, roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
             socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
             socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
           }
@@ -143,7 +143,7 @@ const socketCon = (io) => {
                 roomUserData[outRoom].push(userDetail);
               }
             }
-            socket.broadcast.emit('mainPageView', { roomId: outRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: outRoomType, roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+            socket.broadcast.emit('mainPageView', { roomId: outRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[outRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
             socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
             socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
           } else {
