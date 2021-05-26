@@ -91,22 +91,92 @@ let colorNow = '#000000';
 let lineWidthNow = 5;
 let isRainbow = true;
 
-const colorChoose = document.querySelector('#colorChoose');
+// const colorChoose = document.querySelector('#colorChoose');
 
-colorChoose.addEventListener('change', function () {
-  isRainbow = 0;
-  rainbowColor.textContent = ('rainbow:OFF');
-  rainbowColor.className = 'rainbowOff';
-  ctx[canvasNum].strokeStyle = colorChoose.value;
-  rainbowColor.style.backgroundColor = colorChoose.value;
-  colorNow = colorChoose.value;
-});
+// colorChoose.addEventListener('change', function () {
+//   isRainbow = 0;
+//   rainbowColor.textContent = ('rainbow:OFF');
+//   rainbowColor.className = 'rainbowOff';
+//   ctx[canvasNum].strokeStyle = colorChoose.value;
+//   rainbowColor.style.backgroundColor = colorChoose.value;
+//   colorNow = colorChoose.value;
+// });
 
 const lineWidthRange = document.getElementById('lineWidthRange');
 lineWidthRange.oninput = function () {
   ctx[canvasNum].lineWidth = this.value;
   lineWidthNow = this.value;
 };
+
+const red = document.querySelector('#red');
+red.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'red';
+  rainbowColor.style.backgroundColor = 'red';
+  colorNow = 'red';
+});
+
+const orange = document.querySelector('#orange');
+orange.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'orange';
+  rainbowColor.style.backgroundColor = 'orange';
+  colorNow = 'orange';
+});
+
+const yellow = document.querySelector('#yellow');
+yellow.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'yellow';
+  rainbowColor.style.backgroundColor = 'yellow';
+  colorNow = 'yellow';
+});
+
+const green = document.querySelector('#green');
+green.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'green';
+  rainbowColor.style.backgroundColor = 'green';
+  colorNow = 'green';
+});
+
+const blue = document.querySelector('#blue');
+blue.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'blue';
+  rainbowColor.style.backgroundColor = 'blue';
+  colorNow = 'blue';
+});
+
+const purple = document.querySelector('#purple');
+purple.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'purple';
+  rainbowColor.style.backgroundColor = 'purple';
+  colorNow = 'purple';
+});
+
+const black = document.querySelector('#black');
+black.addEventListener('click', function () {
+  isRainbow = 0;
+  rainbowColor.textContent = ('rainbow:OFF');
+  rainbowColor.className = 'rainbowOff';
+  ctx[canvasNum].strokeStyle = 'black';
+  rainbowColor.style.backgroundColor = 'black';
+  colorNow = 'black';
+});
 
 const rainbowColor = document.querySelector('#rainbowColor');
 rainbowColor.addEventListener('click', function () {
@@ -141,7 +211,7 @@ const createCanvas = function () {
   const canvas = document.createElement('canvas');
   canvas.className = 'draw';
   canvas.id = 'draw' + canvasNum;
-  canvas.width = '667';
+  canvas.width = '700';
   canvas.height = '400';
   canvas.style.zIndex = canvasNum;
   ctx[canvasNum] = canvas.getContext('2d');
@@ -241,7 +311,7 @@ socket.on(`question${room}`, (msg) => {
     const canvas = document.createElement('canvas');
     canvas.className = 'draw';
     canvas.id = 'draw' + canvasNum;
-    canvas.width = '667';
+    canvas.width = '700';
     canvas.height = '400';
     canvas.style.zIndex = canvasNum;
     ctx[canvasNum] = canvas.getContext('2d');
@@ -289,7 +359,7 @@ const undo = function () {
     myobjNow.remove();
     const myobj = document.getElementById(`draw${canvasNum - 1}`);
     const c = myobj.getContext('2d');
-    c.clearRect(0, 0, 667, 400);
+    c.clearRect(0, 0, 700, 400);
     canvasNum--;
     socket.emit('undo', { room: room, canvasNum: canvasNum, data: 1 });
   }
@@ -339,15 +409,20 @@ socket.on(`redo url${room}`, async (msg) => {
 });
 
 socket.on(`answerShow${room}`, (msg) => {
-  console.log('answerShow');
-  console.log(msg);
+  const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
+  msgArea.textContent = `${msg.data}`;
+  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
+  userinfoArea.className = 'inCorrect';
+  setTimeout(() => {
+    userinfoArea.classList.remove('inCorrect');
+  }, (limitTime - countIndex) * 1000);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
-  updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
+  updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  msgArea.textContent = '答對摟！';
+  msgArea.textContent = `答對摟！ 加${msg.score}分`;
   const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
   userinfoArea.className = 'correct';
   setTimeout(() => {
@@ -383,14 +458,19 @@ socket.on(`roomUserId${room}`, (msg) => {
 
       const name = document.createElement('td');
       name.textContent = `${gamerName}`;
+      name.className = 'gamerName';
       userinfo.appendChild(name);
 
       const score = document.createElement('td');
       score.textContent = `${gamerScore}`;
       score.id = 'score' + gamerName;
+      score.className = 'gamerScore';
       userinfo.appendChild(score);
+
       const photoTd = document.createElement('td');
+      photoTd.className = 'gamerPhotoTd';
       userinfo.appendChild(photoTd);
+
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
@@ -400,10 +480,14 @@ socket.on(`roomUserId${room}`, (msg) => {
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
 
-      const gameMsg = document.createElement('td');
+      const gameMsgTd = document.createElement('td');
+      gameMsgTd.className = 'msgTd';
+      userinfo.appendChild(gameMsgTd);
+
+      const gameMsg = document.createElement('p');
       gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
-      userinfo.appendChild(gameMsg);
+      gameMsgTd.appendChild(gameMsg);
     }
   }
 
@@ -440,16 +524,16 @@ socket.on(`roomUserId${room}`, (msg) => {
   }
 });
 
-const roomElement = document.getElementById('roomMsg');
-const roomMsgButton = document.getElementById('roomMsgButton');
+const roomElement = document.getElementById('btn-input');
+const roomMsgButton = document.getElementById('btn-chat');
 roomMsgButton.addEventListener('click', function (ev) {
-  const roomMsg = document.getElementById('roomMsg').value;
+  const roomMsg = document.getElementById('btn-input').value;
 
   roomElement.value = '';
   if (roomMsg.length === 0) {
 
-  } else if (roomMsg.length < 30) {
-    socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+  } else if (roomMsg.length < 31) {
+    socket.emit('roomMsg', { room: room, userName: userName, userPhoto: userPhoto, roomMsg: roomMsg });
   } else {
     Swal.fire({
       timer: 2000,
@@ -461,15 +545,15 @@ roomMsgButton.addEventListener('click', function (ev) {
   ev.preventDefault();
 }, false);
 
-$('#roomMsg').on('keypress', function (e) {
+$('#btn-input').on('keypress', function (e) {
   if (e.key === 'Enter' || e.keyCode === 13) {
-    const roomMsg = document.getElementById('roomMsg').value;
-    const roomElement = document.getElementById('roomMsg');
+    const roomMsg = document.getElementById('btn-input').value;
+    const roomElement = document.getElementById('btn-input');
     roomElement.value = '';
     if (roomMsg.length === 0) {
 
-    } else if (roomMsg.length < 30) {
-      socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+    } else if (roomMsg.length < 31) {
+      socket.emit('roomMsg', { room: room, userName: userName, userPhoto: userPhoto, roomMsg: roomMsg });
     } else {
       Swal.fire({
         timer: 2000,
@@ -480,15 +564,62 @@ $('#roomMsg').on('keypress', function (e) {
     }
   }
 });
-
+const chat = document.getElementById('chat');
 socket.on(`roomMsgShow${room}`, (msg) => {
-  const msgArea = document.getElementById(`msg${msg.userName}`);
-  const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
-  msgArea.textContent = msg.roomMsg;
-  userinfoArea.style.backgroundColor = '#ccffff';
-  setTimeout(() => {
-    userinfoArea.style.backgroundColor = '';
-  }, 2000);
+  const li = document.createElement('li');
+  li.className = 'left clearfix';
+  chat.appendChild(li);
+
+  const span = document.createElement('span');
+  span.className = 'chat-img pull-left';
+  li.appendChild(span);
+
+  const img = document.createElement('img');
+  img.className = 'img-circle';
+  img.alt = 'User Img';
+  if (msg.userPhoto) {
+    img.setAttribute('src', `${msg.userPhoto}`);
+  } else {
+    img.setAttribute('src', './images/member2.png');
+  }
+  span.appendChild(img);
+
+  const divChatBody = document.createElement('div');
+  divChatBody.className = 'chat-body clearfix';
+  li.appendChild(divChatBody);
+
+  const headerDiv = document.createElement('div');
+  headerDiv.className = 'header';
+  divChatBody.appendChild(headerDiv);
+
+  const strong = document.createElement('strong');
+  strong.textContent = msg.userName;
+  strong.className = 'primary-font';
+  headerDiv.appendChild(strong);
+
+  // const spanTime = document.createElement('span');
+  // spanTime.className = 'glyphicon glyphicon-time';
+  // headerDiv.appendChild(spanTime);
+  const newDate = new Date();
+  const hour = newDate.getHours();
+  const mins = newDate.getMinutes();
+
+  const small = document.createElement('small');
+  small.textContent = hour + ':' + mins;
+  small.className = 'pull-right text-muted';
+  headerDiv.appendChild(small);
+
+  const p = document.createElement('p');
+  p.textContent = msg.roomMsg;
+  divChatBody.appendChild(p);
+
+  // const msgArea = document.getElementById(`msg${msg.userName}`);
+  // const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
+  // msgArea.textContent = msg.roomMsg;
+  // userinfoArea.style.backgroundColor = '#ccffff';
+  // setTimeout(() => {
+  //   userinfoArea.style.backgroundColor = '';
+  // }, 2000);
 });
 
 const leave = document.getElementById('leave');

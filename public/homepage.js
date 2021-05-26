@@ -276,7 +276,7 @@ signUp.addEventListener('click', async function () {
     html:
 
     '<div>NAME*</div>' +
-    '<input id="swal-input3" type="text" name="name" class="swal2-input">' +
+    '<input id="swal-input3" type="text" name="name" class="swal2-input" maxlength="10">' +
     '<div>PASSWORD*</div>' +
     '<input id="swal-input4" type="password" name="password" class="swal2-input">',
     preConfirm: function () {
@@ -292,6 +292,8 @@ signUp.addEventListener('click', async function () {
     if (result.value) {
       if (!result.value[0]) {
         alert('NAME不能為空');
+      } else if (result.value[0].length > 10) {
+        alert('NAME太長了');
       } else if (!result.value[1]) {
         alert('PASSWORD不能為空');
       } else {
@@ -607,7 +609,7 @@ socket.on('mainPageView', async (msg) => {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
     const hostinfo = document.createElement('tr');
-    hostinfo.className = 'hostinfo';
+    hostinfo.className = 'hostinfo roomHostInfo';
     tbodyHost.appendChild(hostinfo);
     const name = document.createElement('td');
     name.textContent = `房主: ${hostName}`;

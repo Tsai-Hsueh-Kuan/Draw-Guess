@@ -166,12 +166,14 @@ socket.on(`answer${room}`, (msg) => {
   canvasNum = 0;
   gameStatus = 1;
   reportStatus = 1;
+  likeStatus = 1;
   countIndex = 1; // 倒數計時任務執行次數
   timeout = 1000; // 觸發倒數計時任務的時間間隙
   startTime = new Date().getTime();
   startCountdown(50);
   title.textContent = ('遊戲開始');
   title.className = 'timePlaying';
+  likeButton.className = 'far fa-heart like';
   gameDone = false;
   // message.textContent = '請開始作答';
   socket.emit('checkPlayerInGame', { userId: userId, room: room });
@@ -335,6 +337,26 @@ $('#answerCheck').on('keypress', function (e) {
   }
 });
 
+let likeStatus = 0;
+const likeButton = document.getElementById('likeButton');
+likeButton.addEventListener('click', async function () {
+  if (gameStatus === 0) {
+    Swal.fire({
+      timer: 2000,
+      title: '遊戲開始才能給讚喔',
+      text: '',
+      icon: 'warning',
+      showConfirmButton: false
+    });
+  } else if (likeStatus === 1) {
+    likeButton.className = 'far fa-heart likeClicked';
+    likeStatus = 0;
+  } else if (likeStatus === 0) {
+    likeButton.className = 'far fa-heart like';
+    likeStatus = 1;
+  }
+});
+
 let reportStatus = 0;
 const report = document.getElementById('report');
 report.addEventListener('click', async function (ev) {
@@ -354,7 +376,6 @@ report.addEventListener('click', async function (ev) {
 
     }).then(function (result) {
       if (result.value) {
-        console.log(result);
         Swal.fire({
           timer: 2000,
           title: '已收到您的檢舉',
@@ -394,7 +415,7 @@ report.addEventListener('click', async function (ev) {
 
 socket.on(`answerShow${room}`, (msg) => {
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  msgArea.textContent = `猜 :${msg.data}`;
+  msgArea.textContent = `${msg.data}`;
   const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
   userinfoArea.className = 'inCorrect';
   setTimeout(() => {
@@ -404,9 +425,9 @@ socket.on(`answerShow${room}`, (msg) => {
 
 socket.on(`userCorrect${room}`, (msg) => {
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
-  updateId.textContent = `SCORE: ${msg.userData[0].score + msg.score}`;
+  updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  msgArea.textContent = '答對摟！';
+  msgArea.textContent = `答對摟！ 加${msg.score}分`;
   const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
   userinfoArea.className = 'correct';
   setTimeout(() => {
@@ -470,14 +491,19 @@ socket.on(`roomUserId${room}`, (msg) => {
 
       const name = document.createElement('td');
       name.textContent = `${gamerName}`;
+      name.className = 'gamerName';
       userinfo.appendChild(name);
 
       const score = document.createElement('td');
       score.textContent = `${gamerScore}`;
       score.id = 'score' + gamerName;
+      score.className = 'gamerScore';
       userinfo.appendChild(score);
+
       const photoTd = document.createElement('td');
+      photoTd.className = 'gamerPhotoTd';
       userinfo.appendChild(photoTd);
+
       const photo = document.createElement('img');
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
@@ -486,6 +512,10 @@ socket.on(`roomUserId${room}`, (msg) => {
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
+
+      const gameMsgTd = document.createElement('td');
+      gameMsgTd.className = 'msgTd';
+      userinfo.appendChild(gameMsgTd);
 
       const gameMsg = document.createElement('td');
       gameMsg.className = 'msg';
@@ -521,15 +551,15 @@ socket.on(`roomUserId${room}`, (msg) => {
   }
 });
 
-const roomElement = document.getElementById('roomMsg');
-const roomMsgButton = document.getElementById('roomMsgButton');
+const roomElement = document.getElementById('btn-input');
+const roomMsgButton = document.getElementById('btn-chat');
 roomMsgButton.addEventListener('click', function (ev) {
-  const roomMsg = document.getElementById('roomMsg').value;
+  const roomMsg = document.getElementById('btn-input').value;
   roomElement.value = '';
   if (roomMsg.length === 0) {
 
   } else if (roomMsg.length < 30) {
-    socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+    socket.emit('roomMsg', { room: room, userName: userName, userPhoto: userPhoto, roomMsg: roomMsg });
   } else {
     Swal.fire({
       timer: 2000,
@@ -541,15 +571,15 @@ roomMsgButton.addEventListener('click', function (ev) {
   ev.preventDefault();
 }, false);
 
-$('#roomMsg').on('keypress', function (e) {
+$('#btn-input').on('keypress', function (e) {
   if (e.key === 'Enter' || e.keyCode === 13) {
-    const roomMsg = document.getElementById('roomMsg').value;
-    const roomElement = document.getElementById('roomMsg');
+    const roomMsg = document.getElementById('btn-input').value;
+    const roomElement = document.getElementById('btn-input');
     roomElement.value = '';
     if (roomMsg.length === 0) {
 
     } else if (roomMsg.length < 30) {
-      socket.emit('roomMsg', { room: room, userName: userName, roomMsg: roomMsg });
+      socket.emit('roomMsg', { room: room, userName: userName, userPhoto: userPhoto, roomMsg: roomMsg });
     } else {
       Swal.fire({
         timer: 2000,
@@ -561,14 +591,62 @@ $('#roomMsg').on('keypress', function (e) {
   }
 });
 
+const chat = document.getElementById('chat');
 socket.on(`roomMsgShow${room}`, (msg) => {
-  const msgArea = document.getElementById(`msg${msg.userName}`);
-  const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
-  msgArea.textContent = msg.roomMsg;
-  userinfoArea.style.backgroundColor = '#ccffff';
-  setTimeout(() => {
-    userinfoArea.style.backgroundColor = '';
-  }, 2000);
+  const li = document.createElement('li');
+  li.className = 'left clearfix';
+  chat.appendChild(li);
+
+  const span = document.createElement('span');
+  span.className = 'chat-img pull-left';
+  li.appendChild(span);
+
+  const img = document.createElement('img');
+  img.className = 'img-circle';
+  img.alt = 'User Img';
+  if (msg.userPhoto) {
+    img.setAttribute('src', `${msg.userPhoto}`);
+  } else {
+    img.setAttribute('src', './images/member2.png');
+  }
+  span.appendChild(img);
+
+  const divChatBody = document.createElement('div');
+  divChatBody.className = 'chat-body clearfix';
+  li.appendChild(divChatBody);
+
+  const headerDiv = document.createElement('div');
+  headerDiv.className = 'header';
+  divChatBody.appendChild(headerDiv);
+
+  const strong = document.createElement('strong');
+  strong.textContent = msg.userName;
+  strong.className = 'primary-font';
+  headerDiv.appendChild(strong);
+
+  // const spanTime = document.createElement('span');
+  // spanTime.className = 'glyphicon glyphicon-time';
+  // headerDiv.appendChild(spanTime);
+  const newDate = new Date();
+  const hour = newDate.getHours();
+  const mins = newDate.getMinutes();
+
+  const small = document.createElement('small');
+  small.textContent = hour + '' + mins;
+  small.className = 'pull-right text-muted';
+  headerDiv.appendChild(small);
+
+  const p = document.createElement('p');
+  p.textContent = msg.roomMsg;
+  divChatBody.appendChild(p);
+
+  // const msgArea = document.getElementById(`msg${msg.userName}`);
+  // const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
+  // msgArea.textContent = msg.roomMsg;
+  // userinfoArea.style.backgroundColor = '#ccffff';
+  // setTimeout(() => {
+  //   userinfoArea.style.backgroundColor = '';
+  // }, 2000);
 });
 
 const leave = document.getElementById('leave');

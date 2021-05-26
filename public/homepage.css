@@ -25,6 +25,7 @@ i.fas, i.far {
 
 
 body {
+  height: 0px;
   /* font-family: 'Chivo', 'cwTeXYen', Verdana;   */
   font-family: 'Josefin Sans', 'cwTeXYen', Verdana;
   position: relative;
@@ -32,12 +33,17 @@ body {
 
 }
 .padding2{
-  background-color: white
+  background-color: white;
 }
 
 .main{
  width: 1250px;
  margin: 0 auto;
+}
+.headerDiv{
+  display: flex;
+  padding-left: 10%;
+  padding-right: 10%;
 }
 header.index {
  height: 110px;
@@ -106,6 +112,39 @@ header.index .member-container .signup-form-btn:hover {
 
  
 
+#red{
+  color: red;
+}
+#orange{
+  color: orange;
+}
+#yellow{
+  color: yellow;
+}
+#green{
+  color: green;
+}
+#blue{
+  color: #2234AA;
+}
+#purple{
+  color: purple;
+}
+#black{
+  color: #000000;
+}
+
+
+
+
+#redo:hover,
+#undo:hover,
+#eraser:hover{
+  color: blue;
+}
+
+
+
 
 
 
@@ -124,7 +163,7 @@ header.index .member-container .signup-form-btn:hover {
  }
 
 .mainpart{
- margin-top: 270px;
+ margin-top: 10px;
 }
 .mainPart,
 .playerPart,
@@ -136,10 +175,14 @@ header.index .member-container .signup-form-btn:hover {
 #mainPart,
 #rankShow{
 padding-top: 10px;
-padding-left: 30px;
-padding-right: 30px;
+padding-left: 10px;
+padding-right: 10px;
+padding-bottom: 0%;
+height: 96%;
 display: flex;
 flex-direction: column;
+position: relative;
+justify-content: stretch;
 
 }
 
@@ -154,8 +197,7 @@ flex-direction: column;
   
 
 
-
-.row{
+.rowMain{
  justify-content: space-between;
  height: 590px;
 }
@@ -192,9 +234,8 @@ height: 950px;
 /* #mainPart, */
 .mainTableDiv{
  height: 950px;
- overflow: scroll;
+ overflow-y: scroll;
 }
-
 
 
 
@@ -221,6 +262,9 @@ height: 950px;
 .hostinfo{
  display: flex;
  flex-direction: column;
+}
+.roomHostInfo{
+  align-items: flex-start;
 }
 
 
@@ -296,38 +340,43 @@ td{
 
 .lineWidthRange {
  visibility: visible;
- width: 0;
- height: 0;
+ 
  border-style: solid;
- border-width: 0 0 25px 100px;
+ border-width: 0 0 25px 80px;
  border-color: transparent transparent #5B5B5B transparent;
- margin-top: 20px;
+ margin-top: 16px;
+ margin-left: 0%;
 }
 
 #lineWidthRange {
- width: 100px;
+ width: 80px;
+padding: 0%;
 }
 
 
 #colorChoose{
 width: 32px;
 height: 32px;
+margin-right: 5%;
+margin-left: 3%;
 }
-.demo {
- display: flex;
- flex-direction: column;
+
+.lineWidth{
+  margin-right: 5%;
+margin-left: 3%;
 }
+
 
 #skip{
  width: 200px;
  height: 30px;
 }
 
-.singleStart,
+#start,
 #getQuestion{
   display: inline-block;
   padding: 10px 10px;
-  font-size: 18px;
+  font-size: 30px;
   cursor: pointer;
   text-align: center;   
   text-decoration: none;
@@ -341,7 +390,7 @@ height: 32px;
   height: 36px;
   color: #000000;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
-  font-weight: 400;  /*   need check */
+  font-weight: 500;  /*   need check */
 }
 
 #rainbowColor{
@@ -362,6 +411,7 @@ height: 36px;
  color: #000000;  /*   need check */
  font-family: 'Kalam', Verdana;  /*   need check */
  font-weight: 400;  /*   need check */
+ margin-right: 20px;
 }
 
 #getQuestion{
@@ -375,6 +425,7 @@ height: 36px;
 }
 
 #answerShow{
+  font-size: 42px;
   position: absolute;
   color: #000000;  /*   need check */
   font-size: 28px;
@@ -385,6 +436,7 @@ height: 36px;
 .time{
   top: 100px;
   left: 180px;
+  font-size: 42px;
   position: absolute;
   color: #000000;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
@@ -393,6 +445,7 @@ height: 36px;
 .time5{
   right: 30px;
   top: 10px;
+  font-size: 42px;
   position: absolute;
   color:red;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
@@ -401,6 +454,7 @@ height: 36px;
 .timePlaying{
   right: 30px;
   top: 10px;
+  font-size: 42px;
   position: absolute;
   color: #000000;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
@@ -409,6 +463,7 @@ height: 36px;
 .timeSingle{
   top: 100px;
   left: 105px;
+  font-size: 42px;
   position: absolute;
   color: #000000;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
@@ -417,13 +472,14 @@ height: 36px;
 .timeSinglePlaying{
   top: -60px;
   position: absolute;
-
+  font-size: 42px;
   font-family: 'Kalam', Verdana;  /*   need check */
   font-weight: 600;  /*   need check */
 }
 .timePlaying{
   right: 30px;
   top: 10px;
+  font-size: 42px;
   position: absolute;
   color: #000000;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
@@ -431,15 +487,15 @@ height: 36px;
 }
 
 .singleStart{
-
+  font-size: 42px;
   margin-left: auto;
 }
-#rainbowColor:hover {background-color: #FF6363}
+#rainbowColor:hover {background-color: #E00000}
 #getQuestion:hover {background-color: #4F4FFF}
 .singleStart:hover {background-color: #4F4FFF}
 
 #rainbowColor:active{
-  background-color: #FF6363;
+  background-color: #E00000;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
@@ -514,30 +570,12 @@ height: 36px;
 
 
 
-.container{
-width: 100%;
-}
 
-.userPhoto,
-.hostPhoto,
-.gamerPhoto,
-.userinfoPhoto{
-width: 100px;
-height: 100px;
-object-fit: cover;
 
-}
 
-.gamerPhoto{
- margin: 0 auto;
-}
 
-.row{
-justify-content: space-between;
-}
-.rankPart{
-flex-grow: 1;
-}
+
+
 
 .room{
 padding: 2%;
@@ -548,11 +586,17 @@ display: flex;
 .tableDiv{
 /* border: 1px solid #999; */
 height: 400px;
-overflow: scroll;
+overflow-y: scroll;
 /* margin-right: 0%; */
 position: relative;
 }
+.tableDivGame{
+  height:100%;
 
+overflow-y: scroll;
+/* margin-right: 0%; */
+position: relative;
+}
 .draw {
 border: 1px solid #999;
 
@@ -568,30 +612,13 @@ justify-content: center;
 
 
  
- .container{
+ .chat-container{
   width: 100%;
+
+  padding: 0px;
  }
 
 
- .hostPhoto,
- .gamerPhoto,
- .userinfoPhoto{
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
- }
- 
-
-
- 
- .row{
-  justify-content: space-between;
-
- }
- .rankPart{
-  flex-grow: 1;
- }
- 
 
  
 
@@ -654,21 +681,19 @@ justify-content: center;
 
 
 
-
-
-
 .hostPhoto,
 .gamerPhoto,
 .userinfoPhoto{
 width: 80px;
 height: 80px;
 padding: 3px;
+object-fit: cover;
 box-shadow:3px 3px 12px gray;padding:3px
 }
 
 .imgs{
  border: 1px solid #999;
- width: 667px ;
+ width: 700px ;
  height: 400px;
  position: relative;
 }
@@ -676,7 +701,7 @@ box-shadow:3px 3px 12px gray;padding:3px
 
 #imgs{
  border: 1px solid #999;
- width: 667px ;
+ width: 700px ;
  height: 400px;
  position: relative;
  z-index: 100;
@@ -685,14 +710,14 @@ box-shadow:3px 3px 12px gray;padding:3px
 .img{
  top: 0%;
  position: absolute;
- min-width: 667px;
+ min-width: 700px;
  min-height: 400px;
  max-height: 400px;
 }
 
-#footerTop{
-  height: 220px;
-}
+/* #footerTop{
+  height: 20px;
+} */
 
 
 footer{
@@ -753,7 +778,9 @@ background-color: khaki;
   flex-direction: row;
   margin-bottom: 1%;
 }
-#report,
+#roomAnsDiv{
+  margin-top: 3%;
+}
 
 
 #roomMsg{
@@ -778,6 +805,7 @@ background-color: khaki;
   border-radius: 5%;
   width: 150px;
 }
+.like,
 #report{
   background-color: white;
   color: black;
@@ -794,11 +822,50 @@ background-color: khaki;
   background-color: #3f53d9; /* Green */
   color: white;
 }
+
 #report:hover {
   background-color: #3f53d9; /* Green */
   color: white;
 }
+.likeClicked{
+  background-color:#3f53d9;
+  color:white;
+  border: 2px solid #3f53d9; /* Green */
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  border-radius: 5%;
+  width: 150px;
+}
+.colName,
+.gamerName{
+  padding: 0%;
+max-width: 150px;
+white-space: nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
 
+.colScore,
+.gamerScore{
+  padding: 0%;
+
+}
+.gamerPhotoTd,
+.colPhoto{
+  width: 80px;
+  margin: 0%;
+}
+.msgTd,
+.colGuess{
+  padding: 0%;
+width: 170px;
+  overflow-wrap: break-word; 
+  word-wrap:break-word;
+}
+.msg{
+  padding: 0%;
+width: 170px;
+}
 
 
 .tooli{
@@ -807,7 +874,7 @@ background-color: khaki;
   margin-bottom: -80px;
   cursor: pointer;
   transform: scale(2);
-  margin-left: 30px;
+  margin-left: 10px;
 }
 
 .tooli:hover{
@@ -818,9 +885,11 @@ background-color: khaki;
 .demo{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
+
 }
+
 
 #startDiv{
   display: flex;
@@ -839,12 +908,92 @@ background-color: khaki;
   z-index: 1000;
 } */
 
+.playerListUserinfo{
+  display: flex;
+  flex-direction: row;
 
-@media(max-width: 1280px) {
-  .mainpart{
-    margin-top: 120px;
-   }
-  #footerTop{
-    height: 20px;
-  }
+  align-items: center; 
+  width: auto;
+  border-bottom:solid 1px teal;
+}
+.playerListName{
+
+}
+.playerListName,
+.playerListScore,
+.playerListPhoto,
+.playerListMsg{
+  /* border: solid 1px black; */
+  height: 80px;
+  width: 100px;
+  overflow : hidden;
+  text-overflow : ellipsis;
+  white-space : nowrap;
+  padding-right: 3%;
+align-items:flex-start
+
+}
+
+
+
+
+
+.chat
+{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.chat li
+{
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dotted #B3A9A9;
+}
+
+.chat li.left .chat-body
+{
+    margin-left: 60px;
+}
+
+.chat li.right .chat-body
+{
+    margin-right: 60px;
+}
+
+
+.chat li .chat-body p
+{
+    margin: 0;
+    color: #777777;
+}
+
+.panel .slidedown .glyphicon, .chat .glyphicon
+{
+    margin-right: 5px;
+}
+
+.panel-body
+{
+    overflow-y: scroll;
+    height: 250px;
+}
+
+.img-circle{
+  height: 50px;
+  width: 50px;
+}
+
+
+
+
+@media(min-width: 1281px) {
+
+   .mainpart{
+    margin-top: 8%
+   } 
+  /* #footerTop{
+    height: 220px;
+  } */
 }
