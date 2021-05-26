@@ -632,7 +632,7 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   const mins = newDate.getMinutes();
 
   const small = document.createElement('small');
-  small.textContent = hour + '' + mins;
+  small.textContent = hour + ':' + mins;
   small.className = 'pull-right text-muted';
   headerDiv.appendChild(small);
 
