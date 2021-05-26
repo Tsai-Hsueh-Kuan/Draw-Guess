@@ -22,7 +22,8 @@
         <a href="/" class="title">Draw & Guess</a href="/">
       </div>
       <div class="member-container">
-        <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM <i class="fas fa-arrow-right"></i></button>    
+        <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-bullhorn"></i></button>
+        <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE ROOM</button>    
         <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
       </div>
     </header>
@@ -82,21 +83,25 @@
         </div>
 
         <div class="rankPart col-5" id="rankShow">
-          <div>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">房主</th>
-                  <th scope="col" id="hostPHOTO">PHOTO</th>
-                  <th scope="col">MESSAGE</th>
-                </tr>
-              </thead>
-              <tbody id="host" class="host"></tbody>
-            </table>
+
+          <div class="tableDivGameHost">
+            <div>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col" class="colNameHost">房主</th>
+                    <th scope="col" class="colScoreHost">SCORE</th>
+                    <th scope="col" class="colPhotoHost">PHOTO</th>
+                    <!-- <th scope="col" class="colGuessHost">答題 猜測</th> -->
+                  </tr>
+                </thead>
+                <tbody id="host" class="host"></tbody>
+              </table>
+            </div>
           </div>
 
           <div class="tableDivGame">
-            <table class="table table-striped">
+            <table class="table">
               <thead>
                 <tr>
                   <th scope="col" class="colName">玩家</th>
@@ -207,7 +212,7 @@
 
     <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+ 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>

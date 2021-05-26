@@ -22,7 +22,8 @@
                 <a href="/" class="title">Draw & Guess</a href="/">
               </div>
               <div class="member-container">
-                <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM</button>    
+                <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-bullhorn"></i></button>
+                <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE ROOM</button>  
                 <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
               </div>
         
@@ -46,7 +47,7 @@
           </div>
 
           <div id="roomAnsDiv">
-            <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區">
+            <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區" maxlength="20">
             <button id="answerCheckButton" class="form-control">確認答案</button>
             <button id="report" class="form-control">report</button>
             <button id="likeButton" class="far fa-heart like">like</button>
@@ -71,7 +72,7 @@
 
       
             <div class="tableDivGame">
-              <table class="table table-striped">
+              <table class="table">
                 <thead>
                   <tr>
                     <th scope="col" class="colName">玩家</th>

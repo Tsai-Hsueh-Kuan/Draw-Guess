@@ -431,6 +431,8 @@ height: 36px;
   font-size: 28px;
   font-family: 'Kalam', Verdana;  /*   need check */
   font-weight: 600;  /*   need check */
+  top:5px;
+  left:5px
 }
 
 .time{
@@ -597,6 +599,10 @@ overflow-y: scroll;
 /* margin-right: 0%; */
 position: relative;
 }
+.tableDivGameHost{
+  height: 150px
+
+}
 .draw {
 border: 1px solid #999;
 
@@ -657,7 +663,7 @@ justify-content: center;
  } */
 
  .correct{
-   border: 2px solid red;
+   background-color: #C1FBA4
  }
 
 
@@ -688,7 +694,8 @@ width: 80px;
 height: 80px;
 padding: 3px;
 object-fit: cover;
-box-shadow:3px 3px 12px gray;padding:3px
+box-shadow:3px 3px 12px gray;
+padding:3px
 }
 
 .imgs{
@@ -838,7 +845,7 @@ background-color: khaki;
 }
 .colName,
 .gamerName{
-  padding: 0%;
+padding: 0%;
 max-width: 150px;
 white-space: nowrap;
 overflow:hidden;
@@ -858,13 +865,13 @@ text-overflow:ellipsis;
 .msgTd,
 .colGuess{
   padding: 0%;
-width: 170px;
+  width: 170px;
   overflow-wrap: break-word; 
   word-wrap:break-word;
 }
 .msg{
   padding: 0%;
-width: 170px;
+  width: 170px;
 }
 
 

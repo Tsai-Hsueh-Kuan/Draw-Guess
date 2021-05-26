@@ -12,6 +12,7 @@ let userPhoto;
 let userScore;
 let limitTime;
 let roomId = [];
+let correctUserList = [];
 if (type === 'english') {
   limitTime = 60;
 } else if (type === 'idiom') {
@@ -59,7 +60,6 @@ fetch('/api/1.0/user/profile', {
   .catch(function (err) {
     return err;
   });
-
 // socket io
 const socket = io((''), {
   auth: {
@@ -269,6 +269,23 @@ canvasDiv.addEventListener('mouseup', function () {
   socketUrl();
 });
 
+const invite = document.getElementById('invite');
+invite.addEventListener('click', function () {
+  const imgs = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+  const i = Math.floor(Math.random() * 6);
+  Swal.fire({
+    title: '邀請朋友加入',
+    imageUrl: `./images/${imgs[i]}.jpeg`,
+    imageWidth: 200,
+    imageHeight: 200,
+    imageAlt: 'image',
+    html:
+    ' 房間連結：' +
+    `<input type="text" id="text" value=${urlAll} style="width: 200px;" >` +
+  '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
+  });
+});
+
 const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
 getQuestion.addEventListener('click', function () {
@@ -283,6 +300,11 @@ getQuestion.addEventListener('click', function () {
     });
   } else if (gameDone) {
     socket.emit('getQuestion', { room: room, type: type, hostId: userId });
+    correctUserList = [];
+    const correctEle = document.getElementsByClassName('correct');
+    for (const i in correctEle) {
+      correctEle[i].className = 'userinfo';
+    }
   } else {
     Swal.fire({
       timer: 3000,
@@ -321,7 +343,7 @@ socket.on(`question${room}`, (msg) => {
     questionSql = msg;
     question.textContent = `${questionSql}`;
     time.className = 'timePlaying';
-    getQuestion.textContent = ('PLAYING');
+    // getQuestion.textContent = ('PLAYING');
   }
 });
 
@@ -419,15 +441,30 @@ socket.on(`answerShow${room}`, (msg) => {
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
+  if (correctUserList[0]) {
+    correctUserList.push(msg.userData[0].name);
+  } else {
+    correctUserList[0] = msg.userData[0].name;
+  }
+
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `答對摟！ 加${msg.score}分`;
   const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  userinfoArea.className = 'correct';
+  userinfoArea.className = 'userinfo correct';
   setTimeout(() => {
     userinfoArea.classList.remove('correct');
   }, (limitTime - countIndex) * 1000);
+  const updateHost = document.getElementById('hostScore');
+  updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
+  // const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
+  // msgArea.textContent = `答對摟！ 加${msg.score}分`;
+  const userinfoHostArea = document.getElementById('userinfoHost');
+  userinfoHostArea.className = 'userinfo correct';
+  setTimeout(() => {
+    userinfoHostArea.classList.remove('correct');
+  }, 2000);
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -452,7 +489,10 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
-      userinfo.className = 'userinfo';
+      for (const i in correctUserList) {
+        if (gamerName === correctUserList[i]) { userinfo.className = 'userinfo correct'; }
+      }
+
       userinfo.id = `userinfo${gamerName}`;
       playerList.appendChild(userinfo);
 
@@ -495,15 +535,24 @@ socket.on(`roomUserId${room}`, (msg) => {
   if (msg.hostDetail) {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
+    const hostScore = msg.hostDetail[0].score;
+
     const hostinfo = document.createElement('tr');
     hostinfo.className = 'userinfo';
-    hostinfo.id = `userinfo${hostName}`;
+    hostinfo.id = 'userinfoHost';
     host.appendChild(hostinfo);
     const name = document.createElement('td');
     name.textContent = `${hostName}`;
     hostinfo.appendChild(name);
 
+    const score = document.createElement('td');
+    score.textContent = `${hostScore}`;
+    score.id = 'hostScore';
+    score.className = 'gamerScore';
+    hostinfo.appendChild(score);
+
     const photoTd = document.createElement('td');
+    photoTd.className = 'gamerPhotoTd';
     hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     if (userPhoto) {
@@ -514,10 +563,14 @@ socket.on(`roomUserId${room}`, (msg) => {
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
 
-    const gameMsg = document.createElement('td');
-    gameMsg.className = 'msg';
-    gameMsg.id = 'msg' + hostName;
-    hostinfo.appendChild(gameMsg);
+    // const gameMsgTd = document.createElement('td');
+    // gameMsgTd.className = 'msgTd';
+    // hostinfo.appendChild(gameMsgTd);
+
+    // const gameMsg = document.createElement('p');
+    // gameMsg.className = 'msg';
+    // gameMsg.id = 'msg' + hostName;
+    // gameMsgTd.appendChild(gameMsg);
   }
   if (msg.roomUserId) {
     roomId = msg.roomUserId;

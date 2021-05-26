@@ -34,8 +34,13 @@ const updateHistory = async (gameId, userId, record) => {
   await pool.query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
 };
 
-const updateScore = async (score, userId) => {
+const updateScore = async (score, userId, hostId, gameId) => {
+  const totalList = await pool.query('SELECT * from draw.history where game_id = ? AND record <> "only view"', gameId);
+  const totalCount = totalList[0].length;
+  const hostScore = Math.ceil(score / totalCount);
+  await pool.query('UPDATE user SET score = score + ? where id = ? ', [hostScore, hostId]);
   await pool.query('UPDATE user SET score = score + ? where id = ? ', [score, userId]);
+  return hostScore;
 };
 
 const inputCanvas = async (gameId, canvasNum, canvasData, data) => {

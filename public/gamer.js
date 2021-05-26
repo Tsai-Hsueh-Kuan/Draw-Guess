@@ -6,6 +6,8 @@ const type = url.get('type');
 const room = url.get('room');
 const urlGamer = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
 const urlDraw = protocol + '//' + urlhost + '/draw.html?room=' + room + '&type=' + type;
+const urlAll = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
+
 let userId;
 let userName;
 let userPhoto;
@@ -13,10 +15,13 @@ let userScore;
 let answerLimit = true;
 let answerGet;
 let limitTime;
+let noChangeTime;
 if (type === 'english') {
   limitTime = 60;
+  noChangeTime = 60;
 } else if (type === 'idiom') {
   limitTime = 60;
+  noChangeTime = 60;
 }
 
 const Toast2 = Swal.mixin({
@@ -43,6 +48,14 @@ const socket = io((''), {
   }
 });
 
+let canvasNum = 0;
+let gameStatus = 0;
+let answerData;
+let gameDone = true;
+let countIndex = 1; // 倒數計時任務執行次數
+let timeout = 1000; // 觸發倒數計時任務的時間間隙
+let startTime = new Date().getTime();
+let correctUserList = [];
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -70,6 +83,7 @@ fetch('/api/1.0/user/profile', {
     userScore = data.data.score;
 
     socket.on(`canvasUpdate${room}id${token}`, (msg) => {
+      const timeCheck = msg.timeCheck;
       const canvasAll = msg.canvas;
       for (const i in canvasAll) {
         if (canvasAll[i].canvas_data !== '0') {
@@ -77,16 +91,40 @@ fetch('/api/1.0/user/profile', {
           img.src = canvasAll[i].canvas_data;
           img.className = 'img';
           img.id = 'img' + i;
-          canvasNum = canvasAll[i].canvas_num - 1;
+          canvasNum = parseInt(canvasAll[i].canvas_num) + 1;
+
           imgs.appendChild(img);
         } else if (canvasAll[i].canvas_undo !== '0') {
           const img = document.getElementsByClassName('img');
-
           const finalNum = img.length;
-
           img[finalNum - 1].remove();
         }
       }
+
+      limitTime = limitTime - parseInt(timeCheck);
+      gameStatus = 1;
+      reportStatus = 1;
+      likeStatus = 1;
+      countIndex = 1; // 倒數計時任務執行次數
+      timeout = 1000; // 觸發倒數計時任務的時間間隙
+      startTime = new Date().getTime();
+      startCountdown(50);
+      title.textContent = ('遊戲開始');
+      title.className = 'timePlaying';
+      likeButton.className = 'far fa-heart like';
+      gameDone = false;
+
+      for (const i in msg.correctUserList) {
+        if (correctUserList[0]) {
+          correctUserList.push(msg.correctUserList[i]);
+        } else {
+          correctUserList[0] = msg.correctUserList[i];
+        }
+        const userinfoArea = document.getElementById(`userinfo${msg.correctUserList[i]}`);
+        userinfoArea.className = 'userinfo correct';
+      }
+
+      socket.emit('checkPlayerInGame', { userId: userId, room: room });
     });
     const info = document.getElementById('info');
     const name = document.createElement('td');
@@ -103,14 +141,6 @@ fetch('/api/1.0/user/profile', {
   .catch(function (err) {
     return err;
   });
-
-let canvasNum = 0;
-let gameStatus = 0;
-let answerData;
-let gameDone = true;
-let countIndex = 1; // 倒數計時任務執行次數
-let timeout = 1000; // 觸發倒數計時任務的時間間隙
-let startTime = new Date().getTime();
 
 function startCountdown (interval) {
   setTimeout(() => {
@@ -131,6 +161,7 @@ function startCountdown (interval) {
       reportStatus = 0;
       gameStatus = 0;
       title.className = 'time';
+      limitTime = noChangeTime;
       // message.textContent = '請等待下一局';
     }
   }, interval);
@@ -172,6 +203,13 @@ socket.on(`answer${room}`, (msg) => {
   startTime = new Date().getTime();
   startCountdown(50);
   title.textContent = ('遊戲開始');
+
+  correctUserList = [];
+  const correctEle = document.getElementsByClassName('correct');
+  for (const i in correctEle) {
+    correctEle[i].className = 'userinfo';
+  }
+
   title.className = 'timePlaying';
   likeButton.className = 'far fa-heart like';
   gameDone = false;
@@ -209,8 +247,8 @@ answerCheckButton.addEventListener('click', function (ev) {
     setTimeout(() => {
       answerLimit = true;
     }, 2000);
-    socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
+    socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
         // message.textContent = `正確答案！ ${answerCheck}`;
@@ -424,15 +462,27 @@ socket.on(`answerShow${room}`, (msg) => {
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
+  if (correctUserList[0]) {
+    correctUserList.push(msg.userData[0].name);
+  } else {
+    correctUserList[0] = msg.userData[0].name;
+  }
+
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `答對摟！ 加${msg.score}分`;
   const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  userinfoArea.className = 'correct';
+  userinfoArea.className = 'userinfo correct';
   setTimeout(() => {
     userinfoArea.classList.remove('correct');
   }, (limitTime - countIndex) * 1000);
+  const updateHost = document.getElementById('hostScore');
+  updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
+  // const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
+  // msgArea.textContent = `答對摟！ 加${msg.score}分`;
+  const userinfoHostArea = document.getElementById('userinfoHost');
+  userinfoHostArea.className = 'userinfo correct';
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -480,7 +530,10 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
-      userinfo.className = 'userinfo';
+      for (const i in correctUserList) {
+        if (gamerName === correctUserList[i]) { userinfo.className = 'userinfo correct'; }
+      }
+
       userinfo.id = 'userinfo' + gamerName;
       playerList.appendChild(userinfo);
 
@@ -517,24 +570,34 @@ socket.on(`roomUserId${room}`, (msg) => {
       gameMsgTd.className = 'msgTd';
       userinfo.appendChild(gameMsgTd);
 
-      const gameMsg = document.createElement('td');
+      const gameMsg = document.createElement('p');
       gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
-      userinfo.appendChild(gameMsg);
+      gameMsgTd.appendChild(gameMsg);
     }
   }
   host.innerHTML = '';
   if (msg.hostDetail) {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
+    const hostScore = msg.hostDetail[0].score;
+
     const hostinfo = document.createElement('tr');
     hostinfo.className = 'userinfo';
-    hostinfo.id = `userinfo${hostName}`;
+    hostinfo.id = 'userinfoHost';
     host.appendChild(hostinfo);
     const name = document.createElement('td');
     name.textContent = `${hostName}`;
     hostinfo.appendChild(name);
+
+    const score = document.createElement('td');
+    score.textContent = `${hostScore}`;
+    score.id = 'hostScore';
+    score.className = 'gamerScore';
+    hostinfo.appendChild(score);
+
     const photoTd = document.createElement('td');
+    photoTd.className = 'gamerPhotoTd';
     hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     if (hostPhoto) {
@@ -544,10 +607,18 @@ socket.on(`roomUserId${room}`, (msg) => {
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
-    const gameMsg = document.createElement('td');
-    gameMsg.className = 'msg';
-    gameMsg.id = 'msg' + hostName;
-    hostinfo.appendChild(gameMsg);
+
+    // const gameMsgTd = document.createElement('td');
+    // gameMsgTd.className = 'msgTd';
+    // hostinfo.appendChild(gameMsgTd);
+
+    // const gameMsg = document.createElement('p');
+    // gameMsg.className = 'msg';
+    // gameMsg.id = 'msg' + hostName;
+    // gameMsgTd.appendChild(gameMsg);
+  }
+  if (msg.roomUserId) {
+    roomId = msg.roomUserId;
   }
 });
 
@@ -589,6 +660,23 @@ $('#btn-input').on('keypress', function (e) {
       });
     }
   }
+});
+
+const invite = document.getElementById('invite');
+invite.addEventListener('click', function () {
+  const imgs = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+  const i = Math.floor(Math.random() * 6);
+  Swal.fire({
+    title: '邀請朋友加入',
+    imageUrl: `./images/${imgs[i]}.jpeg`,
+    imageWidth: 200,
+    imageHeight: 200,
+    imageAlt: 'image',
+    html:
+    ' 房間連結：' +
+    `<input type="text" id="text" value=${urlAll} style="width: 200px;" >` +
+  '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
+  });
 });
 
 const chat = document.getElementById('chat');

@@ -19,7 +19,7 @@ const roomUserId = [];
 const hostDetail = [];
 const roomUserData = [];
 const disconnectTime = [];
-
+const correctUserList = [];
 const roomType = [];
 let roomList = [];
 let hostDisconnect;
@@ -30,6 +30,7 @@ const socketCon = (io) => {
     const intype = socket.handshake.auth.type;
     const inRoomType = socket.handshake.auth.roomType;
     const limitTime = socket.handshake.auth.limitTime;
+
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (verifyHost.err) {
@@ -82,7 +83,7 @@ const socketCon = (io) => {
 
     if (timeCheck[inRoom]) {
       const canvasUpate = await canvasUpdate(gameId[inRoom]);
-      socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate });
+      socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate, timeCheck: gameTime[inRoom], correctUserList: correctUserList[inRoom] });
     }
 
     socket.on('disconnect', async function () {
@@ -166,6 +167,7 @@ const socketCon = (io) => {
         questionId[msg.room] = questionData[0].id;
         userId[msg.room] = '';
         gameId[msg.room] = '';
+        correctUserList[msg.room] = '';
         if (!gameId[msg.room]) {
           gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
         }
@@ -184,13 +186,13 @@ const socketCon = (io) => {
             const endTime = new Date().getTime();
             const deviation = endTime - (startTime + gameTime[msg.room] * timeout);
             if (gameTime[msg.room] < limitTime) {
-              gameTime[msg.room]++;
+              gameTime[msg.room] = gameTime[msg.room] + 1;
               startCountdown(timeout - deviation);
             } else {
               timeCheck[msg.room] = false;
-              if (userId[msg.room]) {
-                getHistory(gameId[msg.room], userId[msg.room], 'only view');
-              }
+              // if (userId[msg.room]) {
+              //   getHistory(gameId[msg.room], userId[msg.room], 'only view');
+              // }
               checkGameCanvas(gameId[msg.room]);
               socket.broadcast.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
               socket.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
@@ -200,9 +202,9 @@ const socketCon = (io) => {
         startCountdown(10);
       });
 
-      // socket.on('checkPlayerInGame', async (msg) => {
-      //   getHistory(gameId[msg.room], roomUserId[inRoom], 'fail');
-      //   userId[msg.room] = '';
+      socket.on('checkPlayerInGame', async (msg) => {
+        getHistory(gameId[msg.room], roomUserId[inRoom], 'fail');
+      });
       //   gameTime[msg.room] = 1; // 倒數計時任務執行次數
       //   const timeout = 1000; // 觸發倒數計時任務的時間間隙
       //   const startTime = new Date().getTime();
@@ -235,12 +237,18 @@ const socketCon = (io) => {
           if (msg.answerData === question[msg.room]) {
             const checktime = limitTime - gameTime[msg.room];
             updateHistory(gameId[msg.room], msg.userId, msg.canvasNum);
-            updateScore(checktime, msg.userId);
+            const hostScore = await updateScore(checktime, msg.userId, hostId[msg.room], gameId[msg.room]);
             const rankData = await getRank();
+
+            if (!correctUserList[msg.room]) {
+              correctUserList[msg.room] = [userData[0].name];
+            } else {
+              correctUserList[msg.room].push(userData[0].name);
+            }
             socket.broadcast.emit('getRank', { data: rankData });
             socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: true, answer: '' });
-            socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: checktime });
-            socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: checktime });
+            socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: checktime, hostScore: hostScore });
+            socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: gameTime[msg.room], score: checktime, hostScore: hostScore });
           } else {
             socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
             socket.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
@@ -311,10 +319,10 @@ const socketCon = (io) => {
       });
 
       socket.on('homeRank', async (msg) => {
-        if (msg) {
+        if (msg.homeTime) {
           const rankData = await getRank();
-          socket.broadcast.emit('getRank', { data: rankData });
-          socket.emit('getRank', { data: rankData });
+          socket.broadcast.emit(`getRank${msg.homeTime}`, { data: rankData });
+          socket.emit(`getRank${msg.homeTime}`, { data: rankData });
         }
       });
 
