@@ -11,7 +11,8 @@ const {
   updateHistory,
   getAnswer,
   checkAnswer,
-  getcrawler
+  getcrawler,
+  del
 } = require('../controllers/game_controller');
 
 router.route('/game/single')

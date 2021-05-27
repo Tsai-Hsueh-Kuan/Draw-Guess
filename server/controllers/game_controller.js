@@ -71,10 +71,12 @@ const getcrawler = async (req, res) => {
 //       return err;
 //     }
 //   });
+
 module.exports = {
   getSingleGame,
   updateHistory,
   checkAnswer,
   getAnswer,
   getcrawler
+
 };

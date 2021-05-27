@@ -592,6 +592,14 @@ overflow-y: scroll;
 /* margin-right: 0%; */
 position: relative;
 }
+
+.tableDivSingle{
+  /* border: 1px solid #999; */
+  height: 550%;
+  overflow-y: scroll;
+  /* margin-right: 0%; */
+  position: relative;
+  }
 .tableDivGame{
   height:100%;
 

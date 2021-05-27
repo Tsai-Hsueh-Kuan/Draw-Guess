@@ -26,7 +26,7 @@ if (type === 'english') {
 
 const Toast2 = Swal.mixin({
   toast: true,
-  position: 'top',
+  // position: 'top',
   showConfirmButton: false,
   timer: 5000
 
@@ -35,6 +35,18 @@ const Toast2 = Swal.mixin({
   //   toast.addEventListener('mouseenter', Swal.stopTimer);
   //   toast.addEventListener('mouseleave', Swal.resumeTimer);
   // }
+});
+const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+const randomNumber = Math.floor(Math.random() * 6);
+Swal.fire({
+  title: '歡迎加入遊戲',
+  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageWidth: 200,
+  imageHeight: 200,
+  imageAlt: 'image',
+  html: '請盡量回答 來獲得更多分數！' +
+  '</br>' +
+   '回答得越快 分數越高喔～'
 });
 
 const imgs = document.querySelector('#imgs');
@@ -712,17 +724,19 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   strong.className = 'primary-font';
   headerDiv.appendChild(strong);
 
-  // const spanTime = document.createElement('span');
-  // spanTime.className = 'glyphicon glyphicon-time';
-  // headerDiv.appendChild(spanTime);
   const newDate = new Date();
   const hour = newDate.getHours();
   const mins = newDate.getMinutes();
 
   const small = document.createElement('small');
+
   small.textContent = hour + ':' + mins;
   small.className = 'pull-right text-muted';
   headerDiv.appendChild(small);
+
+  const spanTime = document.createElement('span');
+  spanTime.className = 'glyphicon glyphicon-time';
+  small.appendChild(spanTime);
 
   const p = document.createElement('p');
   p.textContent = msg.roomMsg;

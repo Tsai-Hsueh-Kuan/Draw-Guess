@@ -70,6 +70,20 @@ const socket = io((''), {
     limitTime: limitTime
   }
 });
+const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+const randomNumber = Math.floor(Math.random() * 6);
+Swal.fire({
+  title: '歡迎加入遊戲',
+  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageWidth: 200,
+  imageHeight: 200,
+  imageAlt: 'image',
+  html: '請盡量畫圖 來獲得更多分數！' +
+  '</br>' +
+   '大家猜得越快 分數越高喔～' +
+   '</br>' +
+   '但請勿直接寫答案 這是犯規的喔～'
+});
 
 const canvasDiv = document.querySelector('#addCanvas');
 const canvas = document.querySelector('.draw');
@@ -658,9 +672,14 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   const mins = newDate.getMinutes();
 
   const small = document.createElement('small');
+
   small.textContent = hour + ':' + mins;
   small.className = 'pull-right text-muted';
   headerDiv.appendChild(small);
+
+  const spanTime = document.createElement('span');
+  spanTime.className = 'glyphicon glyphicon-time';
+  small.appendChild(spanTime);
 
   const p = document.createElement('p');
   p.textContent = msg.roomMsg;
