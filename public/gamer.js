@@ -8,6 +8,12 @@ const urlGamer = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type
 const urlDraw = protocol + '//' + urlhost + '/draw.html?room=' + room + '&type=' + type;
 const urlAll = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
 
+const typeShow = document.getElementById('question');
+if (type === 'english') {
+  typeShow.textContent = '動物 單字';
+} else if (type === 'idiom') {
+  typeShow.textContent = '四字 成語';
+}
 let userId;
 let userName;
 let userPhoto;
@@ -38,16 +44,6 @@ const Toast2 = Swal.mixin({
 });
 const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
 const randomNumber = Math.floor(Math.random() * 6);
-Swal.fire({
-  title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
-  imageWidth: 200,
-  imageHeight: 200,
-  imageAlt: 'image',
-  html: '請盡量回答 來獲得更多分數！' +
-  '</br>' +
-   '回答得越快 分數越高喔～'
-});
 
 const imgs = document.querySelector('#imgs');
 const token = localStorage.getItem('token');
@@ -516,20 +512,6 @@ socket.on(`closeRoom${room}`, () => {
     return window.location.assign('/');
   });
 });
-// socket.on(`repeat${room}`, (msg) => {
-//   setTimeout(() => {
-//     if (msg.id === userId) {
-//       Swal.fire({
-//         timer: 3000,
-//         title: '您已是房主！',
-//         text: '將回到首頁 請勿重複加入',
-//         icon: 'error'
-//       }).then(() => {
-//         return window.location.assign('/');
-//       });
-//     }
-//   }, 1000);
-// });
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
@@ -768,19 +750,6 @@ leave.addEventListener('click', function () {
     });
 });
 
-// Swal.fire({
-//   title: 'Custom width, padding, background.',
-//   width: 600,
-//   padding: '3em',
-//   background: '#fff url(/images/trees.png)',
-//   backdrop: `
-//     rgba(154,196,238,0.4)
-//     url("/images/nyan-cat.gif")
-//     left top
-//     no-repeat
-//   `
-// });
-
 const Toast = Swal.mixin({
   toast: true,
   // position: 'top-end',
@@ -794,12 +763,44 @@ const Toast = Swal.mixin({
   }
 });
 
-// Toast.fire({
-//   icon: 'success',
-//   title: 'Signed in successfully',
-//   text: '234',
-//   width: '400px',
-//   height: '500px',
-//   padding: '50px',
-//   background: 'src="./images/member2.png"'
-// });
+socket.on(`repeat${room}`, (msg) => {
+  setTimeout(() => {
+    if (msg.id === userId) {
+      Swal.fire({
+        timer: 3000,
+        title: '您已是房主！',
+        text: '將回到首頁 請勿重複加入',
+        icon: 'error'
+      }).then(() => {
+        return window.location.assign('/');
+      });
+    }
+  }, 1000);
+});
+
+socket.on(`repeatUser${room}`, (msg) => {
+  setTimeout(() => {
+    if (msg.id === userId) {
+      Swal.fire({
+        timer: 3000,
+        title: '您已在房間！',
+        text: '請勿重複加入 ' +
+        '良好遊戲風氣 需大家共同維護',
+        icon: 'error'
+      }).then(() => {
+        return window.location.assign('/');
+      });
+    }
+  }, 3000);
+});
+
+Swal.fire({
+  title: '歡迎加入遊戲',
+  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageWidth: 200,
+  imageHeight: 200,
+  imageAlt: 'image',
+  html: '請盡量回答 來獲得更多分數！' +
+  '</br>' +
+   '回答得越快 分數越高喔～'
+});

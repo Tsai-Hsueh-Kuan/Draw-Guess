@@ -57,7 +57,7 @@ const verifyTokenSocket = (token) => {
 };
 
 const getRank = async () => {
-  const data = await pool.query('SELECT id,name,photo,score from draw.user order by score desc');
+  const data = await pool.query('SELECT id,name,photo,score from draw.user order by score desc limit 10');
   for (const i in data[0]) {
     if (data[0][i].photo) {
       data[0][i].photo = IP + data[0][i].photo;

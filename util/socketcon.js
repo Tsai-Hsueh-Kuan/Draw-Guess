@@ -56,6 +56,13 @@ const socketCon = (io) => {
             socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
             socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
           }
+
+          for (const i in roomUserId[inRoom]) {
+            if (roomUserId[inRoom][i] === verifyHost.id) {
+              socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+              return;
+            }
+          }
           if (!userId[inRoom]) {
             userId[inRoom] = [verifyHost.id];
           } else {
@@ -144,6 +151,7 @@ const socketCon = (io) => {
             roomUserId[outRoom] = roomUserId[outRoom].filter(function (item) {
               return item !== verifyHost.id;
             });
+
             roomUserData[outRoom] = [];
             for (const i in roomUserId[outRoom]) {
               const userDetail = await getUser(roomUserId[outRoom][i]);
