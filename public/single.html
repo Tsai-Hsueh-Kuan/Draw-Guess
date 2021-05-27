@@ -18,34 +18,38 @@
         <a href="/" class="title">Draw & Guess</a href="/">
       </div>
       <div class="member-container">
-        <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE ROOM</button>    
+        <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE <i class="fas fa-door-open"></i></button>    
         <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
       </div>
     </header>
 
     <div class="container-fluid main mainpart" id="main">
       <div class="row rowMain">
-
         <div class="mainPart col-7 container-fluid" id="mainPart">
-          <div class="singleTopDiv">
-            <!-- <h4 id="message">please wait next game</h1> -->
-            <button id="start" class="singleStart">START</button>  
-          </div>
+
+
+          <div id="startDiv">
+            <div id="questionData">
+              <div class="question">題庫：</div>
+              <div id="question" class="question"></div>
+            
+                <button id="start" class="singleStart">START</button>  
          
-   
-        
+            </div>
+
+           
+          </div>
+
           <div id="dashboardArea">
             <h1 id="title" class="timeSingle">請按START GAME開始遊戲</h1>
             <div id="imgs"></div>
           </div>
-      <br>
+
           <div id="roomAnsDiv">
             <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區">
-            <button id="answerCheckButton" class="form-control">確認答案</button>
-            <!-- <button id="report" class="form-control">report</button> -->
+            <button id="answerCheckButton" class="form-control">確認   <i class="fas fa-paper-plane"></i></button>
           </div>
 
-           
         </div>
 
         <div class="rankPart col-5" id="rankShow">
@@ -53,26 +57,24 @@
             <table class="table table-striped">
               <thead>
                 <tr>
+                  <th scope="col"></th>
                   <th scope="col">玩家</th>
-                  <th scope="col">RECORD</th>
-                  <th scope="col">PHOTO</th>
+                  <th scope="col">紀錄 筆劃</th>
                 </tr>
               </thead>
               <tbody class="record" id="record"></tbody>
             </table>
           </div>
         </div>
-        
       </div>
     </div>
 
+    <footer class="index">
+      <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+    </footer>
 
-  <!-- <div id="footerTop"></div> -->
-   </div> 
-</div>
-        <footer class="index">
-          <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
-        </footer>
+  </div>
+        
         <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>

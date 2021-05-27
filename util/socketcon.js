@@ -30,7 +30,6 @@ const socketCon = (io) => {
     const intype = socket.handshake.auth.type;
     const inRoomType = socket.handshake.auth.roomType;
     const limitTime = socket.handshake.auth.limitTime;
-
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (verifyHost.err) {

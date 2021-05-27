@@ -14,6 +14,13 @@ let gameId;
 let getAnswer;
 const token = localStorage.getItem('token');
 
+const typeShow = document.getElementById('question');
+if (type === 'english') {
+  typeShow.textContent = '動物 單字';
+} else if (type === 'idiom') {
+  typeShow.textContent = '四字 成語';
+}
+
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -115,6 +122,15 @@ start.addEventListener('click', function () {
           recordInfo.className = 'recordInfo';
           recordDiv.appendChild(recordInfo);
 
+          const photo = document.createElement('img');
+          if (recordPhoto) {
+            photo.setAttribute('src', `${recordPhoto}`);
+          } else {
+            photo.setAttribute('src', './images/member2.png');
+          }
+          photo.className = 'singleGamerPhoto';
+          recordInfo.appendChild(photo);
+
           const name = document.createElement('td');
           name.textContent = `${recordName}`;
           recordInfo.appendChild(name);
@@ -122,15 +138,6 @@ start.addEventListener('click', function () {
           const record = document.createElement('td');
           record.textContent = `${recordRecord}`;
           recordInfo.appendChild(record);
-
-          const photo = document.createElement('img');
-          if (recordPhoto) {
-            photo.setAttribute('src', `${recordPhoto}`);
-          } else {
-            photo.setAttribute('src', './images/member2.png');
-          }
-          photo.className = 'gamerPhoto';
-          recordInfo.appendChild(photo);
         }
       }
     })
@@ -138,7 +145,7 @@ start.addEventListener('click', function () {
       return err;
     });
 });
-const timeout = 2000; // 觸發倒數計時任務的時間間隙
+const timeout = 1; // 觸發倒數計時任務的時間間隙
 let countIndex = 1; // 倒數計時任務執行次數
 const limitTime = 20;
 let startTime = new Date().getTime();
@@ -426,15 +433,14 @@ leave.addEventListener('click', function () {
 
 const Toast2 = Swal.mixin({
   toast: true,
-  position: 'top',
   showConfirmButton: false,
-  timer: 5000,
+  timer: 5000
 
   // timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
+  // didOpen: (toast) => {
+  //   toast.addEventListener('mouseenter', Swal.stopTimer);
+  //   toast.addEventListener('mouseleave', Swal.resumeTimer);
+  // }
 });
 
 const Toast = Swal.mixin({

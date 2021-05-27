@@ -22,8 +22,8 @@
         <a href="/" class="title">Draw & Guess</a href="/">
       </div>
       <div class="member-container">
-        <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-bullhorn"></i></button>
-        <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE ROOM</button>    
+        <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-user-plus"></i></button>
+        <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE <i class="fas fa-door-open"></i></button>    
         <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
       </div>
     </header>
@@ -42,8 +42,9 @@
             <div id="questionData">
               <div class="question">題目：</div>
               <div id="question" class="question"></div>
-            </div>
+            
             <button id="getQuestion">START</button>
+          </div>
           </div>
 
           <div id="dashboardArea">
@@ -85,28 +86,29 @@
         <div class="rankPart col-5" id="rankShow">
 
           <div class="tableDivGameHost">
-            <div>
+            
               <table class="table table-striped">
                 <thead>
-                  <tr>
+                  <tr> 
+                    <th scope="col" class="colPhotoHost"></th>
                     <th scope="col" class="colNameHost">房主</th>
-                    <th scope="col" class="colScoreHost">SCORE</th>
-                    <th scope="col" class="colPhotoHost">PHOTO</th>
+                    <th scope="col" class="colScoreHost">分數</th>
+                   
                     <!-- <th scope="col" class="colGuessHost">答題 猜測</th> -->
                   </tr>
                 </thead>
                 <tbody id="host" class="host"></tbody>
               </table>
-            </div>
+            
           </div>
 
           <div class="tableDivGame">
             <table class="table">
               <thead>
                 <tr>
+                  <th scope="col" class="colPhoto"></th>
                   <th scope="col" class="colName">玩家</th>
-                  <th scope="col" class="colScore">SCORE</th>
-                  <th scope="col" class="colPhoto">PHOTO</th>
+                  <th scope="col" class="colScore">分數</th>
                   <th scope="col" class="colGuess">答題 猜測</th>
                 </tr>
               </thead>
@@ -116,77 +118,8 @@
 
 
           
-          <div class="container" style="width: 100%; padding-left: 30%;padding-right: 0%; position: absolute;right: 0%; bottom: -20px;">
-            <div class="row">
-                <div>
-                    <div class="panel panel-primary" style="padding:0%;">
-                        <div class="panel-heading" id="accordion">
-                            <span class="glyphicon glyphicon-comment"></span> Chat
-                            <div class="btn-group pull-right">
-                                <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                    <span class="glyphicon glyphicon-chevron-down"></span>
-                                </a>
-                            </div>
-                        </div>
-                    <div class="panel-collapse collapse" id="collapseOne">
-                        <div class="panel-body">
-                            <ul id="chat" class="chat">
-                                <!-- <li class="left clearfix">
-                                  <span class="chat-img pull-left">
-                                    <img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle" />
-                                  </span>
-                                  <div class="chat-body clearfix">
-                                      <div class="header">
-                                          <strong class="primary-font">Jack Sparrow</strong> 
-                                          <small class="pull-right text-muted">
-                                              <span class="glyphicon glyphicon-time">12 mins ago</span>
-                                              
-                                          </small>
-                                      </div>
-                                      <p>
-                                          44444444.
-                                      </p>
-                                  </div>
-                                  -->
-                                  <li class="right clearfix"><span class="chat-img pull-right">
-                                      <img src="./images/Takeshi Kaneshiro Shares His Views on Aging and Acting 2.jpeg" alt="HsuehKuan" class="img-circle" />
-                                  </span>
-                                      <div class="chat-body clearfix">
-                                          <div class="header">
-                                              <small class=" text-muted"><i class="	far fa-comment-alt"></i>系統訊息</small>
-                                              <strong class="pull-right primary-font">HsuehKuan</strong>
-                                          </div>
-                                          <p>
-                                            請不要在聊天室告訴別人正確答案喔～～    良好的遊戲風氣需要大家努力 祝遊戲愉快
-                                          </p>
-                                      </div>
-                                  </li>
-                            
-                            
-                            </ul>
-                        </div>
-                        <div class="panel-footer">
-                            <div class="input-group">
-                                <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." maxlength="30" />
-                                <span class="input-group-btn">
-                                    <button class="btn btn-warning btn-sm" id="btn-chat">Send</button>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
+         
         </div>
-
-
-
-
-
-
-
-        </div>
-
       </div>
     </div>
 
@@ -198,13 +131,60 @@
         document.execCommand("copy");
     }
   </script>
-<!-- <div id="footerTop"></div> -->
-  </div>
 
+ 
+
+  <div class="container" style="width: 30%; position: fixed;left: 71%; bottom: 0%; z-index: 200" >
+    <div class="row">
+        <div>
+            <div class="panel panel-primary" style="padding:0%;">
+                <div class="panel-heading" id="accordion">
+                    <span class="glyphicon glyphicon-comment"></span> Chat
+                    <div class="btn-group pull-right">
+                        <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                            <span class="glyphicon glyphicon-chevron-down"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-collapse collapse" id="collapseOne">
+                    <div class="panel-body">
+                        <ul id="chat" class="chat">
+                      
+                              <li class="right clearfix"><span class="chat-img pull-right">
+                                  <img src="./images/Takeshi Kaneshiro Shares His Views on Aging and Acting 2.jpeg" alt="HsuehKuan" class="img-circle" />
+                              </span>
+                                  <div class="chat-body clearfix">
+                                      <div class="header">
+                                          <small class=" text-muted"><i class="	far fa-comment-alt"></i>系統訊息</small>
+                                          <strong class="pull-right primary-font">HsuehKuan</strong>
+                                      </div>
+                                      <p>
+                                        請不要在聊天室告訴別人正確答案喔～～    良好的遊戲風氣需要大家努力 祝遊戲愉快
+                                      </p>
+                                  </div>
+                              </li>
+                        
+                        
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." maxlength="30" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning btn-sm" id="btn-chat">Send</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
+  </div>  
   <footer class="index">
     <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
   </footer>
-    
+ 
+</div>
 
   <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>

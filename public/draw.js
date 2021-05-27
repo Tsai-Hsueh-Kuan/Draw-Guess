@@ -70,20 +70,6 @@ const socket = io((''), {
     limitTime: limitTime
   }
 });
-const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
-const randomNumber = Math.floor(Math.random() * 6);
-Swal.fire({
-  title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
-  imageWidth: 200,
-  imageHeight: 200,
-  imageAlt: 'image',
-  html: '請盡量畫圖 來獲得更多分數！' +
-  '</br>' +
-   '大家猜得越快 分數越高喔～' +
-   '</br>' +
-   '但請勿直接寫答案 這是犯規的喔～'
-});
 
 const canvasDiv = document.querySelector('#addCanvas');
 const canvas = document.querySelector('.draw');
@@ -385,6 +371,14 @@ function startCountdown (interval) {
       time.textContent = ('請按START開始遊戲');
       time.className = 'time';
       getQuestion.textContent = ('START');
+
+      Toast.fire({
+        // icon: 'info',
+        title: '時間到',
+        text: '休息一下 準備下一題',
+        width: '400px',
+        padding: '30px'
+      });
     }
   }, interval);
 }
@@ -510,17 +504,6 @@ socket.on(`roomUserId${room}`, (msg) => {
       userinfo.id = `userinfo${gamerName}`;
       playerList.appendChild(userinfo);
 
-      const name = document.createElement('td');
-      name.textContent = `${gamerName}`;
-      name.className = 'gamerName';
-      userinfo.appendChild(name);
-
-      const score = document.createElement('td');
-      score.textContent = `${gamerScore}`;
-      score.id = 'score' + gamerName;
-      score.className = 'gamerScore';
-      userinfo.appendChild(score);
-
       const photoTd = document.createElement('td');
       photoTd.className = 'gamerPhotoTd';
       userinfo.appendChild(photoTd);
@@ -533,6 +516,17 @@ socket.on(`roomUserId${room}`, (msg) => {
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
+
+      const name = document.createElement('td');
+      name.textContent = `${gamerName}`;
+      name.className = 'gamerName';
+      userinfo.appendChild(name);
+
+      const score = document.createElement('td');
+      score.textContent = `${gamerScore}`;
+      score.id = 'score' + gamerName;
+      score.className = 'gamerScore';
+      userinfo.appendChild(score);
 
       const gameMsgTd = document.createElement('td');
       gameMsgTd.className = 'msgTd';
@@ -555,15 +549,6 @@ socket.on(`roomUserId${room}`, (msg) => {
     hostinfo.className = 'userinfo';
     hostinfo.id = 'userinfoHost';
     host.appendChild(hostinfo);
-    const name = document.createElement('td');
-    name.textContent = `${hostName}`;
-    hostinfo.appendChild(name);
-
-    const score = document.createElement('td');
-    score.textContent = `${hostScore}`;
-    score.id = 'hostScore';
-    score.className = 'gamerScore';
-    hostinfo.appendChild(score);
 
     const photoTd = document.createElement('td');
     photoTd.className = 'gamerPhotoTd';
@@ -576,6 +561,16 @@ socket.on(`roomUserId${room}`, (msg) => {
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
+
+    const name = document.createElement('td');
+    name.textContent = `${hostName}`;
+    hostinfo.appendChild(name);
+
+    const score = document.createElement('td');
+    score.textContent = `${hostScore}`;
+    score.id = 'hostScore';
+    score.className = 'gamerScore';
+    hostinfo.appendChild(score);
 
     // const gameMsgTd = document.createElement('td');
     // gameMsgTd.className = 'msgTd';
@@ -694,6 +689,19 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   // }, 2000);
 });
 
+const Toast = Swal.mixin({
+  toast: true,
+  // position: 'top-end',
+  showConfirmButton: false,
+  timer: 8000,
+
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
+});
+
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
   Swal.fire({
@@ -710,3 +718,18 @@ leave.addEventListener('click', function () {
       }
     });
 });
+
+// const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+// const randomNumber = Math.floor(Math.random() * 6);
+// Swal.fire({
+//   title: '歡迎加入遊戲',
+//   imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+//   imageWidth: 200,
+//   imageHeight: 200,
+//   imageAlt: 'image',
+//   html: '請盡量畫圖 來獲得更多分數！' +
+//   '</br>' +
+//    '大家猜得越快 分數越高喔～' +
+//    '</br>' +
+//    '但請勿直接寫答案 這是犯規的喔～'
+// });

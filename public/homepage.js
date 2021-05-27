@@ -5,6 +5,7 @@ let userScore;
 const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
+
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',
@@ -406,42 +407,6 @@ const photoButton = document.getElementById('userPhoto');
 photoButton.addEventListener('click', function () {
 
 });
-// const signInForm = document.forms.namedItem('signInForm');
-// const signInButton = document.getElementById('signInButton');
-// signInButton.addEventListener('click', function (ev) {
-//   const signIpFormData = new FormData(signInForm);
-//   fetch('/api/1.0/user/signin', {
-//     method: 'POST',
-//     body: signIpFormData
-//   }).then(function (response) {
-//     if (response.status === 200) {
-//       return response.json();
-//     } else if (response.status === 429) {
-//       alert('Too Many Requests');
-//     } else if (response.status === 400) {
-//       return response.json();
-//     } else if (response.status === 403) {
-//       return response.json();
-//     } else if (response.status === 500) {
-//       return response.json();
-//     }
-//   }).then(data => {
-//     if (data.error) {
-//       Swal.fire('OOPS！', `${data.error}`, 'error');
-//     } else if (data.data) {
-//       localStorage.setItem('token', `${data.data.access_token}`);
-//       Swal.fire({
-//         title: '登入成功',
-//         text: `歡迎${data.data.user.name}玩家`,
-//         icon: 'success'
-//       }).then(() => {
-//         return window.location.assign('/');
-//       });
-//     }
-//   });
-//   ev.preventDefault();
-// }, false);
-
 const signOutButton = document.getElementById('exampleModal2');
 const createGame = document.getElementById('createGame');
 const singlePlay = document.getElementById('singlePlay');
@@ -538,38 +503,67 @@ socket.on('mainPageView', async (msg) => {
   imgs.setAttribute('href', `/gamer.html?room=${roomId}&type=${roomType}`);
   room.appendChild(imgs);
 
-  const tableDiv = document.createElement('div');
-  tableDiv.className = 'tableDiv col-2';
-  room.appendChild(tableDiv);
+  const roomIdArea = document.createElement('div');
+  roomIdArea.className = 'roomId';
+  roomIdArea.textContent = `房號${roomId}`;
+  imgs.appendChild(roomIdArea);
 
-  const table = document.createElement('table');
+  const tbodyHost = document.createElement('div');
+  tbodyHost.id = `tbodyHost${roomId}`;
+  tbodyHost.className = 'tbodyHost';
+  imgs.appendChild(tbodyHost);
+
+  tbodyHost.innerHTML = '';
+  if (msg.hostDetail) {
+    const hostName = msg.hostDetail[0].name;
+    const hostPhoto = msg.hostDetail[0].photo;
+    const hostinfo = document.createElement('tr');
+    hostinfo.className = 'hostinfo roomHostInfo';
+    tbodyHost.appendChild(hostinfo);
+    const name = document.createElement('td');
+    name.textContent = `房主: ${hostName}`;
+    name.className = 'hostName hover';
+
+    const photoTd = document.createElement('td');
+    hostinfo.appendChild(photoTd);
+    const photo = document.createElement('img');
+    photo.className = 'hostPhoto hostPhotoMainPage';
+    if (hostPhoto) {
+      photo.setAttribute('src', `${hostPhoto}`);
+    } else {
+      photo.setAttribute('src', './images/member2.png');
+    }
+    photoTd.appendChild(name);
+    photoTd.appendChild(photo);
+  }
+
+  const tableDiv = document.createElement('div');
+  tableDiv.className = 'tableDiv';
+  imgs.appendChild(tableDiv);
+
+  const table = document.createElement('div');
   table.id = `table${roomId}`;
   table.className = 'table';
   tableDiv.appendChild(table);
 
-  const thead = document.createElement('thead');
+  const thead = document.createElement('div');
   thead.id = `thead${roomId}`;
   thead.className = 'thead';
   table.appendChild(thead);
 
-  const tr = document.createElement('tr');
+  const tr = document.createElement('div');
   thead.appendChild(tr);
 
-  const th = document.createElement('th');
+  const th = document.createElement('div');
   th.scope = 'col';
   th.textContent = 'NAME';
   th.className = 'thName';
   tr.appendChild(th);
 
-  const th2 = document.createElement('th');
+  const th2 = document.createElement('div');
   th2.scope = 'col';
-  th2.textContent = '目前玩家';
+  th2.textContent = '目前玩家 0位';
   tr.appendChild(th2);
-
-  const tbodyHost = document.createElement('tbody');
-  tbodyHost.id = `tbodyHost${roomId}`;
-  tbodyHost.className = 'tbodyHost';
-  imgs.appendChild(tbodyHost);
 
   const tbodyPlayerList = document.createElement('tbody');
   tbodyPlayerList.id = `tbodyPlayerList${roomId}`;
@@ -588,8 +582,8 @@ socket.on('mainPageView', async (msg) => {
       userinfo.className = 'userinfo';
       tbodyPlayerList.appendChild(userinfo);
       const name = document.createElement('td');
-      name.textContent = `NAME: ${gamerName}`;
-      name.className = 'userName hover';
+      name.textContent = `${gamerName}`;
+      name.className = 'playerName hover';
 
       const photoTd = document.createElement('td');
       photoTd.className = 'gamerTd';
@@ -604,29 +598,6 @@ socket.on('mainPageView', async (msg) => {
       photoTd.appendChild(name);
       photoTd.appendChild(photo);
     }
-  }
-  tbodyHost.innerHTML = '';
-  if (msg.hostDetail) {
-    const hostName = msg.hostDetail[0].name;
-    const hostPhoto = msg.hostDetail[0].photo;
-    const hostinfo = document.createElement('tr');
-    hostinfo.className = 'hostinfo roomHostInfo';
-    tbodyHost.appendChild(hostinfo);
-    const name = document.createElement('td');
-    name.textContent = `房主: ${hostName}`;
-    name.className = 'hostName';
-    hostinfo.appendChild(name);
-    const photoTd = document.createElement('td');
-    hostinfo.appendChild(photoTd);
-    const photo = document.createElement('img');
-    photo.className = 'hostPhoto hostPhotoMainPage';
-    if (hostPhoto) {
-      photo.setAttribute('src', `${hostPhoto}`);
-    } else {
-      photo.setAttribute('src', './images/member2.png');
-    }
-
-    photoTd.appendChild(photo);
   }
 });
 

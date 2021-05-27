@@ -8,9 +8,13 @@ const jwt = require('jsonwebtoken');
 const { createHash } = require('crypto');
 
 const passwordencryption = function (password) {
-  const hash = createHash('sha256');
-  hash.update(password);
-  return (hash.digest('hex'));
+  try {
+    const hash = createHash('sha256');
+    hash.update(password);
+    return (hash.digest('hex'));
+  } catch (error) {
+    return error;
+  }
 };
 
 const signUp = async (name, password, photo) => {
@@ -39,7 +43,6 @@ const signUp = async (name, password, photo) => {
     await conn.query('COMMIT');
     return { user };
   } catch (error) {
-    console.log(error);
     await conn.query('ROLLBACK');
     return { error };
   } finally {
@@ -90,7 +93,7 @@ const getUserDetail = async (userId) => {
     }
     return userDetail[0][0];
   } catch (error) {
-    return null;
+    return error;
   }
 };
 
@@ -98,7 +101,7 @@ const replacePhoto = async (id, photo) => {
   try {
     await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
   } catch (error) {
-    return null;
+    return error;
   }
 };
 
@@ -108,7 +111,7 @@ const uploadPhoto = async (id, photo) => {
     photo = IP + photo;
     return photo;
   } catch (error) {
-    return null;
+    return error;
   }
 };
 

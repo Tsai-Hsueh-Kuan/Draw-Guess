@@ -42,8 +42,6 @@ const Toast2 = Swal.mixin({
   //   toast.addEventListener('mouseleave', Swal.resumeTimer);
   // }
 });
-const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
-const randomNumber = Math.floor(Math.random() * 6);
 
 const imgs = document.querySelector('#imgs');
 const token = localStorage.getItem('token');
@@ -119,7 +117,7 @@ fetch('/api/1.0/user/profile', {
       startCountdown(50);
       title.textContent = ('遊戲開始');
       title.className = 'timePlaying';
-      likeButton.className = 'far fa-heart like';
+      // likeButton.className = 'like';
       gameDone = false;
 
       for (const i in msg.correctUserList) {
@@ -185,8 +183,7 @@ socket.on(`answerGet${room}`, (msg) => {
     title: '時間到',
     text: `正確答案:${answerData}`,
     width: '400px',
-    padding: '30px',
-    background: '#DEFFFF'
+    padding: '30px'
   });
   const msgarea = document.getElementsByClassName('msg');
 
@@ -219,7 +216,7 @@ socket.on(`answer${room}`, (msg) => {
   }
 
   title.className = 'timePlaying';
-  likeButton.className = 'far fa-heart like';
+  // likeButton.className = 'like';
   gameDone = false;
   // message.textContent = '請開始作答';
   socket.emit('checkPlayerInGame', { userId: userId, room: room });
@@ -264,8 +261,8 @@ answerCheckButton.addEventListener('click', function (ev) {
           icon: 'success',
           title: '答對了！',
           width: '400px',
-          padding: '30px',
-          background: '#DEFFFF'
+          padding: '30px'
+
         });
         const answerShow = document.getElementById('answerShow');
         answerShow.textContent = `ANSWER: ${answerCheck}`;
@@ -277,8 +274,8 @@ answerCheckButton.addEventListener('click', function (ev) {
           icon: 'error',
           title: '猜錯了！',
           width: '400px',
-          padding: '30px',
-          background: '#DEFFFF'
+          padding: '30px'
+
         });
       }
     });
@@ -288,8 +285,8 @@ answerCheckButton.addEventListener('click', function (ev) {
       icon: 'warning',
       title: '作答時間間隔太短',
       width: '400px',
-      padding: '30px',
-      background: '#DEFFFF'
+      padding: '30px'
+
     });
   } else if (gameStatus === 0) {
     // message.textContent = 'please wait for next game';
@@ -297,8 +294,8 @@ answerCheckButton.addEventListener('click', function (ev) {
       icon: 'warning',
       title: 'please wait for next game',
       width: '400px',
-      padding: '30px',
-      background: '#DEFFFF'
+      padding: '30px'
+
     });
   } else if (gameStatus === 2) {
     // message.textContent = '您已答對 please wait for next game';
@@ -306,8 +303,8 @@ answerCheckButton.addEventListener('click', function (ev) {
       icon: 'warning',
       title: '已經答對囉',
       width: '400px',
-      padding: '30px',
-      background: '#DEFFFF'
+      padding: '30px'
+
     });
   }
 
@@ -334,8 +331,8 @@ $('#answerCheck').on('keypress', function (e) {
             icon: 'success',
             title: '答對了！',
             width: '400px',
-            padding: '30px',
-            background: '#DEFFFF'
+            padding: '30px'
+
           });
           const answerShow = document.getElementById('answerShow');
           answerShow.textContent = `ANSWER:${answerCheck}`;
@@ -347,8 +344,8 @@ $('#answerCheck').on('keypress', function (e) {
             icon: 'error',
             title: '猜錯了！',
             width: '400px',
-            padding: '30px',
-            background: '#DEFFFF'
+            padding: '30px'
+
           });
         }
       });
@@ -358,8 +355,8 @@ $('#answerCheck').on('keypress', function (e) {
         icon: 'warning',
         title: '作答時間間隔太短',
         width: '400px',
-        padding: '30px',
-        background: '#DEFFFF'
+        padding: '30px'
+
       });
     } else if (gameStatus === 0) {
       // message.textContent = 'please wait for next game';
@@ -367,8 +364,8 @@ $('#answerCheck').on('keypress', function (e) {
         icon: 'warning',
         title: 'please wait for next game',
         width: '400px',
-        padding: '30px',
-        background: '#DEFFFF'
+        padding: '30px'
+
       });
     } else if (gameStatus === 2) {
       // message.textContent = '您已答對 please wait for next game';
@@ -376,32 +373,32 @@ $('#answerCheck').on('keypress', function (e) {
         icon: 'warning',
         title: '已經猜對囉 請欣賞並等待下一局！',
         width: '400px',
-        padding: '30px',
-        background: '#DEFFFF'
+        padding: '30px'
+
       });
     }
   }
 });
 
-let likeStatus = 0;
-const likeButton = document.getElementById('likeButton');
-likeButton.addEventListener('click', async function () {
-  if (gameStatus === 0) {
-    Swal.fire({
-      timer: 2000,
-      title: '遊戲開始才能給讚喔',
-      text: '',
-      icon: 'warning',
-      showConfirmButton: false
-    });
-  } else if (likeStatus === 1) {
-    likeButton.className = 'far fa-heart likeClicked';
-    likeStatus = 0;
-  } else if (likeStatus === 0) {
-    likeButton.className = 'far fa-heart like';
-    likeStatus = 1;
-  }
-});
+// let likeStatus = 0;
+// const likeButton = document.getElementById('heart');
+// likeButton.addEventListener('click', async function () {
+//   if (gameStatus === 0) {
+//     Swal.fire({
+//       timer: 2000,
+//       title: '遊戲開始才能給讚喔',
+//       text: '',
+//       icon: 'warning',
+//       showConfirmButton: false
+//     });
+//   } else if (likeStatus === 1) {
+//     likeButton.className = 'likeClicked';
+//     likeStatus = 0;
+//   } else if (likeStatus === 0) {
+//     likeButton.className = 'like';
+//     likeStatus = 1;
+//   }
+// });
 
 let reportStatus = 0;
 const report = document.getElementById('report');
@@ -536,17 +533,6 @@ socket.on(`roomUserId${room}`, (msg) => {
       // userAnswerArea.id = 'userAnswerArea' + gamerName;
       // userinfo.appendChild(userAnswerArea);
 
-      const name = document.createElement('td');
-      name.textContent = `${gamerName}`;
-      name.className = 'gamerName';
-      userinfo.appendChild(name);
-
-      const score = document.createElement('td');
-      score.textContent = `${gamerScore}`;
-      score.id = 'score' + gamerName;
-      score.className = 'gamerScore';
-      userinfo.appendChild(score);
-
       const photoTd = document.createElement('td');
       photoTd.className = 'gamerPhotoTd';
       userinfo.appendChild(photoTd);
@@ -559,6 +545,17 @@ socket.on(`roomUserId${room}`, (msg) => {
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
+
+      const name = document.createElement('td');
+      name.textContent = `${gamerName}`;
+      name.className = 'gamerName';
+      userinfo.appendChild(name);
+
+      const score = document.createElement('td');
+      score.textContent = `${gamerScore}`;
+      score.id = 'score' + gamerName;
+      score.className = 'gamerScore';
+      userinfo.appendChild(score);
 
       const gameMsgTd = document.createElement('td');
       gameMsgTd.className = 'msgTd';
@@ -580,15 +577,6 @@ socket.on(`roomUserId${room}`, (msg) => {
     hostinfo.className = 'userinfo';
     hostinfo.id = 'userinfoHost';
     host.appendChild(hostinfo);
-    const name = document.createElement('td');
-    name.textContent = `${hostName}`;
-    hostinfo.appendChild(name);
-
-    const score = document.createElement('td');
-    score.textContent = `${hostScore}`;
-    score.id = 'hostScore';
-    score.className = 'gamerScore';
-    hostinfo.appendChild(score);
 
     const photoTd = document.createElement('td');
     photoTd.className = 'gamerPhotoTd';
@@ -601,6 +589,16 @@ socket.on(`roomUserId${room}`, (msg) => {
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
+
+    const name = document.createElement('td');
+    name.textContent = `${hostName}`;
+    hostinfo.appendChild(name);
+
+    const score = document.createElement('td');
+    score.textContent = `${hostScore}`;
+    score.id = 'hostScore';
+    score.className = 'gamerScore';
+    hostinfo.appendChild(score);
 
     // const gameMsgTd = document.createElement('td');
     // gameMsgTd.className = 'msgTd';
@@ -763,44 +761,46 @@ const Toast = Swal.mixin({
   }
 });
 
-socket.on(`repeat${room}`, (msg) => {
-  setTimeout(() => {
-    if (msg.id === userId) {
-      Swal.fire({
-        timer: 3000,
-        title: '您已是房主！',
-        text: '將回到首頁 請勿重複加入',
-        icon: 'error'
-      }).then(() => {
-        return window.location.assign('/');
-      });
-    }
-  }, 1000);
-});
+// socket.on(`repeat${room}`, (msg) => {
+//   setTimeout(() => {
+//     if (msg.id === userId) {
+//       Swal.fire({
+//         timer: 3000,
+//         title: '您已是房主！',
+//         text: '將回到首頁 請勿重複加入',
+//         icon: 'error'
+//       }).then(() => {
+//         return window.location.assign('/');
+//       });
+//     }
+//   }, 1000);
+// });
 
-socket.on(`repeatUser${room}`, (msg) => {
-  setTimeout(() => {
-    if (msg.id === userId) {
-      Swal.fire({
-        timer: 3000,
-        title: '您已在房間！',
-        text: '請勿重複加入 ' +
-        '良好遊戲風氣 需大家共同維護',
-        icon: 'error'
-      }).then(() => {
-        return window.location.assign('/');
-      });
-    }
-  }, 3000);
-});
+// socket.on(`repeatUser${room}`, (msg) => {
+//   setTimeout(() => {
+//     if (msg.id === userId) {
+//       Swal.fire({
+//         timer: 3000,
+//         title: '您已在房間！',
+//         text: '請勿重複加入 ' +
+//         '良好遊戲風氣 需大家共同維護',
+//         icon: 'error'
+//       }).then(() => {
+//         return window.location.assign('/');
+//       });
+//     }
+//   }, 3000);
+// });
 
-Swal.fire({
-  title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
-  imageWidth: 200,
-  imageHeight: 200,
-  imageAlt: 'image',
-  html: '請盡量回答 來獲得更多分數！' +
-  '</br>' +
-   '回答得越快 分數越高喔～'
-});
+// const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+// const randomNumber = Math.floor(Math.random() * 6);
+// Swal.fire({
+//   title: '歡迎加入遊戲',
+//   imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+//   imageWidth: 200,
+//   imageHeight: 200,
+//   imageAlt: 'image',
+//   html: '請盡量回答 來獲得更多分數！' +
+//   '</br>' +
+//    '回答得越快 分數越高喔～'
+// });
