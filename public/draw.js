@@ -671,9 +671,6 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   strong.className = 'primary-font';
   headerDiv.appendChild(strong);
 
-  // const spanTime = document.createElement('span');
-  // spanTime.className = 'glyphicon glyphicon-time';
-  // headerDiv.appendChild(spanTime);
   const newDate = new Date();
   const hour = newDate.getHours();
   const mins = newDate.getMinutes();
@@ -692,13 +689,8 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   p.textContent = msg.roomMsg;
   divChatBody.appendChild(p);
 
-  // const msgArea = document.getElementById(`msg${msg.userName}`);
-  // const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
-  // msgArea.textContent = msg.roomMsg;
-  // userinfoArea.style.backgroundColor = '#ccffff';
-  // setTimeout(() => {
-  //   userinfoArea.style.backgroundColor = '';
-  // }, 2000);
+  const panel = document.getElementsByClassName('panel-body');
+  panel[0].scrollTo(0, 999999999);
 });
 
 const Toast = Swal.mixin({

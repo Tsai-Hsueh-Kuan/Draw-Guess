@@ -196,7 +196,7 @@ function startCountdown (interval) {
           text: `正確答案:${getAnswer}`,
           width: '400px',
           padding: '30px',
-          background: '#DEFFFF'
+          background: '#ffffff'
         });
         gameDone = true;
       });
@@ -243,7 +243,7 @@ answerCheckButton.addEventListener('click', function (ev) {
           text: `您的紀錄是${countIndex}`,
           width: '400px',
           padding: '30px',
-          background: '#DEFFFF'
+          background: '#FFFFFF'
         });
         gameStatus = 2;
 
@@ -274,7 +274,7 @@ answerCheckButton.addEventListener('click', function (ev) {
           title: '猜錯了！',
           width: '400px',
           padding: '30px',
-          background: '#DEFFFF'
+          background: '#ffffff'
         });
       }
     });
@@ -285,7 +285,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       title: 'please wait for next game',
       width: '400px',
       padding: '30px',
-      background: '#DEFFFF'
+      background: '#ffffff'
     });
   } else if (gameStatus === 2) {
     // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
@@ -294,7 +294,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       title: '已經答對囉',
       width: '400px',
       padding: '30px',
-      background: '#DEFFFF'
+      background: '#ffffff'
     });
   } else if (!answerLimit) {
     // message.textContent = '作答時間間隔太短';
@@ -303,7 +303,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       title: '作答時間間隔太短',
       width: '400px',
       padding: '30px',
-      background: '#DEFFFF'
+      background: '#ffffff'
     });
   }
   ev.preventDefault();
@@ -348,7 +348,7 @@ $('#answerCheck').on('keypress', function (e) {
             text: `您的紀錄是${countIndex}`,
             width: '400px',
             padding: '30px',
-            background: '#DEFFFF'
+            background: '#ffffff'
           });
           gameStatus = 2;
 
@@ -379,7 +379,7 @@ $('#answerCheck').on('keypress', function (e) {
             title: '猜錯了！',
             width: '400px',
             padding: '30px',
-            background: '#DEFFFF'
+            background: '#ffffff'
           });
         }
       });
@@ -390,7 +390,7 @@ $('#answerCheck').on('keypress', function (e) {
         title: 'please wait for next game',
         width: '400px',
         padding: '30px',
-        background: '#DEFFFF'
+        background: '#ffffff'
       });
     } else if (gameStatus === 2) {
       // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
@@ -399,7 +399,7 @@ $('#answerCheck').on('keypress', function (e) {
         title: '已經答對囉',
         width: '400px',
         padding: '30px',
-        background: '#DEFFFF'
+        background: '#ffffff'
       });
     } else if (!answerLimit) {
       // message.textContent = '作答時間間隔太短';
@@ -408,7 +408,7 @@ $('#answerCheck').on('keypress', function (e) {
         title: '作答時間間隔太短',
         width: '400px',
         padding: '30px',
-        background: '#DEFFFF'
+        background: '#ffffff'
       });
     }
   }
@@ -435,20 +435,12 @@ const Toast2 = Swal.mixin({
   toast: true,
   showConfirmButton: false,
   timer: 5000
-
-  // timerProgressBar: true,
-  // didOpen: (toast) => {
-  //   toast.addEventListener('mouseenter', Swal.stopTimer);
-  //   toast.addEventListener('mouseleave', Swal.resumeTimer);
-  // }
 });
 
 const Toast = Swal.mixin({
   toast: true,
-  // position: 'top-end',
   showConfirmButton: false,
   timer: 8000,
-
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);

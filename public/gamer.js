@@ -741,6 +741,10 @@ socket.on(`roomMsgShow${room}`, (msg) => {
   p.textContent = msg.roomMsg;
   divChatBody.appendChild(p);
 
+  const panel = document.getElementsByClassName('panel-body');
+  const chat = document.getElementById('chat');
+  panel[0].scrollTo(0, 99999999999999);
+
   // const msgArea = document.getElementById(`msg${msg.userName}`);
   // const userinfoArea = document.getElementById(`userinfo${msg.userName}`);
   // msgArea.textContent = msg.roomMsg;
