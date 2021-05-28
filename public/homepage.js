@@ -417,8 +417,12 @@ socket.on(`getRank${homeTime}`, async (msg) => {
 
     rank.appendChild(userinfo);
 
+    // const scopeTd = document.createElement('div');
+    // scopeTd.className = 'scopeTd';
+    // // scopeTd.scope = 'row';
+    // userinfo.appendChild(scopeTd);
+
     const scope = document.createElement('td');
-    scope.scope = 'row';
     scope.textContent = (parseInt(i) + 1);
     userinfo.appendChild(scope);
 

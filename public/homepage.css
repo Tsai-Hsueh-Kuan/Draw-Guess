@@ -193,16 +193,7 @@ header.index .member-container .signup-form-btn:hover {
 .mainpart{
  margin-top: 10px;
 }
-.mainPart,
-.playerPart,
-.rankPart{
- /* border: 1px solid rgb(201, 205, 209); */
 
-}
-
-#room{
-
-}
 .mainPart{
   box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
 }
@@ -298,6 +289,9 @@ height: 950px;
  position: relative;
 }
 
+.userinfo{
+  vertical-align: middle;
+}
 
 .hostinfo{
  display: flex;
@@ -792,7 +786,12 @@ z-index: 1059;
   margin-left: 5px;
 }
 
-
+.scopeTd{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  vertical-align: middle;
+}
 
 .userinfoPhoto{
 width: 80px;
