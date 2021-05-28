@@ -70,6 +70,17 @@ header.index .title-container .title {
  margin-top: 20px;
 }
 
+#onlineUser{
+  display: block;
+  text-align: center;
+  font-size: 1.4rem;  /*   need check */
+  color: #ffffff;  /*   need check */
+  font-family: 'Kalam', Verdana;  /*   need check */
+  font-weight: 400;  /*   need check */
+  margin-left: 50px;
+  margin-top: 20px;
+}
+
 
 header.index .member-container {
  display: flex;
@@ -591,6 +602,12 @@ margin-left: 3%;
   border-color:#939699; */
 }
 
+.msgTd{
+  display: flex;
+  flex-direction: row;
+  height: 86px;
+}
+
 .gameMsg{
  font-size: 28px;
  border: 1px solid #999;
@@ -621,7 +638,7 @@ display: flex;
 position: absolute;
 bottom: 0px;
 margin: 0px;
-z-index: 9999;
+z-index: 1059;
 }
 
 .tableDivSingle{
@@ -650,7 +667,7 @@ position: absolute;
 align-items: center;
 justify-content: center;
 margin: 0%;
-z-index: 9999;
+z-index: 1059;
 }
 
 .tbodyPlayerList{
@@ -666,7 +683,7 @@ z-index: 9999;
  }
 
 .tbodyHost{
-  z-index: 9999;
+  z-index: 1059;
 }
 
  
@@ -704,10 +721,49 @@ z-index: 9999;
    justify-content: center;
    align-items: center;
  } */
+ .msg{
+  padding: 0%;
+}
 
- .correct{
-   background-color: #C1FBA4
+/* .correct {
+  position: relative;
+}
+.correct:before {
+  content : "";
+  display: block;
+  position: absolute;
+  background-image: url("./images/correctGreen.png") !important;
+  background-size: 50px 50px;
+  background-repeat: no-repeat;
+  background-position: 100% 50% ;
+  opacity:0.6;
+} */
+
+.noRoom{
+  display: block;
+}
+.haveRoom{
+  display: none;
+}
+
+ .correct{  
+   background-color: hsla(0,0%,100%,0.70);
+   background-blend-mode: overlay;
+   background-image: url("./images/correctGreen.png") !important;
+   background-size: 50px 50px;
+   background-repeat: no-repeat;
+   background-position: 100% 50% ;
+   /* opacity:0.6; */
  }
+ .inCorrect{
+  background-color: hsla(0,0%,100%,0.70);
+  background-blend-mode: overlay;
+  background-image: url("./images/inCorrect.png") !important;
+  background-size: 50px 50px;
+  background-repeat: no-repeat;
+  background-position: 100% 50% ;
+  /* opacity:0.6; */
+}
 
 
  #thRank{
@@ -738,7 +794,6 @@ z-index: 9999;
 
 
 
-.hostPhoto,
 .userinfoPhoto{
 width: 80px;
 height: 80px;
@@ -748,9 +803,11 @@ object-fit: cover;
 /* box-shadow:3px 3px 12px gray;
 padding:3px */
 }
+
+.hostPhoto,
 .gamerPhoto{
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius:50%;
   object-fit: cover;
 }
@@ -886,7 +943,7 @@ background-color: khaki;
   align-items: center;
   height: 80px;
  }
-
+.startOptionButton,
 .like,
 #report,
 #answerCheckButton{
@@ -906,11 +963,17 @@ background-color: khaki;
   z-index: 0;
   color: #ffffff;
 }
+
+#quickStart{
+  width: 200px;
+}
+.startOptionButton:hover,
 .like:hover,
 #report:hover,
 #answerCheckButton:hover{
   background-color: #4F4FFF
 }
+.startOptionButton:active,
 .like:active,
 #report:active,
 #answerCheckButton:active {
@@ -938,47 +1001,46 @@ background-color: khaki;
   border-radius: 5%;
   width: 150px;
 }
+.colNameHost,
+.gamerNameHost,
+.colNameHost,
+.nameHost,
 .colName,
 .gamerName{
 padding: 0%;
-width: 150px;
+width: 142px !important;
 white-space: nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
+
 }
-.colNameHost{
-  padding: 0%;
-width: 150px;
-white-space: nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-}
+
 
 .colScore,
 .gamerScore{
   padding: 0%;
+  width: 75px;
 
 }
 .gamerPhotoTd{
   width: 80px;
   margin: 0%;
 }
+.colPhotoHost,
 .colPhoto{
   width: 96px;
   margin: 0%;
 }
 
 .msgTd,
-.colGuess{
+.colGuess,
+.colHeartHost{
   padding: 0%;
   width: 170px;
   overflow-wrap: break-word; 
   word-wrap:break-word;
 }
-.msg{
-  padding: 0%;
-  width: 170px;
-}
+
 
 
 .tooli{
@@ -1107,6 +1169,7 @@ th{
 }
 
 
+
 .heart {
   width: 100px;
   height: 100px;
@@ -1123,20 +1186,30 @@ th{
   transition-duration: 1s;
   background-position: -2800px 0;
 }
-body {
-  /* background: -webkit-linear-gradient(315deg, #121721 0%, #000000 100%) fixed;
-  background: linear-gradient(135deg, #121721 0%, #000000 100%) fixed;
-  color: #FFF; */
-  /* font: 300 16px/1.5 "Open Sans", sans-serif; */
-}
+
 .stage {
-  /* position: fixed;
-  top: 20%;
-  left: 50%; */
-  /* -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%); */
   margin-left: auto;
 }
+
+.swal2-confirm{
+  background-color: #3f53d9 !important;
+}
+
+
+#startOption{
+display: flex;
+flex-direction: column;
+}
+
+.optionInputButton{
+  display: flex;
+flex-direction: row;
+}
+
+.fa-heart{
+  color: red !important;
+}
+
 
 
 

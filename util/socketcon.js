@@ -5,7 +5,7 @@ const {
   promisifydel
 } = require('./cache.js');
 
-const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport } = require('../server/models/socketcon_model');
+const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../server/models/socketcon_model');
 
 const timeCheck = [];
 const question = [];
@@ -23,6 +23,8 @@ const correctUserList = [];
 const roomType = [];
 let roomList = [];
 let hostDisconnect;
+const userAll = new Set();
+
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
     const inToken = socket.handshake.auth.token;
@@ -35,6 +37,7 @@ const socketCon = (io) => {
       if (verifyHost.err) {
         return;
       } else {
+        userAll.add(verifyHost.id);
         if (`${intype}` === 'host') {
           if (!roomList[0]) {
             roomList[0] = inRoom;
@@ -106,8 +109,10 @@ const socketCon = (io) => {
       const outRoom = socket.handshake.auth.room;
       const outtype = socket.handshake.auth.type;
       const outRoomType = socket.handshake.auth.roomType;
-      const verifyHost = await verifyTokenSocket(outToken);
+
       if (outToken) {
+        const verifyHost = await verifyTokenSocket(outToken);
+        userAll.delete(verifyHost.id);
         if (`${outtype}` === 'host') {
           hostDisconnect = true;
           roomList = roomList.filter(function (item) {
@@ -250,6 +255,12 @@ const socketCon = (io) => {
         }
       });
 
+      socket.on('giveHeart', async (msg) => {
+        const heartCount = await updateHeart(hostId[msg.room]);
+        socket.emit(`heartShow${msg.room}`, { data: heartCount });
+        socket.broadcast.emit(`heartShow${msg.room}`, { data: heartCount });
+      });
+
       socket.on('roomMsg', async (msg) => {
         socket.emit(`roomMsgShow${msg.room}`, msg);
         socket.broadcast.emit(`roomMsgShow${msg.room}`, msg);
@@ -307,6 +318,12 @@ const socketCon = (io) => {
           socket.broadcast.emit(`getRank${msg.homeTime}`, { data: rankData });
           socket.emit(`getRank${msg.homeTime}`, { data: rankData });
         }
+      });
+
+      socket.on('onlineUser', async (msg) => {
+        const userAllArray = Array.from(userAll);
+        socket.broadcast.emit('onlineUserShow', { userAll: userAllArray });
+        socket.emit('onlineUserShow', { userAll: userAllArray });
       });
 
       socket.on('roomData', async (msg) => {

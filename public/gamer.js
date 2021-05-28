@@ -21,6 +21,7 @@ let userScore;
 let answerLimit = true;
 let answerGet;
 let limitTime;
+let roomId = [];
 let noChangeTime;
 if (type === 'english') {
   limitTime = 60;
@@ -126,8 +127,8 @@ fetch('/api/1.0/user/profile', {
         } else {
           correctUserList[0] = msg.correctUserList[i];
         }
-        const userinfoArea = document.getElementById(`userinfo${msg.correctUserList[i]}`);
-        userinfoArea.className = 'userinfo correct';
+        const msgTdArea = document.getElementById(`msgTd${msg.correctUserList[i]}`);
+        msgTdArea.className = 'msgTd correct';
       }
 
       socket.emit('checkPlayerInGame', { userId: userId, room: room });
@@ -177,6 +178,8 @@ socket.on(`answerGet${room}`, (msg) => {
   gameDone = true;
   answerData = msg.answer;
   title.textContent = ('等待開始下局遊戲');
+  const msgTdHost = document.getElementById('msgTdHost');
+  msgTdHost.innerHTML = '';
   // message.textContent = `時間到 正確答案:${answerData}`;
   Toast.fire({
     // icon: 'info',
@@ -190,10 +193,11 @@ socket.on(`answerGet${room}`, (msg) => {
   for (const i in msgarea) {
     msgarea[i].textContent = '';
   }
+  heartStatus = 0;
+  const heart = document.getElementById('heart');
+  heart.className = 'heart';
   const answerShow = document.getElementById('answerShow');
   answerShow.textContent = '';
-  // const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  // userinfoArea.removeClass('correct');
 });
 const title = document.getElementById('title');
 socket.on(`answer${room}`, (msg) => {
@@ -202,7 +206,6 @@ socket.on(`answer${room}`, (msg) => {
   canvasNum = 0;
   gameStatus = 1;
   reportStatus = 1;
-  likeStatus = 1;
   countIndex = 1; // 倒數計時任務執行次數
   timeout = 1000; // 觸發倒數計時任務的時間間隙
   startTime = new Date().getTime();
@@ -212,7 +215,7 @@ socket.on(`answer${room}`, (msg) => {
   correctUserList = [];
   const correctEle = document.getElementsByClassName('correct');
   for (const i in correctEle) {
-    correctEle[i].className = 'userinfo';
+    correctEle[i].className = 'msgTd';
   }
 
   title.className = 'timePlaying';
@@ -459,11 +462,11 @@ report.addEventListener('click', async function (ev) {
 socket.on(`answerShow${room}`, (msg) => {
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `${msg.data}`;
-  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  userinfoArea.className = 'inCorrect';
+  const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
+  msgTdArea.className = 'inCorrect';
   setTimeout(() => {
-    userinfoArea.classList.remove('inCorrect');
-  }, (limitTime - countIndex) * 1000);
+    msgTdArea.classList.remove('inCorrect');
+  }, 2000);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
@@ -477,17 +480,17 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `答對摟！ 加${msg.score}分`;
-  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  userinfoArea.className = 'userinfo correct';
+
   setTimeout(() => {
-    userinfoArea.classList.remove('correct');
-  }, (limitTime - countIndex) * 1000);
+    msgArea.textContent = '';
+  }, 3000);
+  const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
+  msgTdArea.className = 'userinfo correct';
+  // setTimeout(() => {
+  //   msgTdArea.classList.remove('correct');
+  // }, (limitTime - countIndex) * 1000);
   const updateHost = document.getElementById('hostScore');
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
-  // const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  // msgArea.textContent = `答對摟！ 加${msg.score}分`;
-  const userinfoHostArea = document.getElementById('userinfoHost');
-  userinfoHostArea.className = 'userinfo correct';
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -497,6 +500,13 @@ socket.on(`reportOk${room}`, (msg) => {
     text: '已通知房主要求改進！',
     icon: 'warning'
   });
+});
+
+socket.on(`heartShow${room}`, () => {
+  const msgTd = document.getElementsByClassName('msgTd');
+  const gameMsg = document.createElement('p');
+  gameMsg.className = 'msg fas fa-heart';
+  msgTd[0].appendChild(gameMsg);
 });
 
 socket.on(`closeRoom${room}`, () => {
@@ -521,9 +531,6 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
-      for (const i in correctUserList) {
-        if (gamerName === correctUserList[i]) { userinfo.className = 'userinfo correct'; }
-      }
 
       userinfo.id = 'userinfo' + gamerName;
       playerList.appendChild(userinfo);
@@ -558,6 +565,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       userinfo.appendChild(score);
 
       const gameMsgTd = document.createElement('td');
+      gameMsgTd.id = 'msgTd' + gamerName;
       gameMsgTd.className = 'msgTd';
       userinfo.appendChild(gameMsgTd);
 
@@ -565,6 +573,13 @@ socket.on(`roomUserId${room}`, (msg) => {
       gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
       gameMsgTd.appendChild(gameMsg);
+
+      for (const i in correctUserList) {
+        if (gamerName === correctUserList[i]) {
+          gameMsgTd.className = 'msgTd correct';
+          gameMsg.textContent = '答對摟！';
+        }
+      }
     }
   }
   host.innerHTML = '';
@@ -592,6 +607,7 @@ socket.on(`roomUserId${room}`, (msg) => {
 
     const name = document.createElement('td');
     name.textContent = `${hostName}`;
+    name.className = 'gamerNameHost';
     hostinfo.appendChild(name);
 
     const score = document.createElement('td');
@@ -600,13 +616,16 @@ socket.on(`roomUserId${room}`, (msg) => {
     score.className = 'gamerScore';
     hostinfo.appendChild(score);
 
-    // const gameMsgTd = document.createElement('td');
-    // gameMsgTd.className = 'msgTd';
-    // hostinfo.appendChild(gameMsgTd);
+    const gameMsgTd = document.createElement('td');
+    gameMsgTd.className = 'msgTd';
+    gameMsgTd.id = 'msgTdHost';
+
+    hostinfo.appendChild(gameMsgTd);
 
     // const gameMsg = document.createElement('p');
-    // gameMsg.className = 'msg';
     // gameMsg.id = 'msg' + hostName;
+    // gameMsg.className = 'msg fas fa-heart';
+    // gameMsg.textContent = 'X0';
     // gameMsgTd.appendChild(gameMsg);
   }
   if (msg.roomUserId) {
@@ -761,6 +780,16 @@ const Toast = Swal.mixin({
   }
 });
 
+let heartStatus = 0;
+const heartButton = document.getElementById('heart');
+heartButton.addEventListener('click', function () {
+  if (heartStatus === 0 && gameDone === false) {
+    heartStatus = 1;
+    $(this).toggleClass('is-active');
+    socket.emit('giveHeart', { heart: true, room: room });
+  }
+});
+
 // socket.on(`repeat${room}`, (msg) => {
 //   setTimeout(() => {
 //     if (msg.id === userId) {
@@ -776,21 +805,21 @@ const Toast = Swal.mixin({
 //   }, 1000);
 // });
 
-// socket.on(`repeatUser${room}`, (msg) => {
-//   setTimeout(() => {
-//     if (msg.id === userId) {
-//       Swal.fire({
-//         timer: 3000,
-//         title: '您已在房間！',
-//         text: '請勿重複加入 ' +
-//         '良好遊戲風氣 需大家共同維護',
-//         icon: 'error'
-//       }).then(() => {
-//         return window.location.assign('/');
-//       });
-//     }
-//   }, 3000);
-// });
+socket.on(`repeatUser${room}`, (msg) => {
+  setTimeout(() => {
+    if (msg.id === userId) {
+      Swal.fire({
+        timer: 3000,
+        title: '您已在房間！',
+        text: '請勿重複加入 ' +
+        '良好遊戲風氣 需大家共同維護',
+        icon: 'error'
+      }).then(() => {
+        return window.location.assign('/');
+      });
+    }
+  }, 3000);
+});
 
 // const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
 // const randomNumber = Math.floor(Math.random() * 6);

@@ -2,6 +2,7 @@ let userId;
 let userName;
 let userPhoto;
 let userScore;
+let onlineUser;
 const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
@@ -62,7 +63,7 @@ if (token) {
               'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhoto" >',
               'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhoto" >',
               'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhoto" >',
-              upload: '<div id="uploadText" >上傳照片</div>'
+              upload: '<div id="uploadText" >上傳</div>'
             });
           }, 1000);
         });
@@ -233,44 +234,6 @@ userPhotoImg.addEventListener('click', function () {
   }).catch(Swal.fire.noop);
 });
 
-// const signUpForm = document.forms.namedItem('signUpForm');
-// const signUpButton = document.getElementById('signUpButton');
-// signUpButton.addEventListener('click', function (ev) {
-//   const signUpFormData = new FormData(signUpForm);
-//   fetch('/api/1.0/user/signup', {
-//     method: 'POST',
-//     body: signUpFormData
-//   })
-//     .then(function (response) {
-//       if (response.status === 200) {
-//         return response.json();
-//       } else if (response.status === 429) {
-//         alert('Too Many Requests');
-//       } else if (response.status === 400) {
-//         return response.json();
-//       } else if (response.status === 403) {
-//         return response.json();
-//       } else if (response.status === 500) {
-//         return response.json();
-//       }
-//     })
-//     .then(data => {
-//       if (data.error) {
-//         Swal.fire('OOPS！', `${data.error}`, 'error');
-//       } else if (data.data) {
-//         localStorage.setItem('token', `${data.data.access_token}`);
-//         Swal.fire({
-//           title: '註冊成功',
-//           text: `歡迎${data.data.user.name}玩家`,
-//           icon: 'success'
-//         }).then(() => {
-//           return window.location.assign('/');
-//         });
-//       }
-//     });
-//   ev.preventDefault();
-// }, false);
-
 signUp.addEventListener('click', async function () {
   Swal.fire({
     title: '尚未擁有帳號 這邊註冊',
@@ -433,13 +396,14 @@ signOutButton.addEventListener('click', function () {
 const socket = io((''), {
   auth: {
     room: 'homePage',
-    type: 'homePage'
+    type: 'homePage',
+    token: token
   }
 });
 const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
 socket.emit('homeRank', { homeTime: homeTime });
-
+socket.emit('onlineUser', 'get');
 const rank = document.getElementById('rank');
 socket.on(`getRank${homeTime}`, async (msg) => {
   rank.innerHTML = '';
@@ -485,6 +449,14 @@ socket.on(`getRank${homeTime}`, async (msg) => {
 const mainPart = document.getElementById('mainPart');
 
 socket.on('mainPageView', async (msg) => {
+  if (roomList[0]) {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'haveRoom';
+  } else {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'noRoom';
+  }
+
   const roomId = msg.roomId;
   const roomType = msg.roomType;
   canvasNum[roomId] = 0;
@@ -505,7 +477,12 @@ socket.on('mainPageView', async (msg) => {
 
   const roomIdArea = document.createElement('div');
   roomIdArea.className = 'roomId';
-  roomIdArea.textContent = `房號${roomId}`;
+  if (roomType === 'english') {
+    roomIdArea.textContent = `ROOM 00${roomId} (ENGLISH)`;
+  } else if (roomType === 'idiom') {
+    roomIdArea.textContent = `ROOM 00${roomId} (四字成語)`;
+  }
+
   imgs.appendChild(roomIdArea);
 
   const tbodyHost = document.createElement('div');
@@ -601,6 +578,22 @@ socket.on('mainPageView', async (msg) => {
   }
 });
 
+const roomTab = document.getElementById('room-tab');
+roomTab.addEventListener('click', function () {
+  console.log(onlineUser);
+  if (roomList[0]) {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'haveRoom';
+  } else {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'noRoom';
+  }
+});
+
+socket.on('onlineUserShow', async (msg) => {
+  onlineUser = msg.userAll;
+});
+
 socket.on('mainPageViewClose', async (msg) => {
   const roomId = msg.room;
   const room = document.getElementById(`room${roomId}`);
@@ -691,7 +684,7 @@ singlePlay.addEventListener('click', function () {
 
 createGame.addEventListener('click', function () {
   let room;
-  for (let j = 0; j < 10000; j++) {
+  for (let j = 1; j < 10000; j++) {
     const check = roomList.indexOf(`${j}`);
     if (check === -1) {
       room = j;

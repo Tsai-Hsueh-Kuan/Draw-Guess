@@ -30,7 +30,8 @@ const signUp = async (name, password, photo) => {
       password: passwordencryption(password),
       name: name,
       photo: photo || null,
-      score: 0
+      score: 0,
+      heart: 0
     };
     const queryStr = 'INSERT INTO user SET ?';
     const result = await conn.query(queryStr, user);

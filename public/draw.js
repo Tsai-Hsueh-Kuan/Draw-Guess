@@ -303,7 +303,7 @@ getQuestion.addEventListener('click', function () {
     correctUserList = [];
     const correctEle = document.getElementsByClassName('correct');
     for (const i in correctEle) {
-      correctEle[i].className = 'userinfo';
+      correctEle[i].className = 'msgTd';
     }
   } else {
     Swal.fire({
@@ -366,7 +366,8 @@ function startCountdown (interval) {
       for (const i in msg) {
         msg[i].textContent = '';
       }
-
+      const msgTdHost = document.getElementById('msgTdHost');
+      msgTdHost.innerHTML = '';
       gameDone = true;
       time.textContent = ('請按START開始遊戲');
       time.className = 'time';
@@ -441,11 +442,11 @@ socket.on(`redo url${room}`, async (msg) => {
 socket.on(`answerShow${room}`, (msg) => {
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `${msg.data}`;
-  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  userinfoArea.className = 'inCorrect';
+  const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
+  msgTdArea.className = 'inCorrect';
   setTimeout(() => {
-    userinfoArea.classList.remove('inCorrect');
-  }, (limitTime - countIndex) * 1000);
+    msgTdArea.classList.remove('inCorrect');
+  }, 2000);
 });
 
 socket.on(`userCorrect${room}`, (msg) => {
@@ -459,20 +460,18 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `答對摟！ 加${msg.score}分`;
-  const userinfoArea = document.getElementById(`userinfo${msg.userData[0].name}`);
-  userinfoArea.className = 'userinfo correct';
   setTimeout(() => {
-    userinfoArea.classList.remove('correct');
-  }, (limitTime - countIndex) * 1000);
+    msgArea.textContent = '答對摟！';
+  }, 3000);
+  const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
+  msgTdArea.className = 'msgTd correct';
+  // setTimeout(() => {
+  //   msgTdArea.classList.remove('correct');
+  // }, (limitTime - countIndex) * 1000);
   const updateHost = document.getElementById('hostScore');
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
   // const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   // msgArea.textContent = `答對摟！ 加${msg.score}分`;
-  const userinfoHostArea = document.getElementById('userinfoHost');
-  userinfoHostArea.className = 'userinfo correct';
-  setTimeout(() => {
-    userinfoHostArea.classList.remove('correct');
-  }, 2000);
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -487,6 +486,13 @@ socket.on(`reportOk${room}`, (msg) => {
   });
 });
 
+socket.on(`heartShow${room}`, () => {
+  const msgTd = document.getElementsByClassName('msgTd');
+  const gameMsg = document.createElement('p');
+  gameMsg.className = 'msg fas fa-heart';
+  msgTd[0].appendChild(gameMsg);
+});
+
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on(`roomUserId${room}`, (msg) => {
@@ -497,9 +503,6 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
-      for (const i in correctUserList) {
-        if (gamerName === correctUserList[i]) { userinfo.className = 'userinfo correct'; }
-      }
 
       userinfo.id = `userinfo${gamerName}`;
       playerList.appendChild(userinfo);
@@ -530,12 +533,20 @@ socket.on(`roomUserId${room}`, (msg) => {
 
       const gameMsgTd = document.createElement('td');
       gameMsgTd.className = 'msgTd';
+      gameMsgTd.id = 'msgTd' + gamerName;
       userinfo.appendChild(gameMsgTd);
 
       const gameMsg = document.createElement('p');
       gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
       gameMsgTd.appendChild(gameMsg);
+
+      for (const i in correctUserList) {
+        if (gamerName === correctUserList[i]) {
+          gameMsgTd.className = 'msgTd correct';
+          gameMsg.textContent = '答對摟！';
+        }
+      }
     }
   }
 
@@ -546,7 +557,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     const hostScore = msg.hostDetail[0].score;
 
     const hostinfo = document.createElement('tr');
-    hostinfo.className = 'userinfo';
+    // hostinfo.className = 'userinfo';
     hostinfo.id = 'userinfoHost';
     host.appendChild(hostinfo);
 
@@ -572,12 +583,13 @@ socket.on(`roomUserId${room}`, (msg) => {
     score.className = 'gamerScore';
     hostinfo.appendChild(score);
 
-    // const gameMsgTd = document.createElement('td');
-    // gameMsgTd.className = 'msgTd';
-    // hostinfo.appendChild(gameMsgTd);
+    const gameMsgTd = document.createElement('td');
+    gameMsgTd.className = 'msgTd';
+    gameMsgTd.id = 'msgTdHost';
+    hostinfo.appendChild(gameMsgTd);
 
     // const gameMsg = document.createElement('p');
-    // gameMsg.className = 'msg';
+    // gameMsg.className = 'msg fas fa-heart';
     // gameMsg.id = 'msg' + hostName;
     // gameMsgTd.appendChild(gameMsg);
   }

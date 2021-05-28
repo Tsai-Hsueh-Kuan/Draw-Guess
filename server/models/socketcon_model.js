@@ -161,6 +161,17 @@ const updateReport = async (gameId, reason, userId) => {
   }
 };
 
+const updateHeart = async (hostId) => {
+  try {
+    await pool.query('UPDATE user SET heart = heart + 1 where id = ? ', [hostId]);
+    const heartCount = await pool.query('SELECT heart from user where id = ? ', [hostId]);
+
+    return heartCount[0][0].heart;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   getquestion,
   updateInuse,
@@ -175,5 +186,6 @@ module.exports = {
   getUser,
   checkGameCanvas,
   canvasUpdate,
-  updateReport
+  updateReport,
+  updateHeart
 };

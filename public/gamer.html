@@ -72,12 +72,13 @@
         <div class="rankPart col-5" id="rankShow">
 
           <div class="tableDivGameHost">
-            <table class="table table-striped">
+            <table class="table">
               <thead>
                 <tr>
-                  <th scope="col" class="colPhotoHost"></th>
+                    <th scope="col" class="colPhoto"></th>
                     <th scope="col" class="colNameHost">房主</th>
-                    <th scope="col" class="colScoreHost">分數</th>
+                    <th scope="col" class="colScore">分數</th>
+                    <th scope="col" class="colGuess">喜歡</th>
                 </tr>
               </thead>
               <tbody id="host" class="host"></tbody>
@@ -161,11 +162,11 @@
       input.select(); 
       document.execCommand("copy");
   }
-  $(function() {
-    $(".heart").on("click", function() {
-        $(this).toggleClass("is-active");
-    });
-});
+//   $(function() {
+//     $(".heart").on("click", function() {
+//         $(this).toggleClass("is-active");
+//     });
+// });
 </script>
   
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
