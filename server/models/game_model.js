@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { pool } = require('../../util/mysqlcon.js');
-const { TOKEN_EXPIRE, TOKEN_SECRET, IP } = process.env; // 30 days by seconds
+const { IP } = process.env;
 
 const getSingleGame = async (id, type) => {
   try {

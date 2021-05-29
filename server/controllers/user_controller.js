@@ -1,9 +1,6 @@
 require('dotenv').config();
 const validator = require('validator');
 const User = require('../models/user_model');
-const util = require('../../util/util');
-const { TOKEN_SECRET } = process.env;
-const jwt = require('jsonwebtoken');
 
 const signUp = async (req, res) => {
   let { name, password } = req.body;
@@ -15,7 +12,6 @@ const signUp = async (req, res) => {
     res.status(400).send({ error: 'Name and password need to be entered completely' });
     return;
   }
-
   name = validator.escape(name);
   const result = await User.signUp(name, password, photo);
   if (result.error) {
@@ -41,21 +37,17 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   const { name, password } = req.body;
-
   const result = await User.signIn(name, password);
-
   if (result.error) {
     const statusCode = result.status ? result.status : 403;
     res.status(statusCode).send({ error: result.error });
     return;
   }
-
   const user = result.user;
   if (!user) {
     res.status(500).send({ error: 'Database Query Error' });
     return;
   }
-
   res.status(200).send({
     data: {
       access_token: user.access_token,
@@ -100,10 +92,15 @@ const uploadPhoto = async (req, res) => {
   }
 };
 
+const testRate = async (req, res) => {
+  res.status(200).send({ ok: 'ok' });
+};
+
 module.exports = {
   signIn,
   signUp,
   getUserProfile,
   replacePhoto,
-  uploadPhoto
+  uploadPhoto,
+  testRate
 };

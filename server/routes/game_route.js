@@ -1,6 +1,4 @@
 const router = require('express').Router();
-const { upload } = require('../../util/util');
-const cpUpload = upload.single('photo');
 const {
   wrapAsync,
   verifyToken
@@ -11,8 +9,7 @@ const {
   updateHistory,
   getAnswer,
   checkAnswer,
-  getcrawler,
-  del
+  getcrawler
 } = require('../controllers/game_controller');
 
 router.route('/game/single')

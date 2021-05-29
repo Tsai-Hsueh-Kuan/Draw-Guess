@@ -1,9 +1,6 @@
 require('dotenv').config();
-const validator = require('validator');
+
 const Game = require('../models/game_model');
-const util = require('../../util/util');
-const { TOKEN_SECRET } = process.env;
-const jwt = require('jsonwebtoken');
 const cheerio = require('cheerio');
 
 const getSingleGame = async (req, res) => {
@@ -27,7 +24,6 @@ const getAnswer = async (req, res) => {
 };
 
 const getcrawler = async (req, res) => {
-  console.log('1');
   const request = require('request');
   for (let i = 1; i < 1000; i++) {
     const url = `https://dict.idioms.moe.edu.tw/idiomView.jsp?ID=${i + 2000}&q=1`;
@@ -78,5 +74,4 @@ module.exports = {
   checkAnswer,
   getAnswer,
   getcrawler
-
 };

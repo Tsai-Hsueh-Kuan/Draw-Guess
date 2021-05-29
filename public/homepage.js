@@ -366,10 +366,6 @@ signIn.addEventListener('click', async function () {
   }).catch(Swal.fire.noop);
 });
 
-const photoButton = document.getElementById('userPhoto');
-photoButton.addEventListener('click', function () {
-
-});
 const signOutButton = document.getElementById('exampleModal2');
 const createGame = document.getElementById('createGame');
 const singlePlay = document.getElementById('singlePlay');
@@ -404,6 +400,7 @@ const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
 socket.emit('homeRank', { homeTime: homeTime });
 socket.emit('onlineUser', 'get');
+
 const rank = document.getElementById('rank');
 socket.on(`getRank${homeTime}`, async (msg) => {
   rank.innerHTML = '';
@@ -414,13 +411,7 @@ socket.on(`getRank${homeTime}`, async (msg) => {
     const rankScore = msg.data[i].score;
     const userinfo = document.createElement('tr');
     userinfo.className = 'userinfo';
-
     rank.appendChild(userinfo);
-
-    // const scopeTd = document.createElement('div');
-    // scopeTd.className = 'scopeTd';
-    // // scopeTd.scope = 'row';
-    // userinfo.appendChild(scopeTd);
 
     const scope = document.createElement('td');
     scope.textContent = (parseInt(i) + 1);
@@ -428,7 +419,6 @@ socket.on(`getRank${homeTime}`, async (msg) => {
 
     const name = document.createElement('td');
     name.className = 'userinfoName';
-
     name.textContent = `${rankName}`;
     userinfo.appendChild(name);
 
@@ -451,8 +441,8 @@ socket.on(`getRank${homeTime}`, async (msg) => {
 });
 
 const mainPart = document.getElementById('mainPart');
-
 socket.on('mainPageView', async (msg) => {
+  ;
   if (roomList[0]) {
     const noRoom = document.getElementById('noRoom');
     noRoom.className = 'haveRoom';
@@ -476,6 +466,7 @@ socket.on('mainPageView', async (msg) => {
   const imgs = document.createElement('a');
   imgs.id = `imgs${roomId}`;
   imgs.className = 'imgs col-10';
+  imgs.alt = `/gamer.html?room=${roomId}&type=${roomType}`;
   imgs.setAttribute('href', `/gamer.html?room=${roomId}&type=${roomType}`);
   room.appendChild(imgs);
 
@@ -509,6 +500,8 @@ socket.on('mainPageView', async (msg) => {
     hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
     photo.className = 'hostPhoto hostPhotoMainPage';
+    photo.id = `hostPhoto${hostName}`;
+    photo.alt = `/gamer.html?room=${roomId}&type=${roomType}`;
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
@@ -584,7 +577,6 @@ socket.on('mainPageView', async (msg) => {
 
 const roomTab = document.getElementById('room-tab');
 roomTab.addEventListener('click', function () {
-  console.log(onlineUser);
   if (roomList[0]) {
     const noRoom = document.getElementById('noRoom');
     noRoom.className = 'haveRoom';
@@ -594,12 +586,183 @@ roomTab.addEventListener('click', function () {
   }
 });
 
+const roomIdJoin = document.getElementById('roomIdJoin');
+roomIdJoin.addEventListener('click', function () {
+  const roomIdSearch = document.getElementById('roomIdSearch').value.toLowerCase();
+  const roomIdSearchArea = document.getElementById('roomIdSearch');
+  const roomImgs = document.getElementById(`imgs${roomIdSearch}`);
+  if (roomImgs) {
+    const roomUrl = roomImgs.alt;
+    roomIdSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '加入遊戲中',
+      icon: 'info',
+      showConfirmButton: false
+    });
+    return window.location.assign(`${roomUrl}`);
+  } else {
+    roomIdSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '房號不存在！',
+      icon: 'error',
+      showConfirmButton: false
+    });
+  }
+});
+
+$('#roomIdSearch').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const roomIdSearch = document.getElementById('roomIdSearch').value.toLowerCase();
+    const roomIdSearchArea = document.getElementById('roomIdSearch');
+    const roomImgs = document.getElementById(`imgs${roomIdSearch}`);
+    if (roomImgs) {
+      const roomUrl = roomImgs.alt;
+      roomIdSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '加入遊戲中',
+        icon: 'info',
+        showConfirmButton: false
+      });
+      return window.location.assign(`${roomUrl}`);
+    } else {
+      roomIdSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '房號不存在！',
+        icon: 'error',
+        showConfirmButton: false
+      });
+    }
+  }
+});
+
+const hostNameJoin = document.getElementById('hostNameJoin');
+hostNameJoin.addEventListener('click', function () {
+  const hostNameSearch = document.getElementById('hostNameSearch').value.toLowerCase();
+  const hostNameSearchArea = document.getElementById('hostNameSearch');
+  const hostPhoto = document.getElementById(`hostPhoto${hostNameSearch}`);
+  if (hostPhoto) {
+    const roomUrl = hostPhoto.alt;
+    hostNameSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '加入遊戲中',
+      icon: 'info',
+      showConfirmButton: false
+    });
+    return window.location.assign(`${roomUrl}`);
+  } else {
+    hostNameSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '不存在該房主！',
+      icon: 'error',
+      showConfirmButton: false
+    });
+  }
+});
+
+$('#hostNameSearch').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const hostNameSearch = document.getElementById('hostNameSearch').value.toLowerCase();
+    const hostNameSearchArea = document.getElementById('hostNameSearch');
+    const hostPhoto = document.getElementById(`hostPhoto${hostNameSearch}`);
+    if (hostPhoto) {
+      const roomUrl = hostPhoto.alt;
+      hostNameSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '加入遊戲中',
+        icon: 'info',
+        showConfirmButton: false
+      });
+      return window.location.assign(`${roomUrl}`);
+    } else {
+      hostNameSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '不存在該房主！',
+        icon: 'error',
+        showConfirmButton: false
+      });
+    }
+  }
+});
+
 socket.on('onlineUserShow', async (msg) => {
   onlineUser = msg.userAll;
 });
 
+const quickStart = document.getElementById('quickStart');
+quickStart.addEventListener('click', function () {
+  const checkOnlineUser = onlineUser.filter(function (item) {
+    return item !== userId;
+  });
+
+  if (roomList[0]) {
+    const roomImgs = document.getElementById(`imgs${roomList[0]}`);
+    if (roomImgs) {
+      const roomUrl = roomImgs.alt;
+      Swal.fire({
+        timer: 2000,
+        title: '加入遊戲中',
+        icon: 'info',
+        showConfirmButton: false
+      });
+      return window.location.assign(`${roomUrl}`);
+    }
+  } else if (checkOnlineUser[0]) {
+    let room;
+    for (let j = 1; j < 10000; j++) {
+      const check = roomList.indexOf(`${j}`);
+      if (check === -1) {
+        room = j;
+        break;
+      }
+    }
+    Swal.fire({
+      timer: 2000,
+      title: '創建房間中',
+      icon: 'info',
+      showConfirmButton: false
+    });
+    const num = Math.floor(Math.random() * 2);
+    if (num === 0) {
+      return window.location.assign(`/draw.html?room=${room}&type=english`);
+    } else {
+      return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+    }
+  } else {
+    Swal.fire({
+      timer: 2000,
+      title: '單人模式加入中',
+      icon: 'info',
+      showConfirmButton: false
+    });
+    const num = Math.floor(Math.random() * 2);
+    if (num === 0) {
+      return window.location.assign('/single.html?type=english');
+    } else {
+      return window.location.assign('/single.html?type=idiom');
+    }
+  }
+});
+
 socket.on('mainPageViewClose', async (msg) => {
   const roomId = msg.room;
+  roomList = roomList.filter(function (item) {
+    return item !== roomId;
+  });
+  if (roomList[0]) {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'haveRoom';
+  } else {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'noRoom';
+  }
   const room = document.getElementById(`room${roomId}`);
   if (room) {
     room.remove();
@@ -609,6 +772,7 @@ socket.on('mainPageViewClose', async (msg) => {
 const canvasNum = [];
 socket.on('mainPageCanvasClear', async (msg) => {
   const roomId = msg.room;
+
   canvasNum[roomId] = 0;
   const imgs = document.getElementById(`imgs${roomId}`);
   imgs.innerHTML = '';

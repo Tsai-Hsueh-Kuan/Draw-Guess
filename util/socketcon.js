@@ -7,11 +7,44 @@ const {
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../server/models/socketcon_model');
 
-const timeCheck = [];
-const question = [];
-const questionId = [];
-const canvas = [];
-const hostId = [];
+cache.set('timeCheck', JSON.stringify({ data: [] }), 'NX', function (err) {
+  if (err) {
+    console.log(err);
+    console.log('timeCheck err');
+  }
+});
+cache.set('question', JSON.stringify({ data: [] }), 'NX', function (err) {
+  if (err) {
+    console.log(err);
+    console.log('question err');
+  }
+});
+
+cache.set('questionId', JSON.stringify({ data: [] }), 'NX', function (err) {
+  if (err) {
+    console.log(err);
+    console.log('questionId err');
+  }
+});
+
+cache.set('canvas', JSON.stringify({ data: [] }), 'NX', function (err) {
+  if (err) {
+    console.log(err);
+    console.log('canvas err');
+  }
+});
+
+cache.set('hostId', JSON.stringify({ data: [] }), 'NX', function (err) {
+  if (err) {
+    console.log(err);
+    console.log('hostId err');
+  }
+});
+
+// const question = [];
+// const questionId = [];
+// const canvas = [];
+// const hostId = [];
 const gameId = [];
 const gameTime = [];
 const userId = [];
@@ -21,9 +54,18 @@ const roomUserData = [];
 const disconnectTime = [];
 const correctUserList = [];
 const roomType = [];
-let roomList = [];
-let hostDisconnect;
+const hostDisconnect = [];
 const userAll = new Set();
+let roomList = [];
+// cache.flushdb(function (err, ok) {
+//   if (err) {
+//     console.log(err);
+//     return err;
+//   }
+//   if (ok) {
+//     console.log(ok);
+//   }
+// });
 
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
@@ -32,12 +74,29 @@ const socketCon = (io) => {
     const intype = socket.handshake.auth.type;
     const inRoomType = socket.handshake.auth.roomType;
     const limitTime = socket.handshake.auth.limitTime;
+
+    const timeCheckGET = await promisifyget('timeCheck');
+    const timeCheck = JSON.parse(timeCheckGET).data;
+    const questionGET = await promisifyget('question');
+    const question = JSON.parse(questionGET).data;
+    const questionIdGET = await promisifyget('questionId');
+    const questionId = JSON.parse(questionIdGET).data;
+    const canvasGET = await promisifyget('canvas');
+    const canvas = JSON.parse(canvasGET).data;
+    const hostIdGET = await promisifyget('hostId');
+    const hostId = JSON.parse(hostIdGET).data;
+
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (verifyHost.err) {
         return;
       } else {
         userAll.add(verifyHost.id);
+        socket.on('onlineUser', async (msg) => {
+          const userAllArray = Array.from(userAll);
+          socket.broadcast.emit('onlineUserShow', { userAll: userAllArray });
+          socket.emit('onlineUserShow', { userAll: userAllArray });
+        });
         if (`${intype}` === 'host') {
           if (!roomList[0]) {
             roomList[0] = inRoom;
@@ -46,8 +105,9 @@ const socketCon = (io) => {
           }
 
           roomType[inRoom] = inRoomType;
-          hostDisconnect = false;
+          hostDisconnect[inRoom] = false;
           hostId[inRoom] = verifyHost.id;
+          await promisifyset('hostId', JSON.stringify({ data: hostId }));
           hostDetail[inRoom] = await getUser(verifyHost.id);
           socket.broadcast.emit('roomList', { roomList: roomList });
           socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
@@ -97,12 +157,6 @@ const socketCon = (io) => {
       await getHistory(gameId[inRoom], userId[inRoom], 'fail');
       userId[inRoom] = '';
     }
-    // socket.on('checkPlayerInGame', async (msg) => {
-    //   if (timeCheck[inRoom]) {
-    //     console.log('1111');
-
-    //   }
-    // });
 
     socket.on('disconnect', async function () {
       const outToken = socket.handshake.auth.token;
@@ -113,8 +167,12 @@ const socketCon = (io) => {
       if (outToken) {
         const verifyHost = await verifyTokenSocket(outToken);
         userAll.delete(verifyHost.id);
+        const userAllArray = Array.from(userAll);
+        socket.broadcast.emit('onlineUserShow', { userAll: userAllArray });
+        socket.emit('onlineUserShow', { userAll: userAllArray });
+
         if (`${outtype}` === 'host') {
-          hostDisconnect = true;
+          hostDisconnect[outRoom] = true;
           roomList = roomList.filter(function (item) {
             return item !== outRoom;
           });
@@ -122,22 +180,27 @@ const socketCon = (io) => {
           const timeout = 1000; // 觸發倒數計時任務的時間間隙
           const startTime = new Date().getTime();
           function startCountdown (interval) {
-            setTimeout(() => {
+            setTimeout(async () => {
               const endTime = new Date().getTime();
               const deviation = endTime - (startTime + disconnectTime[outRoom] * timeout);
-              if (disconnectTime[outRoom] < 5) {
+              if (disconnectTime[outRoom] < 2) {
                 disconnectTime[outRoom]++;
                 startCountdown(timeout - deviation);
               } else {
-                if (hostDisconnect === true) {
+                if (hostDisconnect[outRoom] === true) {
                   socket.broadcast.emit('mainPageViewClose', { room: outRoom });
                   socket.emit(`closeRoom${outRoom}`);
                   socket.broadcast.emit(`closeRoom${outRoom}`);
                   timeCheck[outRoom] = '';
+                  await promisifyset('timeCheck', JSON.stringify({ data: timeCheck }));
                   question[outRoom] = '';
+                  await promisifyset('question', JSON.stringify({ data: question }));
                   questionId[outRoom] = '';
+                  await promisifyset('questionId', JSON.stringify({ data: questionId }));
                   canvas[outRoom] = '';
+                  await promisifyset('canvas', JSON.stringify({ data: canvas }));
                   hostId[outRoom] = '';
+                  await promisifyset('hostId', JSON.stringify({ data: hostId }));
                   gameId[outRoom] = '';
                   gameTime[outRoom] = '';
                   userId[outRoom] = '';
@@ -177,7 +240,7 @@ const socketCon = (io) => {
     try {
       socket.on('getQuestion', async (msg) => {
         hostId[msg.room] = msg.hostId;
-
+        await promisifyset('hostId', JSON.stringify({ data: hostId }));
         let questionData = await getquestion(msg.type);
         if (!questionData[0]) {
           await updateInuse(msg.type);
@@ -185,7 +248,9 @@ const socketCon = (io) => {
         }
         await resetInuse(questionData[0].id);
         question[msg.room] = questionData[0].question;
+        await promisifyset('question', JSON.stringify({ data: question }));
         questionId[msg.room] = questionData[0].id;
+        await promisifyset('questionId', JSON.stringify({ data: questionId }));
         userId[msg.room] = '';
         gameId[msg.room] = '';
         correctUserList[msg.room] = '';
@@ -199,10 +264,13 @@ const socketCon = (io) => {
         gameTime[msg.room] = 1; // 倒數計時任務執行次數
         const timeout = 1000; // 觸發倒數計時任務的時間間隙
         const startTime = new Date().getTime();
+
         timeCheck[msg.room] = true;
+        await promisifyset('timeCheck', JSON.stringify({ data: timeCheck }));
+
         socket.broadcast.emit('mainPageCanvasClear', { room: msg.room });
         function startCountdown (interval) {
-          setTimeout(() => {
+          setTimeout(async () => {
             const endTime = new Date().getTime();
             const deviation = endTime - (startTime + gameTime[msg.room] * timeout);
             if (gameTime[msg.room] < limitTime) {
@@ -210,6 +278,8 @@ const socketCon = (io) => {
               startCountdown(timeout - deviation);
             } else {
               timeCheck[msg.room] = false;
+              await promisifyset('timeCheck', JSON.stringify({ data: timeCheck }));
+
               checkGameCanvas(gameId[msg.room]);
               socket.broadcast.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
               socket.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
@@ -221,6 +291,7 @@ const socketCon = (io) => {
 
       socket.on('answerCheck', async (msg) => {
         const userData = await getUser(msg.userId);
+
         if (timeCheck[msg.room]) {
           if (msg.answerData === question[msg.room]) {
             const checktime = limitTime - gameTime[msg.room];
@@ -320,16 +391,10 @@ const socketCon = (io) => {
         }
       });
 
-      socket.on('onlineUser', async (msg) => {
-        const userAllArray = Array.from(userAll);
-        socket.broadcast.emit('onlineUserShow', { userAll: userAllArray });
-        socket.emit('onlineUserShow', { userAll: userAllArray });
-      });
-
       socket.on('roomData', async (msg) => {
         socket.emit('roomList', { roomList: roomList });
         for (const i in roomList) {
-          socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[roomList[i]], hostDetail: hostDetail[roomList[i]], roomType: roomType[roomList[i]], roomUserId: roomUserId[roomList[i]], roomUserData: roomUserData[roomList[i]] });
+          socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[parseInt(roomList[i])], hostDetail: hostDetail[parseInt(roomList[i])], roomType: roomType[parseInt(roomList[i])], roomUserId: roomUserId[parseInt(roomList[i])], roomUserData: roomUserData[parseInt(roomList[i])] });
         }
       });
 
@@ -345,13 +410,12 @@ const socketCon = (io) => {
             } else {
               console.log('no canvas');
             }
-          } else {
-            // no
           }
         }
       }
     } catch (err) {
       console.log(err);
+      return err;
     }
   });
 };

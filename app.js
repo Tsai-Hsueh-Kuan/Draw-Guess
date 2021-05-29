@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { rateLimiterRoute } = require('./util/ratelimiter');
 const { PORT_TEST, PORT, NODE_ENV, API_VERSION } = process.env;
 const port = NODE_ENV === 'test' ? PORT_TEST : PORT;
 // Express Initialization
@@ -7,7 +8,6 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 app.set('trust proxy', true);
-// app.set('trust proxy', 'loopback');
 app.set('json spaces', 2);
 
 app.use(express.static('public'));
@@ -19,11 +19,12 @@ app.use(cors());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '/public/homepage.html'), (err) => {
-    if (err) res.send(404);
+    if (err) res.status(404).redirect('/404.html');
   });
 });
 // API routes
 app.use('/api/' + API_VERSION,
+  rateLimiterRoute,
   [
     require('./server/routes/user_route'),
     require('./server/routes/game_route')
@@ -38,7 +39,7 @@ socketCon(io);
 
 // Page not found
 app.use(function (req, res, next) {
-  res.status(404).send('page not found');
+  res.status(404).redirect('/404.html');
 });
 
 // Error handling

@@ -1,7 +1,7 @@
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
-const port = process.env.PORT;
+// const crypto = require('crypto');
+// const fs = require('fs');
+// const path = require('path');
+// const port = process.env.PORT;
 const User = require('../server/models/user_model');
 const { TOKEN_SECRET } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');

@@ -44,9 +44,9 @@
                       <a class="nav-link " id="room-tab" data-bs-toggle="tab" href="#room" role="tab" aria-controls="room" aria-selected="true">ROOM LIST</a>
                     </li>
                    
-                    <li class="nav-item" role="presentation">
+                    <!-- <li class="nav-item" role="presentation">
                       <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">START GAME</a>
-                    </li>
+                    </li> -->
                 </ul>
 
                 <div class="tab-content" id="myTabContent">
@@ -57,11 +57,31 @@
                   </div>
 
                   <div class="tab-pane fade " id="room" role="tabpanel" aria-labelledby="room-tab">
-                      <img id='noRoom' src="./images/cow.jpeg" alt="just a picture">
+                      
+                      
+                      <div id="startOption">
+
+                        <button class="startOptionButton" id="quickStart">QUICK START<i class="fas fa-arrow-right"></i></button>
+
+                        <div class="optionInputButton">
+                          <div>ROOM ID</div>
+                          <input class="searchInput" id="roomIdSearch" placeholder="room ID" maxlength="5">
+                          <button class="startOptionButton" id="roomIdJoin">JOIN</button> 
+                        </div>
+
+                        <div class="optionInputButton">
+                          <div>HOST NAME</div>
+                          <input class="searchInput" id="hostNameSearch" placeholder="host name" maxlength="10">
+                          <button class="startOptionButton" id="hostNameJoin"> JOIN</button> 
+                        </div>
+                        
+                      </div>
+                      <img id='noRoom' src="./images/cow.jpeg" alt="just a picture" width="300px">
                       <div id="mainPart"></div>
+
                   </div>
 
-                  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                  <!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 
                       <div id="startOption">
 
@@ -79,10 +99,8 @@
                           <button class="startOptionButton"> JOIN</button> 
                         </div>
 
-                        <img src="./images/chipmunk.jpeg" alt="just a picture">
-
                       </div>
-                  </div>
+                  </div> -->
 
                 </div>
           </div>
@@ -117,6 +135,7 @@
       <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
       <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
+      
       <script src="js/bootstrap.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script src="homepage.js"></script>
