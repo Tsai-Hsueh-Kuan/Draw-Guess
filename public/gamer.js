@@ -52,7 +52,8 @@ const socket = io((''), {
     room: room,
     type: 'player',
     limitTime: limitTime
-  }
+  },
+  transports: ['websocket']
 });
 
 let canvasNum = 0;
