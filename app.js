@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const { rateLimiterRoute } = require('./util/ratelimiter');
 const { PORT_TEST, PORT, NODE_ENV, API_VERSION } = process.env;
@@ -31,7 +32,6 @@ app.use('/api/' + API_VERSION,
   ]
 );
 
-// peerjs
 // const { ExpressPeerServer } = require('peer');
 // const { PeerServer } = require('peer');
 // const peerServer = PeerServer({ port: PORT_PEER_SERVER, path: '/call' });
