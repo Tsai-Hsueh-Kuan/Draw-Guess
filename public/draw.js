@@ -68,7 +68,8 @@ const socket = io((''), {
     type: 'host',
     roomType: type,
     limitTime: limitTime
-  }
+  },
+  transports: ['websocket']
 });
 
 const canvasDiv = document.querySelector('#addCanvas');
