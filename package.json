@@ -22,6 +22,7 @@
     "request": "^2.88.2",
     "safetimeout": "^0.1.2",
     "socket.io": "^4.0.2",
+    "socket.io-redis": "^6.1.1",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.0.11",
     "validator": "^13.6.0"

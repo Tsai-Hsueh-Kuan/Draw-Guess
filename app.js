@@ -37,6 +37,11 @@ const io = require('socket.io')(server);
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
 
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server);
+// const redis = require('socket.io-redis');
+// io.adapter(redis({ host: process.env.REDIS_ENDPOINT, port: 6379 }));
+
 // Page not found
 app.use(function (req, res, next) {
   res.status(404).redirect('/404.html');

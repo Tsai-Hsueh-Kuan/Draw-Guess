@@ -394,7 +394,8 @@ const socket = io((''), {
     room: 'homePage',
     type: 'homePage',
     token: token
-  }
+  },
+  transports: ['websocket']
 });
 const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
