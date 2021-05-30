@@ -389,7 +389,7 @@ signOutButton.addEventListener('click', function () {
     });
 });
 
-const socket = io(('localhost:3000'), {
+const socket = io((''), {
   auth: {
     room: 'homePage',
     type: 'homePage',
@@ -397,6 +397,7 @@ const socket = io(('localhost:3000'), {
   },
   transports: ['websocket']
 });
+
 const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
 socket.emit('homeRank', { homeTime: homeTime });

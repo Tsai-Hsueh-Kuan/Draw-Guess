@@ -33,7 +33,12 @@ app.use('/api/' + API_VERSION,
 
 // socket.io
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  transports: ['websocket']
+});
+// const io = require('socket.io-client')(server, {
+//   transports: ['websocket']
+// });
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
 
