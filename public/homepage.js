@@ -389,7 +389,7 @@ signOutButton.addEventListener('click', function () {
     });
 });
 
-const socket = io((''), {
+const socket = io(('localhost:3000'), {
   auth: {
     room: 'homePage',
     type: 'homePage',
