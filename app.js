@@ -31,21 +31,18 @@ app.use('/api/' + API_VERSION,
   ]
 );
 
+// peerjs
+// const { ExpressPeerServer } = require('peer');
+// const { PeerServer } = require('peer');
+// const peerServer = PeerServer({ port: PORT_PEER_SERVER, path: '/call' });
+
 // socket.io
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
   transports: ['websocket']
 });
-// const io = require('socket.io-client')(server, {
-//   transports: ['websocket']
-// });
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
-
-// const server = require('http').createServer(app);
-// const io = require('socket.io')(server);
-// const redis = require('socket.io-redis');
-// io.adapter(redis({ host: process.env.REDIS_ENDPOINT, port: 6379 }));
 
 // Page not found
 app.use(function (req, res, next) {
