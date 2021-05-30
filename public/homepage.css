@@ -794,8 +794,8 @@ z-index: 1059;
 }
 
 .userinfoPhoto{
-width: 80px;
-height: 80px;
+width: 70px;
+height: 70px;
 border-radius:50%;
 object-fit: cover;
 /* padding: 3px; */

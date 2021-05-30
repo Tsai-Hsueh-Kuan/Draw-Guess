@@ -1,6 +1,5 @@
 require('dotenv').config();
 const { pool } = require('../../util/mysqlcon');
-
 const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');
 const { createHash } = require('crypto');

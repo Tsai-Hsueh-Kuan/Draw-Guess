@@ -111,7 +111,6 @@ fetch('/api/1.0/user/profile', {
       limitTime = limitTime - parseInt(timeCheck);
       gameStatus = 1;
       reportStatus = 1;
-      likeStatus = 1;
       countIndex = 1; // 倒數計時任務執行次數
       timeout = 1000; // 觸發倒數計時任務的時間間隙
       startTime = new Date().getTime();

@@ -23,13 +23,6 @@ const upload = multer({
   })
 });
 
-// const getImagePath = (protocol, hostname, productId) => {
-//   if (protocol == 'http') {
-//     return 'https://hsuehkuan.tw/assets/' + productId + '/';
-//   } else {
-//     return 'https://hsuehkuan.tw/assets/' + productId + '/';
-//   }
-// };
 const wrapAsync = (fn) => {
   return function (req, res, next) {
     fn(req, res, next).catch(next);

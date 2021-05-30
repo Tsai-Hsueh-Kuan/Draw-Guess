@@ -1,7 +1,7 @@
 const { pool } = require('../../util/mysqlcon.js');
-const User = require('./user_model');
 const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');
+
 const getquestion = async (type) => {
   try {
     if (!type) {
