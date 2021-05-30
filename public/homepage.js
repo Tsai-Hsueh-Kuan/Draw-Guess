@@ -398,6 +398,14 @@ const socket = io({
   transports: ['websocket']
 });
 
+// const socket = io((''), {    <<<<<<
+//   auth: {
+//     room: 'homePage',
+//     type: 'homePage',
+//     token: token
+//   }
+// });
+
 const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
 socket.emit('homeRank', { homeTime: homeTime });

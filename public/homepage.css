@@ -811,8 +811,8 @@ padding:3px */
   object-fit: cover;
 }
 .singleGamerPhoto{
-  width: 80px;
-  height: 80px;
+  width: 70px;
+  height: 70px;
   border-radius:50%;
   object-fit: cover;
 }
@@ -844,16 +844,12 @@ padding:3px */
  z-index: 10;
 }
 
-/* #footerTop{
-  height: 20px;
-} */
 
 
 footer{
  z-index: 10;
  position: absolute;
  bottom: 0px;
- /* bottom: 0px; */
 }
 
 

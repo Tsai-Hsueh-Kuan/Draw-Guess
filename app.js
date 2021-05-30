@@ -38,11 +38,15 @@ app.use('/api/' + API_VERSION,
 
 // socket.io
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-  transports: ['websocket']
-});
+const io = require('socket.io')(server);
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
+
+// socket.io    <<<<<<<
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server);
+// const { socketCon } = require('./util/socketcon');
+// socketCon(io);
 
 // Page not found
 app.use(function (req, res, next) {
