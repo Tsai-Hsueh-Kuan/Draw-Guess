@@ -30,6 +30,16 @@ if (type === 'english') {
   limitTime = 60;
   noChangeTime = 60;
 }
+const token = localStorage.getItem('token');
+const socket = io((''), {
+  auth: {
+    token: token,
+    room: room,
+    type: 'player',
+    limitTime: limitTime
+  }
+
+});
 
 const Toast2 = Swal.mixin({
   toast: true,
@@ -45,16 +55,6 @@ const Toast2 = Swal.mixin({
 });
 
 const imgs = document.querySelector('#imgs');
-const token = localStorage.getItem('token');
-const socket = io((''), {
-  auth: {
-    token: token,
-    room: room,
-    type: 'player',
-    limitTime: limitTime
-  },
-  transports: ['websocket']
-});
 
 let canvasNum = 0;
 let gameStatus = 0;
@@ -258,7 +258,6 @@ answerCheckButton.addEventListener('click', function (ev) {
 
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
-      console.log(msg);
       if (msg.check) {
         // message.textContent = `正確答案！ ${answerCheck}`;
         Toast2.fire({
@@ -480,10 +479,10 @@ socket.on(`userCorrect${room}`, (msg) => {
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  msgArea.textContent = `答對摟！ 加${msg.score}分`;
+  msgArea.textContent = `答對！ 加${msg.score}分`;
 
   setTimeout(() => {
-    msgArea.textContent = '';
+    msgArea.textContent = '答對！';
   }, 3000);
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
   msgTdArea.className = 'userinfo correct';
@@ -794,20 +793,30 @@ heartButton.addEventListener('click', function () {
   }
 });
 
-// socket.on(`repeat${room}`, (msg) => {
-//   setTimeout(() => {
-//     if (msg.id === userId) {
-//       Swal.fire({
-//         timer: 3000,
-//         title: '您已是房主！',
-//         text: '將回到首頁 請勿重複加入',
-//         icon: 'error'
-//       }).then(() => {
-//         return window.location.assign('/');
-//       });
-//     }
-//   }, 1000);
-// });
+socket.emit('onlineUser', 'get');
+socket.on('onlineUserShow', async (msg) => {
+  const onlineUser = msg.userAll.filter(function (element, index, arr) {
+    return arr.indexOf(element) === index;
+  });
+  const onlineCount = onlineUser.length;
+  const onlineUserCount = document.getElementById('onlineUserCount');
+  onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
+});
+
+socket.on(`repeat${room}`, (msg) => {
+  setTimeout(() => {
+    if (msg.id === userId) {
+      Swal.fire({
+        timer: 3000,
+        title: '您已是房主！',
+        text: '將回到首頁 請勿重複加入',
+        icon: 'error'
+      }).then(() => {
+        return window.location.assign('/');
+      });
+    }
+  }, 1000);
+});
 
 socket.on(`repeatUser${room}`, (msg) => {
   setTimeout(() => {

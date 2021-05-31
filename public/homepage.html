@@ -17,44 +17,47 @@
       <div class="title-container">
         <a href="/" class="title">Draw & Guess</a href="/">
       </div>
-      <!-- <div id="onlineUser">
-        線上人數
-      </div> -->
+      <div id="onlineUserCount" class="signUpButton button">
+        <!-- 在線人數：0人 -->
+      </div>
       <div class="member-container">
-        <button type="button" class="signUpButton signup-form-btn button" id="signUp">Sign up <i class="fas fa-arrow-right"></i></button>
-        <button type="button" class="signInButton signin-form-btn button" id="signIn">Sign in <i class="fas fa-arrow-right"></i></button>
-        <button type="button" class="createButton signup-form-btn button" id="createGame">CREATE GAME <i class="fas fa-arrow-right"></i></button>
-        <button type="button" class="singleButton signup-form-btn button" id="singlePlay">SINGLE PLAY <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="createButton signup-form-btn button" id="playGame">PLAY GAME <i class="fas fa-arrow-right"></i></button>
+
+        <button type="button" class="signUpButton signup-form-btn button" id="signUp">SIGN UP <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="signInButton signin-form-btn button" id="signIn">SIGN IN <i class="fas fa-arrow-right"></i></button>
+ 
+        <!-- <button type="button" class="createButton signup-form-btn button" id="createGame">CREATE GAME <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="singleButton signup-form-btn button" id="singlePlay">SINGLE PLAY <i class="fas fa-arrow-right"></i></button> -->
         <button type="button" class="signOutButton signout-btn button" id="exampleModal2">SIGN OUT</button>
         <div class="info signup-btn item" id="info"><img class="userPhoto userPhotoHome" id="userPhoto" src="./images/member2.png"></div>
       </div>
     </header>
 
     <div class="container-fluid main homeMainpart">
-      <div class="row rowMain homerow">
-        <div class=" col-8 container-fluid homePart">
+      <div class="row homerow">
+        <div class=" col-7 container-fluid homePart tabPart">
           <div class="mainTableDiv">
 
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
 
                     <li class="nav-item" role="presentation">
-                      <a class="nav-link active" id="roles-tab" data-bs-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="false">GAME ROLES</a>
+                      <a class="nav-link active" id="rules-tab" data-bs-toggle="tab" href="#rules" role="tab" aria-controls="rules" aria-selected="false">GAME ROLES</a>
                     </li>
 
                     <li class="nav-item" role="presentation">
                       <a class="nav-link " id="room-tab" data-bs-toggle="tab" href="#room" role="tab" aria-controls="room" aria-selected="true">ROOM LIST</a>
                     </li>
                    
-                    <!-- <li class="nav-item" role="presentation">
-                      <a class="nav-link" id="contact-tab" data-bs-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">START GAME</a>
-                    </li> -->
                 </ul>
 
                 <div class="tab-content" id="myTabContent">
 
-                  <div class="tab-pane fade show active" id="roles" role="tabpanel" aria-labelledby="roles-tab">
-                    wait some roles & img
-                    <img src="./images/rabbit.jpeg" alt="just a picture">
+                  <div class="tab-pane fade show active" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+                    <br>
+                    <br>
+                    <img src="./images/drawPage.png" alt="draw page" id="drawPageImg" class="rule">
+                    <img src="./images/gamerPage.png" alt="gamer page" id="gamerPageImg" class="rule">
+                    <img src="./images/singlePage.png" alt="single page" id="singlePageImg" class="rule">
                   </div>
 
                   <div class="tab-pane fade " id="room" role="tabpanel" aria-labelledby="room-tab">
@@ -62,46 +65,30 @@
                       
                       <div id="startOption">
 
-                        <button class="startOptionButton" id="quickStart">QUICK START<i class="fas fa-arrow-right"></i></button>
-
-                        <div class="optionInputButton">
-                          <div>ROOM ID</div>
-                          <input class="searchInput" id="roomIdSearch" placeholder="room ID" maxlength="5">
+                        <!-- <button class="startOptionButton" id="quickStart">QUICK START<i class="fas fa-arrow-right"></i></button> -->
+                        <div id="joinRoom">JOIN ROOM</div>
+                        <div class="optionInputButton" id="roomIdSearchDiv">
+                          <!-- <div>By ID</div> -->
+                          <input class="searchInput" id="roomIdSearch" placeholder="ROOM ID" maxlength="5" style="width: 180px;">
                           <button class="startOptionButton" id="roomIdJoin">JOIN</button> 
                         </div>
 
-                        <div class="optionInputButton">
-                          <div>HOST NAME</div>
-                          <input class="searchInput" id="hostNameSearch" placeholder="host name" maxlength="10">
+                        <div class="optionInputButton" id="hostNameSearchDiv">
+                          <!-- <div>By Name</div> -->
+                          <input class="searchInput" id="hostNameSearch" placeholder="HOST" maxlength="10" style="width: 180px;">
                           <button class="startOptionButton" id="hostNameJoin"> JOIN</button> 
                         </div>
                         
                       </div>
-                      <img id='noRoom' src="./images/cow.jpeg" alt="just a picture" width="300px">
-                      <div id="mainPart"></div>
+                      <!-- <img id='noRoom' src="./images/cow.jpeg" alt="just a picture" width="300px"> -->
+                      <div id="noRoom">
+                        <div class="noRoomDiv">噢！ 看起來現在沒有其他房間... 何不試試自己創建？<button type="button" class="createGame" id="createGame">CREATE GAME <i class="fas fa-marker"></i></button>
+                        </div>
+                      </div>
+                      
+                      <div id="mainPart" class="homePageMainPart"></div>
 
                   </div>
-
-                  <!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-
-                      <div id="startOption">
-
-                        <button class="startOptionButton" id="quickStart">QUICK START<i class="fas fa-arrow-right"></i></button>
-
-                        <div class="optionInputButton">
-                          <div>ROOM ID</div>
-                          <input class="searchInput" id="roomIdSearch" placeholder="room ID" maxlength="5">
-                          <button class="startOptionButton">JOIN</button> 
-                        </div>
-
-                        <div class="optionInputButton">
-                          <div>HOST NAME</div>
-                          <input class="searchInput" id="hostNameSearch" placeholder="host name" maxlength="10">
-                          <button class="startOptionButton"> JOIN</button> 
-                        </div>
-
-                      </div>
-                  </div> -->
 
                 </div>
           </div>

@@ -1,8 +1,7 @@
 const {
   cache,
   promisifyget,
-  promisifyset,
-  promisifydel
+  promisifyset
 } = require('./cache.js');
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../server/models/socketcon_model');
@@ -201,18 +200,16 @@ const socketCon = (io) => {
       } else {
         const userAllGET = await promisifyget('userAll');
         const userAll = JSON.parse(userAllGET).data;
-        if (userAll.indexOf(verifyHost.id) === -1) {
-          if (userAll[0]) {
-            userAll[0] = verifyHost.id;
-          } else {
-            userAll.push(verifyHost.id);
-          }
+
+        if (!userAll[0]) {
+          userAll[0] = verifyHost.id;
+        } else {
+          userAll.push(verifyHost.id);
         }
+
         await promisifyset('userAll', JSON.stringify({ data: userAll }));
 
         socket.on('onlineUser', async (msg) => {
-          const userAllGET = await promisifyget('userAll');
-          const userAll = JSON.parse(userAllGET).data;
           socket.broadcast.emit('onlineUserShow', { userAll: userAll });
           socket.emit('onlineUserShow', { userAll: userAll });
         });
@@ -239,6 +236,7 @@ const socketCon = (io) => {
           const roomUserId = JSON.parse(roomUserIdGET).data;
           const roomUserDataGET = await promisifyget('roomUserData');
           const roomUserData = JSON.parse(roomUserDataGET).data;
+
           socket.broadcast.emit('roomList', { roomList: roomList });
           socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
           socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
@@ -331,10 +329,13 @@ const socketCon = (io) => {
       if (outToken) {
         const verifyHost = await verifyTokenSocket(outToken);
         const userAllGET = await promisifyget('userAll');
-        let userAll = JSON.parse(userAllGET).data;
-        userAll = userAll.filter(function (item) {
-          return item !== verifyHost.id;
-        });
+        const userAll = JSON.parse(userAllGET).data;
+
+        for (const i in userAll) {
+          if (userAll[i] === verifyHost.id) {
+            userAll.splice(i, 1);
+          }
+        }
         await promisifyset('userAll', JSON.stringify({ data: userAll }));
         socket.broadcast.emit('onlineUserShow', { userAll: userAll });
         socket.emit('onlineUserShow', { userAll: userAll });
@@ -401,25 +402,23 @@ const socketCon = (io) => {
         } else if (`${outtype}` === 'player') {
           const roomUserIdGET = await promisifyget('roomUserId');
           const roomUserId = JSON.parse(roomUserIdGET).data;
-          const roomUserDataGET = await promisifyget('roomUserData');
-          const roomUserData = JSON.parse(roomUserDataGET).data;
+
           if (roomUserId[outRoom][0]) {
             roomUserId[outRoom] = roomUserId[outRoom].filter(function (item) {
               return item !== verifyHost.id;
             });
             await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
+
             roomUserData[outRoom] = [];
-            await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
             for (const i in roomUserId[outRoom]) {
               const userDetail = await getUser(roomUserId[outRoom][i]);
               if (i === 0) {
                 roomUserData[outRoom] = [userDetail];
-                await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
               } else {
                 roomUserData[outRoom].push(userDetail);
-                await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
               }
             }
+            await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
             const hostIdGET = await promisifyget('hostId');
             const hostId = JSON.parse(hostIdGET).data;
             const hostDetailGET = await promisifyget('hostDetail');

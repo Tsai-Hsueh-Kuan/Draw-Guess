@@ -67,18 +67,18 @@ header.index .title-container .title {
  font-family: 'Kalam', Verdana;  /*   need check */
  font-weight: 600;  /*   need check */
  margin-left: 50px;
- margin-top: 20px;
+ margin-top: 10px;
 }
 
-#onlineUser{
+#onlineUserCount{
   display: block;
   text-align: center;
   font-size: 1.4rem;  /*   need check */
   color: #ffffff;  /*   need check */
   font-family: 'Kalam', Verdana;  /*   need check */
   font-weight: 400;  /*   need check */
-  margin-left: 50px;
-  margin-top: 20px;
+  margin-left: auto;
+  margin-right: 30px;
 }
 
 
@@ -108,7 +108,7 @@ header.index .member-container .item:hover {
 
 
 .button{
- margin-top: 15px;
+ margin-top: 0px;
 }
 
 header.index .member-container .signup-form-btn {
@@ -125,12 +125,14 @@ header.index .member-container .signup-form-btn:hover {
  cursor: pointer;
 }
 
+
+.signin-form-btn{
+  color: #ffffff;
+}
 #exampleModal2{
   color: #ffffff;
 }
-#exampleModal2,
-#createGame,
-#singlePlay{
+#exampleModal2{
    display: none;
 }
 
@@ -186,20 +188,25 @@ header.index .member-container .signup-form-btn:hover {
 .main{
  margin-top:70px;
 }
+
+.rowGame{
+  background-color: rgb(247, 247, 247) !important;
+}
 .homeMainpart{
   margin-top: 80px;
+  height: 100%;
  }
 
 .mainpart{
  margin-top: 10px;
 }
-
+/* 
 .mainPart{
   box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
 }
 .rankPart{
   box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
-}
+} */
 
 
 #mainPart,
@@ -215,11 +222,18 @@ position: relative;
 justify-content: stretch;
 
 }
+#mainPart{
+  margin-right: 10px;
+  padding-left: 35px;
+}
+#rankShow{
+  padding-right: 35px;
+}
 
 #homeRankShow{
   padding-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 20px;
+  padding-right: 5px;
   display: flex;
   flex-direction: column;
   
@@ -230,6 +244,9 @@ justify-content: stretch;
 .rowMain{
  justify-content: space-between;
  height: 590px;
+ /* box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.4); */
+ box-shadow:5px 5px 25px 0px rgba(0,0,0,0.3);
+ border-radius: 12px;
 }
 .homeRow{
 justify-content: space-between;
@@ -243,11 +260,20 @@ height: 950px;
  height: 590px
 }
 
+.homePageMainPart{
+  padding-left: 23px !important;
+}
 .homePart{
   flex-grow: 1;
   height: 700px;
   background-color: white;
-  box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
+  /* box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.4); */
+  box-shadow:5px 5px 25px 0px rgba(0,0,0,0.3);
+  border-radius: 12px;
+}
+
+.tabPart{
+  margin-right: 50px;
 }
 
 .mainTableDiv{
@@ -265,7 +291,6 @@ height: 950px;
 }
 
 
-/* #mainPart, */
 
 
 
@@ -302,6 +327,9 @@ height: 950px;
 }
 
 
+td{
+  vertical-align: middle !important;
+ }
 .hostinfo:hover .hover{
  display: block;
 }
@@ -344,7 +372,7 @@ height: 950px;
 .userName{
   display: none;
   z-index: 49;
-  margin-top: 20px;
+  margin-top: 0px;
  }
 /* .photoTd{
  position: relative;
@@ -733,8 +761,26 @@ z-index: 1059;
   opacity:0.6;
 } */
 
+#rules{
+  padding-left: 25px;
+  padding-right: 25px;
+}
+.rule{
+  width: 700px;
+}
 .noRoom{
   display: block;
+
+  margin: 100px auto;
+}
+.noRoomDiv{
+  font-size: 18px;
+  margin: 100px auto;
+  width: 600px;
+  align-content: center;
+  justify-content: center;
+  vertical-align: middle;
+
 }
 .haveRoom{
   display: none;
@@ -764,22 +810,27 @@ z-index: 1059;
   padding-left: 0%;
  }
 
-.userPhotoHome,
-#userPhotoSignIn{
-  margin-top: 20px;
-}
+
 
 
 .hostPhotoMainPage,
 .userPhoto{
- width: 80px;
- height: 80px;
+ width: 65px;
+ height: 65px;
  border-radius:50%;
  object-fit: cover;
- margin-top: 20px;
+ margin-top: 5px;
  /* padding: 3px;
  border:2px gray solid;
  box-shadow:3px 3px 12px gray;padding:3px */
+}
+
+.userPhotoReplace{
+  width: 80px;
+  height: 80px;
+  border-radius:50%;
+  object-fit: cover;
+  margin-top: 5px;
 }
 .hostPhotoMainPage{
   margin-top: 5px;
@@ -899,7 +950,7 @@ background-color: white;
 #uploadText{
   width: 80px;
   height: 80px;
-  margin-top: 20px;
+  margin-top: 10px;
 background-color: khaki;
   border-radius: 50%;
  justify-content: center;
@@ -937,8 +988,15 @@ background-color: khaki;
   display: flex;
   align-items: center;
   height: 80px;
+  padding-right: 50px;
  }
-.startOptionButton,
+
+#joinRoom{
+  margin-left: 30px;
+  font-size: 28px;
+  font-family: 'Kalam', Verdana;   
+  font-weight: 600;  /*   need check */
+}
 .like,
 #report,
 #answerCheckButton{
@@ -958,6 +1016,59 @@ background-color: khaki;
   z-index: 0;
   color: #ffffff;
 }
+.startOptionButton{
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;   
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: 	#3f53d9;
+  border: none;
+  border-radius: 30px;
+
+  width: 80px;
+  height: 36px;
+  z-index: 0;
+  color: #ffffff;
+  margin-left: -30px;
+}
+
+.createGame{
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;   
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: 	#3f53d9;
+  border: none;
+  border-radius: 30px;;
+  width: 210px;
+  height: 36px;
+  z-index: 0;
+  color: #ffffff;
+  margin: 0% auto;
+}
+.searchInput{
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;   
+  text-decoration: none;
+  outline: none;
+
+
+  border: gray 0.5px solid;
+  border-radius: 30px;
+
+  width: 120px;
+  height: 36px;
+  z-index: 0;
+
+}
 
 #quickStart{
   width: 200px;
@@ -968,7 +1079,7 @@ background-color: khaki;
 #answerCheckButton:hover{
   background-color: #4F4FFF
 }
-.startOptionButton:active,
+
 .like:active,
 #report:active,
 #answerCheckButton:active {
@@ -983,7 +1094,6 @@ background-color: khaki;
 #answerCheckButton{
   margin-left: 10px;
  }
-#report{}
 
 
 
@@ -1003,7 +1113,7 @@ background-color: khaki;
 .colName,
 .gamerName{
 padding: 0%;
-width: 142px !important;
+width: 130px !important;
 white-space: nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
@@ -1014,16 +1124,16 @@ text-overflow:ellipsis;
 .colScore,
 .gamerScore{
   padding: 0%;
-  width: 75px;
+  width: 65px;
 
 }
 .gamerPhotoTd{
-  width: 80px;
+  width: 78px !important;
   margin: 0%;
 }
 .colPhotoHost,
 .colPhoto{
-  width: 96px;
+  width: 78px !important;
   margin: 0%;
 }
 
@@ -1031,7 +1141,7 @@ text-overflow:ellipsis;
 .colGuess,
 .colHeartHost{
   padding: 0%;
-  width: 170px;
+  /* width: 100px; */
   overflow-wrap: break-word; 
   word-wrap:break-word;
 }
@@ -1085,9 +1195,7 @@ text-overflow:ellipsis;
   width: auto;
   border-bottom:solid 1px teal;
 }
-.playerListName{
 
-}
 .playerListName,
 .playerListScore,
 .playerListPhoto,
@@ -1159,8 +1267,13 @@ th{
 }
 
 .panel-heading{
-  background-color: #3f53d9 !important;
-  border-color:  #3f53d9 !important;
+  color:  #3f53d9 !important;
+  background-color: #ffffff !important;
+  border-color: #3f53d9 !important
+}
+
+.panel-primary {
+  border-color:  #3f53d9 !important
 }
 
 
@@ -1193,12 +1306,22 @@ th{
 
 #startOption{
 display: flex;
-flex-direction: column;
+flex-direction: row;
+
+align-items: center;
+margin-top: 30px;
 }
 
 .optionInputButton{
   display: flex;
 flex-direction: row;
+}
+#roomIdSearchDiv{
+  margin-left: auto;
+}
+#hostNameSearchDiv{
+  margin-left: 10px;
+  margin-right: 50px;
 }
 
 .fa-heart{
@@ -1206,6 +1329,17 @@ flex-direction: row;
 }
 
 
+.nav-link{
+  color: #000000 !important;
+  border: none !important;
+}
+.nav-link.active{
+  color: #3f53d9 !important;
+  border: none !important
+}
+.nav-tabs {
+  border:none !important
+}
 
 
 @media(min-width: 1281px) {
@@ -1224,8 +1358,8 @@ flex-direction: row;
   .homePart{
     flex-grow: 1;
     height: 965px;
-    background-color: white;
-    box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
+    background-color: rgb(247, 247, 247)
+    /* box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5) */
   }
   
   .mainTableDiv{

@@ -20,6 +20,18 @@ if (type === 'english') {
 }
 
 const token = localStorage.getItem('token');
+// socket io
+const socket = io((''), {
+  auth: {
+    token: token,
+    room: room,
+    type: 'host',
+    roomType: type,
+    limitTime: limitTime
+  }
+
+});
+
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -60,17 +72,6 @@ fetch('/api/1.0/user/profile', {
   .catch(function (err) {
     return err;
   });
-// socket io
-const socket = io((''), {
-  auth: {
-    token: token,
-    room: room,
-    type: 'host',
-    roomType: type,
-    limitTime: limitTime
-  },
-  transports: ['websocket']
-});
 
 const canvasDiv = document.querySelector('#addCanvas');
 const canvas = document.querySelector('.draw');
@@ -460,9 +461,9 @@ socket.on(`userCorrect${room}`, (msg) => {
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  msgArea.textContent = `答對摟！ 加${msg.score}分`;
+  msgArea.textContent = `答對！ 加${msg.score}分`;
   setTimeout(() => {
-    msgArea.textContent = '答對摟！';
+    msgArea.textContent = '答對！';
   }, 3000);
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
   msgTdArea.className = 'msgTd correct';
@@ -504,7 +505,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
-
+      userinfo.className = 'userinfo';
       userinfo.id = `userinfo${gamerName}`;
       playerList.appendChild(userinfo);
 
@@ -560,14 +561,15 @@ socket.on(`roomUserId${room}`, (msg) => {
     const hostinfo = document.createElement('tr');
     // hostinfo.className = 'userinfo';
     hostinfo.id = 'userinfoHost';
+    hostinfo.className = 'userinfo';
     host.appendChild(hostinfo);
 
     const photoTd = document.createElement('td');
     photoTd.className = 'gamerPhotoTd';
     hostinfo.appendChild(photoTd);
     const photo = document.createElement('img');
-    if (userPhoto) {
-      photo.setAttribute('src', `${userPhoto}`);
+    if (hostPhoto) {
+      photo.setAttribute('src', `${hostPhoto}`);
     } else {
       photo.setAttribute('src', './images/member2.png');
     }
@@ -705,6 +707,16 @@ const Toast = Swal.mixin({
     toast.addEventListener('mouseenter', Swal.stopTimer);
     toast.addEventListener('mouseleave', Swal.resumeTimer);
   }
+});
+
+socket.emit('onlineUser', 'get');
+socket.on('onlineUserShow', async (msg) => {
+  const onlineUser = msg.userAll.filter(function (element, index, arr) {
+    return arr.indexOf(element) === index;
+  });
+  const onlineCount = onlineUser.length;
+  const onlineUserCount = document.getElementById('onlineUserCount');
+  onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
 });
 
 const leave = document.getElementById('leave');

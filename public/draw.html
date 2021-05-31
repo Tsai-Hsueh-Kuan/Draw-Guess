@@ -20,7 +20,11 @@
       <div class="title-container">
         <a href="/" class="title">Draw & Guess</a href="/">
       </div>
+      <div id="onlineUserCount" class="signUpButton button">
+        <!-- 在線人數：0人 -->
+      </div>
       <div class="member-container">
+       
         <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-user-plus"></i></button>
         <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE <i class="fas fa-door-open"></i></button>    
         <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
@@ -28,7 +32,7 @@
     </header>
 
     <div class="container-fluid mainpart main" id="main">
-      <div class="row rowMain">
+      <div class="row rowMain rowGame">
 
         <div class="mainPart col-7" id="mainPart">
 
@@ -73,7 +77,7 @@
           </div>
         </div>
 
-        <div class="rankPart col-5" id="rankShow">
+        <div class="rankPart col-4" id="rankShow">
 
           <div class="tableDivGameHost">
             <table class="table">
@@ -122,7 +126,7 @@
 
  
 
-  <div class="container" style="width: 30%; position: fixed;left: 71%; bottom: 0%; z-index: 200" >
+  <div class="container" style="width: 30%; position: fixed;left: 70%; bottom: 0%; z-index: 200" >
     <div class="row">
         <div>
             <div class="panel panel-primary" style="padding:0%;">

@@ -7,6 +7,14 @@ const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
 
+const socket = io({
+  auth: {
+    room: 'homePage',
+    type: 'homePage',
+    token: token
+  }
+  // transports: ['websocket']
+});
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',
@@ -21,6 +29,8 @@ if (token) {
           .then(() => {
             return window.location.assign('/');
           });
+      } else if (response.status === 401) {
+        console.log('尚未登入');
       }
     }).then(data => {
       userId = data.data.id;
@@ -30,10 +40,9 @@ if (token) {
       signIn.style = 'display:none;';
       signUp.style = 'display:none;';
       signOutButton.style = 'display:block;';
-      createGame.style = 'display:block;';
-      singlePlay.style = 'display:block;';
+      // createGame.style = 'display:block;';
+      // singlePlay.style = 'display:block;';
       const info = document.getElementById('info');
-
       const name = document.createElement('div');
       name.textContent = `NAME: ${userName}`;
       name.className = 'userName hover';
@@ -56,13 +65,13 @@ if (token) {
         const inputOptions = new Promise((resolve) => {
           setTimeout(() => {
             resolve({
-              'member2.png': '<img src="./images/member2.png" class="userPhoto" >',
-              'chipmunk.jpeg': '<img src="./images/chipmunk.jpeg" class="userPhoto" >',
-              'cow.jpeg': '<img src="./images/cow.jpeg" class="userPhoto" >',
-              'dog.jpeg': '<img src="./images/dog.jpeg" class="userPhoto" >',
-              'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhoto" >',
-              'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhoto" >',
-              'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhoto" >',
+              'member2.png': '<img src="./images/member2.png" class="userPhotoReplace" >',
+              'chipmunk.jpeg': '<img src="./images/chipmunk.jpeg" class="userPhotoReplace" >',
+              'cow.jpeg': '<img src="./images/cow.jpeg" class="userPhotoReplace" >',
+              'dog.jpeg': '<img src="./images/dog.jpeg" class="userPhotoReplace" >',
+              'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhotoReplace" >',
+              'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhotoReplace" >',
+              'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhotoReplace" >',
               upload: '<div id="uploadText" >上傳</div>'
             });
           }, 1000);
@@ -167,7 +176,6 @@ if (token) {
       return err;
     });
 }
-
 const userPhotoImg = document.getElementById('userPhoto');
 userPhotoImg.addEventListener('click', function () {
   Swal.fire({
@@ -367,8 +375,9 @@ signIn.addEventListener('click', async function () {
 });
 
 const signOutButton = document.getElementById('exampleModal2');
-const createGame = document.getElementById('createGame');
-const singlePlay = document.getElementById('singlePlay');
+const playGame = document.getElementById('playGame');
+
+// const singlePlay = document.getElementById('singlePlay');
 
 signOutButton.addEventListener('click', function () {
   Swal.fire({
@@ -388,23 +397,6 @@ signOutButton.addEventListener('click', function () {
       }
     });
 });
-
-const socket = io({
-  auth: {
-    room: 'homePage',
-    type: 'homePage',
-    token: token
-  },
-  transports: ['websocket']
-});
-
-// const socket = io((''), {    <<<<<<
-//   auth: {
-//     room: 'homePage',
-//     type: 'homePage',
-//     token: token
-//   }
-// });
 
 const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
@@ -591,6 +583,12 @@ roomTab.addEventListener('click', function () {
     const noRoom = document.getElementById('noRoom');
     noRoom.className = 'haveRoom';
   } else {
+    Swal.fire({
+      timer: 3000,
+      title: '目前無房間可以加入',
+      icon: 'warning',
+      showConfirmButton: false
+    });
     const noRoom = document.getElementById('noRoom');
     noRoom.className = 'noRoom';
   }
@@ -703,63 +701,68 @@ $('#hostNameSearch').on('keypress', function (e) {
 });
 
 socket.on('onlineUserShow', async (msg) => {
-  onlineUser = msg.userAll;
-});
-
-const quickStart = document.getElementById('quickStart');
-quickStart.addEventListener('click', function () {
-  const checkOnlineUser = onlineUser.filter(function (item) {
-    return item !== userId;
+  onlineUser = msg.userAll.filter(function (element, index, arr) {
+    return arr.indexOf(element) === index;
   });
-
-  if (roomList[0]) {
-    const roomImgs = document.getElementById(`imgs${roomList[0]}`);
-    if (roomImgs) {
-      const roomUrl = roomImgs.alt;
-      Swal.fire({
-        timer: 2000,
-        title: '加入遊戲中',
-        icon: 'info',
-        showConfirmButton: false
-      });
-      return window.location.assign(`${roomUrl}`);
-    }
-  } else if (checkOnlineUser[0]) {
-    let room;
-    for (let j = 1; j < 10000; j++) {
-      const check = roomList.indexOf(`${j}`);
-      if (check === -1) {
-        room = j;
-        break;
-      }
-    }
-    Swal.fire({
-      timer: 2000,
-      title: '創建房間中',
-      icon: 'info',
-      showConfirmButton: false
-    });
-    const num = Math.floor(Math.random() * 2);
-    if (num === 0) {
-      return window.location.assign(`/draw.html?room=${room}&type=english`);
-    } else {
-      return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-    }
-  } else {
-    Swal.fire({
-      timer: 2000,
-      title: '單人模式加入中',
-      icon: 'info',
-      showConfirmButton: false
-    });
-    const num = Math.floor(Math.random() * 2);
-    if (num === 0) {
-      return window.location.assign('/single.html?type=english');
-    } else {
-      return window.location.assign('/single.html?type=idiom');
-    }
-  }
+  const onlineCount = onlineUser.length;
+  const onlineUserCount = document.getElementById('onlineUserCount');
+  onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
 });
+
+// const quickStart = document.getElementById('quickStart');
+// quickStart.addEventListener('click', function () {
+//   const checkOnlineUser = onlineUser.filter(function (item) {
+//     return item !== userId;
+//   });
+
+//   if (roomList[0]) {
+//     const roomImgs = document.getElementById(`imgs${roomList[0]}`);
+//     if (roomImgs) {
+//       const roomUrl = roomImgs.alt;
+//       Swal.fire({
+//         timer: 2000,
+//         title: '加入遊戲中',
+//         icon: 'info',
+//         showConfirmButton: false
+//       });
+//       return window.location.assign(`${roomUrl}`);
+//     }
+//   } else if (checkOnlineUser[0]) {
+//     let room;
+//     for (let j = 1; j < 10000; j++) {
+//       const check = roomList.indexOf(`${j}`);
+//       if (check === -1) {
+//         room = j;
+//         break;
+//       }
+//     }
+//     Swal.fire({
+//       timer: 2000,
+//       title: '創建房間中',
+//       icon: 'info',
+//       showConfirmButton: false
+//     });
+//     const num = Math.floor(Math.random() * 2);
+//     if (num === 0) {
+//       return window.location.assign(`/draw.html?room=${room}&type=english`);
+//     } else {
+//       return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+//     }
+//   } else {
+//     Swal.fire({
+//       timer: 2000,
+//       title: '單人模式加入中',
+//       icon: 'info',
+//       showConfirmButton: false
+//     });
+//     const num = Math.floor(Math.random() * 2);
+//     if (num === 0) {
+//       return window.location.assign('/single.html?type=english');
+//     } else {
+//       return window.location.assign('/single.html?type=idiom');
+//     }
+//   }
+// });
 
 socket.on('mainPageViewClose', async (msg) => {
   const roomId = msg.room;
@@ -834,32 +837,208 @@ socket.on('canvasUpdate', (msg) => {
   }
 });
 
-singlePlay.addEventListener('click', function () {
-  Swal.fire({
-    title: '準備開始單人模式',
-    input: 'select',
-    inputOptions: {
-      english: 'ENGLISH',
-      idiom: '四字成語'
-    },
-    inputPlaceholder: '選擇您喜歡的題型',
-    showCancelButton: true,
-    inputValidator: (value) => {
-      if (value === 'english') {
-        return window.location.assign('/single.html?type=english');
-      } else if (value === 'idiom') {
-        return window.location.assign('/single.html?type=idiom');
-      } else {
-        Swal.fire({
-          timer: 2000,
-          title: '未選擇 取消！',
-          showConfirmButton: false
+playGame.addEventListener('click', function () {
+  if (userId) {
+    Swal.fire({
+      input: 'select',
+      inputOptions: {
+        quick: '快速開始',
+        create: '創建房間',
+        single: '單人模式'
+      },
+      inputPlaceholder: '選擇遊戲模式',
+      inputValidator: (value) => {
+        if (value === 'quick') {
+          const checkOnlineUser = onlineUser.filter(function (item) {
+            return item !== userId;
+          });
+
+          if (roomList[0]) {
+            const roomImgs = document.getElementById(`imgs${roomList[0]}`);
+            if (roomImgs) {
+              const roomUrl = roomImgs.alt;
+              Swal.fire({
+                timer: 2000,
+                title: '加入遊戲中',
+                icon: 'info',
+                showConfirmButton: false
+              });
+              return window.location.assign(`${roomUrl}`);
+            }
+          } else if (checkOnlineUser[0]) {
+            let room;
+            for (let j = 1; j < 10000; j++) {
+              const check = roomList.indexOf(`${j}`);
+              if (check === -1) {
+                room = j;
+                break;
+              }
+            }
+            Swal.fire({
+              timer: 2000,
+              title: '創建房間中',
+              icon: 'info',
+              showConfirmButton: false
+            });
+            const num = Math.floor(Math.random() * 2);
+            if (num === 0) {
+              return window.location.assign(`/draw.html?room=${room}&type=english`);
+            } else {
+              return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+            }
+          } else {
+            Swal.fire({
+              timer: 2000,
+              title: '單人模式加入中',
+              icon: 'info',
+              showConfirmButton: false
+            });
+            const num = Math.floor(Math.random() * 2);
+            if (num === 0) {
+              return window.location.assign('/single.html?type=english');
+            } else {
+              return window.location.assign('/single.html?type=idiom');
+            }
+          }
+        } else if (value === 'create') {
+          let room;
+          for (let j = 1; j < 10000; j++) {
+            const check = roomList.indexOf(`${j}`);
+            if (check === -1) {
+              room = j;
+              break;
+            }
+          }
+          Swal.fire({
+            title: '準備開始連線模式',
+            input: 'select',
+            inputOptions: {
+              english: 'ENGLISH',
+              idiom: '四字成語'
+            },
+            inputPlaceholder: '選擇您喜歡的題型',
+            showCancelButton: true,
+            inputValidator: (value) => {
+              if (value === 'english') {
+                return window.location.assign(`/draw.html?room=${room}&type=english`);
+              } else if (value === 'idiom') {
+                return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+              }
+            }
+          });
+        } else if (value === 'single') {
+          Swal.fire({
+            title: '準備開始單人模式',
+            input: 'select',
+            inputOptions: {
+              english: 'ENGLISH',
+              idiom: '四字成語'
+            },
+            inputPlaceholder: '選擇您喜歡的題型',
+            showCancelButton: true,
+            inputValidator: (value) => {
+              if (value === 'english') {
+                return window.location.assign('/single.html?type=english');
+              } else if (value === 'idiom') {
+                return window.location.assign('/single.html?type=idiom');
+              }
+            }
+          });
+        }
+      }
+    });
+  } else {
+    Swal.fire({
+      title: '開始遊戲前 請先登入',
+      html:
+      '<div>NAME</div>' +
+      '<input id="swal-input1" type="text" class="swal2-input">' +
+      '<div>PASSWORD</div>' +
+      '<input id="swal-input2" type="password" class="swal2-input">',
+
+      preConfirm: function () {
+        return new Promise(function (resolve) {
+          resolve([
+            $('#swal-input1').val(),
+            $('#swal-input2').val()
+          ]);
         });
       }
-    }
-  });
+
+    }).then(function (result) {
+      if (result.value) {
+        if (!result.value[0]) {
+          alert('NAME不能為空');
+        } else if (!result.value[1]) {
+          alert('PASSWORD不能為空');
+        } else {
+          const signInData = {
+            name: result.value[0],
+            password: result.value[1]
+          };
+          fetch('/api/1.0/user/signin', {
+            method: 'POST',
+            body: JSON.stringify(signInData),
+            headers: { 'Content-Type': 'application/json' }
+          }).then(function (response) {
+            if (response.status === 200) {
+              return response.json();
+            } else if (response.status === 429) {
+              alert('Too Many Requests');
+            } else if (response.status === 400) {
+              return response.json();
+            } else if (response.status === 403) {
+              return response.json();
+            } else if (response.status === 500) {
+              return response.json();
+            }
+          }).then(data => {
+            if (data.error) {
+              Swal.fire('OOPS！', `${data.error}`, 'error');
+            } else if (data.data) {
+              localStorage.setItem('token', `${data.data.access_token}`);
+              Swal.fire({
+                timer: 5000,
+                title: '登入成功',
+                text: `歡迎${data.data.user.name}玩家`,
+                icon: 'success'
+              }).then(() => {
+                return window.location.assign('/');
+              });
+            }
+          });
+        }
+      }
+    }).catch(Swal.fire.noop);
+  }
 });
 
+// singlePlay.addEventListener('click', function () {
+//   Swal.fire({
+//     title: '準備開始單人模式',
+//     input: 'select',
+//     inputOptions: {
+//       english: 'ENGLISH',
+//       idiom: '四字成語'
+//     },
+//     inputPlaceholder: '選擇您喜歡的題型',
+//     showCancelButton: true,
+//     inputValidator: (value) => {
+//       if (value === 'english') {
+//         return window.location.assign('/single.html?type=english');
+//       } else if (value === 'idiom') {
+//         return window.location.assign('/single.html?type=idiom');
+//       } else {
+//         Swal.fire({
+//           timer: 2000,
+//           title: '未選擇 取消！',
+//           showConfirmButton: false
+//         });
+//       }
+//     }
+//   });
+// });
+const createGame = document.getElementById('createGame');
 createGame.addEventListener('click', function () {
   let room;
   for (let j = 1; j < 10000; j++) {
