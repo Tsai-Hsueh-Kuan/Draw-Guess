@@ -104,7 +104,7 @@ start.addEventListener('click', function () {
           getAnswerId = canvasAll[0].question_id;
           imgs.innerHTML = '';
           startTime = new Date().getTime();
-          startCountdown(timeout);
+          startCountdown(50);
         } else {
           alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
         }
@@ -145,16 +145,16 @@ start.addEventListener('click', function () {
       return err;
     });
 });
-const timeout = 1; // 觸發倒數計時任務的時間間隙
+const timeout = 2000; // 觸發倒數計時任務的時間間隙
 let countIndex = 1; // 倒數計時任務執行次數
-const limitTime = 20;
-let startTime = new Date().getTime();
+const limitTime = 60;
+let startTime;
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
     // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
-    if (countIndex < limitTime && canvasAll[i]) {
+    if ((countIndex < limitTime) && canvasAll[i]) {
       if (canvasAll[i].canvas_data !== '0') {
         const img = document.createElement('img');
         img.src = canvasAll[i].canvas_data;
@@ -246,6 +246,7 @@ answerCheckButton.addEventListener('click', function (ev) {
           background: '#FFFFFF'
         });
         gameStatus = 2;
+        i = 99999;
 
         const historyData = {
           record: countIndex,
@@ -351,6 +352,7 @@ $('#answerCheck').on('keypress', function (e) {
             background: '#ffffff'
           });
           gameStatus = 2;
+          i = 99999;
 
           const historyData = {
             record: countIndex,
