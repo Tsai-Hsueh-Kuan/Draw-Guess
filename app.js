@@ -32,6 +32,9 @@ app.use('/api/' + API_VERSION,
   ]
 );
 
+// const fs = require('fs');
+// const PeerServer = require('peer').PeerServer;
+
 // const { ExpressPeerServer } = require('peer');
 // const { PeerServer } = require('peer');
 // const peerServer = PeerServer({ port: PORT_PEER_SERVER, path: '/call' });
@@ -41,12 +44,6 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
-
-// socket.io    <<<<<<<
-// const server = require('http').createServer(app);
-// const io = require('socket.io')(server);
-// const { socketCon } = require('./util/socketcon');
-// socketCon(io);
 
 // Page not found
 app.use(function (req, res, next) {

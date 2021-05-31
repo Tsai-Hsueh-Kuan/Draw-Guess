@@ -258,6 +258,7 @@ answerCheckButton.addEventListener('click', function (ev) {
 
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
+      console.log(msg);
       if (msg.check) {
         // message.textContent = `正確答案！ ${answerCheck}`;
         Toast2.fire({
