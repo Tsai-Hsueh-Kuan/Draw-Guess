@@ -39,6 +39,52 @@ app.use('/api/' + API_VERSION,
 // const { PeerServer } = require('peer');
 // const peerServer = PeerServer({ port: PORT_PEER_SERVER, path: '/call' });
 
+// const { Emitter } = require('@socket.io/redis-emitter');
+// const { createClient } = require('redis'); // not included, needs to be explicitly installed
+
+// const redisClient = createClient();
+// const io2 = new Emitter(redisClient);
+
+// setInterval(() => {
+//   io2.emit('time', new Date());
+// }, 5000);
+
+// const cluster = require('cluster');
+// const http = require('http');
+// const { Server } = require('socket.io');
+// const redisAdapter = require('socket.io-redis');
+// const numCPUs = require('os').cpus().length;
+// console.log(numCPUs);
+// const { setupMaster, setupWorker } = require('@socket.io/sticky');
+// let server;
+// if (cluster.isMaster) {
+//   console.log(`Master ${process.pid} is running`);
+
+//   server = require('http').createServer(app);
+//   setupMaster(server, {
+//     loadBalancingMethod: 'least-connection' // either "random", "round-robin" or "least-connection"
+//   });
+
+//   for (let i = 0; i < numCPUs; i++) {
+//     cluster.fork();
+//   }
+
+//   cluster.on('exit', (worker) => {
+//     console.log(`Worker ${worker.process.pid} died`);
+//     cluster.fork();
+//   });
+// } else {
+//   console.log(`Worker ${process.pid} started`);
+
+//   server = require('http').createServer(app);
+//   const io = new Server(server);
+//   io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
+//   setupWorker(io);
+
+//   io.on('connection', (socket) => {
+//     /* ... */
+//   });
+// }
 // socket.io
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);

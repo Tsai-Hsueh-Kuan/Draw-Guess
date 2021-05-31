@@ -301,7 +301,7 @@ getQuestion.addEventListener('click', function () {
       icon: 'error'
     });
   } else if (gameDone) {
-    socket.emit('getQuestion', { room: room, type: type, hostId: userId });
+    socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId });
     correctUserList = [];
     const correctEle = document.getElementsByClassName('correct');
     for (const i in correctEle) {

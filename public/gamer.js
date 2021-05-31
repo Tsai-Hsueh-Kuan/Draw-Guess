@@ -255,7 +255,7 @@ answerCheckButton.addEventListener('click', function (ev) {
     setTimeout(() => {
       answerLimit = true;
     }, 2000);
-
+    console.log('有送出');
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
@@ -325,6 +325,7 @@ $('#answerCheck').on('keypress', function (e) {
       setTimeout(() => {
         answerLimit = true;
       }, 2000);
+      console.log('有送出');
       socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
       socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {

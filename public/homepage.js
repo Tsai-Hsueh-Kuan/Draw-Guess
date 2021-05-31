@@ -1,3 +1,4 @@
+
 let userId;
 let userName;
 let userPhoto;
@@ -178,6 +179,7 @@ if (token) {
       return err;
     });
 }
+
 const userPhotoImg = document.getElementById('userPhoto');
 userPhotoImg.addEventListener('click', function () {
   Swal.fire({
