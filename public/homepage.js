@@ -14,8 +14,8 @@ const socket = io((''), {
     type: 'homePage',
     token: token
   },
-  withCredentials: true,
-  transports: ['websocket']
+  withCredentials: true
+  // transports: ['websocket']
 });
 if (token) {
   fetch('/api/1.0/user/profile', {
