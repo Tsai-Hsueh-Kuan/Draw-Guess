@@ -763,9 +763,9 @@ z-index: 1059;
 } */
 #room-tab,
 #rules-tab{
-  border: rgb(247, 247, 247) 1px solid;
+  border: #d7d7d7 1px solid !important;
   background-color: rgb(247, 247, 247);
-  box-shadow:10px 10px 20px 0px rgba(0,0,0,0.25);
+  /* box-shadow:10px 10px 20px 0px rgba(0,0,0,0.25); */
   margin-left: 15px;
   padding: 10px 20px;
   border-radius: 30px;
@@ -1070,7 +1070,7 @@ background-color: khaki;
   outline: none;
 
 
-  border: gray 0.5px solid;
+  border: #d7d7d7 0.5px solid;
   border-radius: 30px;
 
   width: 120px;
@@ -1343,8 +1343,9 @@ flex-direction: row;
   border: none !important;
 }
 .nav-link.active{
-  color: #3f53d9 !important;
-  border: none !important
+  color: rgb(247, 247, 247) !important;
+  border: none !important;
+  background-color: #3f53d9 !important;
 }
 .nav-tabs {
   border:none !important
