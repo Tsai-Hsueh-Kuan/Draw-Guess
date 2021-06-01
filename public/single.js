@@ -68,7 +68,8 @@ start.addEventListener('click', function () {
   if (!gameDone) {
     Swal.fire({
       timer: 3000,
-      title: '欣賞完作品 再準備下一題',
+      icon: 'warning',
+      title: '這題還沒答對呢！',
       showConfirmButton: false
     });
     return;
@@ -448,4 +449,17 @@ const Toast = Swal.mixin({
     toast.addEventListener('mouseenter', Swal.stopTimer);
     toast.addEventListener('mouseleave', Swal.resumeTimer);
   }
+});
+
+const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+const randomNumber = Math.floor(Math.random() * 6);
+Swal.fire({
+  title: '歡迎加入遊戲',
+  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageWidth: 200,
+  imageHeight: 200,
+  imageAlt: 'image',
+  html: '快速作答！ ' +
+  '</br>' +
+   '在記錄榜留下自己好成績喔～'
 });

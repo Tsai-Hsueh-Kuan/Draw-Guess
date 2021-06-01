@@ -255,7 +255,6 @@ answerCheckButton.addEventListener('click', function (ev) {
     setTimeout(() => {
       answerLimit = true;
     }, 2000);
-    console.log('有送出');
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
@@ -325,7 +324,6 @@ $('#answerCheck').on('keypress', function (e) {
       setTimeout(() => {
         answerLimit = true;
       }, 2000);
-      console.log('有送出');
       socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
       socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
@@ -835,15 +833,15 @@ socket.on(`repeatUser${room}`, (msg) => {
   }, 3000);
 });
 
-// const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
-// const randomNumber = Math.floor(Math.random() * 6);
-// Swal.fire({
-//   title: '歡迎加入遊戲',
-//   imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
-//   imageWidth: 200,
-//   imageHeight: 200,
-//   imageAlt: 'image',
-//   html: '請盡量回答 來獲得更多分數！' +
-//   '</br>' +
-//    '回答得越快 分數越高喔～'
-// });
+const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
+const randomNumber = Math.floor(Math.random() * 6);
+Swal.fire({
+  title: '歡迎加入遊戲',
+  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageWidth: 200,
+  imageHeight: 200,
+  imageAlt: 'image',
+  html: '請盡量回答 來獲得更多分數！' +
+  '</br>' +
+   '回答得越快 分數越高喔～'
+});

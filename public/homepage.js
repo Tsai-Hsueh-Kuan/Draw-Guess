@@ -112,7 +112,11 @@ if (token) {
                     if (response.status === 200) {
                       return response.json();
                     } else if (response.status === 429) {
-                      alert('Too Many Requests');
+                      Swal.fire({
+                        timer: 5000,
+                        title: 'Too Many Requests',
+                        icon: 'error'
+                      });
                     } else if (response.status === 400) {
                       return response.json();
                     } else if (response.status === 403) {
@@ -149,7 +153,11 @@ if (token) {
               if (response.status === 200) {
                 return response.json();
               } else if (response.status === 429) {
-                alert('Too Many Requests');
+                Swal.fire({
+                  timer: 5000,
+                  title: 'Too Many Requests',
+                  icon: 'error'
+                });
               } else if (response.status === 400) {
                 return response.json();
               } else if (response.status === 403) {
@@ -202,9 +210,17 @@ userPhotoImg.addEventListener('click', function () {
   }).then(function (result) {
     if (result.value) {
       if (!result.value[0]) {
-        alert('NAME不能為空');
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME不能為空',
+          icon: 'error'
+        });
       } else if (!result.value[1]) {
-        alert('PASSWORD不能為空');
+        Swal.fire({
+          timer: 5000,
+          title: 'PASSWORD不能為空',
+          icon: 'error'
+        });
       } else {
         const signInData = {
           name: result.value[0],
@@ -218,7 +234,11 @@ userPhotoImg.addEventListener('click', function () {
           if (response.status === 200) {
             return response.json();
           } else if (response.status === 429) {
-            alert('Too Many Requests');
+            Swal.fire({
+              timer: 5000,
+              title: 'Too Many Requests',
+              icon: 'error'
+            });
           } else if (response.status === 400) {
             return response.json();
           } else if (response.status === 403) {
@@ -267,11 +287,23 @@ signUp.addEventListener('click', async function () {
   }).then(function (result) {
     if (result.value) {
       if (!result.value[0]) {
-        alert('NAME不能為空');
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME不能為空',
+          icon: 'error'
+        });
       } else if (result.value[0].length > 10) {
-        alert('NAME太長了');
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME太長了',
+          icon: 'error'
+        });
       } else if (!result.value[1]) {
-        alert('PASSWORD不能為空');
+        Swal.fire({
+          timer: 5000,
+          title: 'PASSWORD不能為空',
+          icon: 'error'
+        });
       } else {
         const signUpData = {
           name: result.value[0],
@@ -285,7 +317,11 @@ signUp.addEventListener('click', async function () {
           if (response.status === 200) {
             return response.json();
           } else if (response.status === 429) {
-            alert('Too Many Requests');
+            Swal.fire({
+              timer: 5000,
+              title: 'Too Many Requests',
+              icon: 'error'
+            });
           } else if (response.status === 400) {
             return response.json();
           } else if (response.status === 403) {
@@ -334,9 +370,17 @@ signIn.addEventListener('click', async function () {
   }).then(function (result) {
     if (result.value) {
       if (!result.value[0]) {
-        alert('NAME不能為空');
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME不能為空',
+          icon: 'error'
+        });
       } else if (!result.value[1]) {
-        alert('PASSWORD不能為空');
+        Swal.fire({
+          timer: 5000,
+          title: 'PASSWORD不能為空',
+          icon: 'error'
+        });
       } else {
         const signInData = {
           name: result.value[0],
@@ -350,7 +394,11 @@ signIn.addEventListener('click', async function () {
           if (response.status === 200) {
             return response.json();
           } else if (response.status === 429) {
-            alert('Too Many Requests');
+            Swal.fire({
+              timer: 5000,
+              title: 'Too Many Requests',
+              icon: 'error'
+            });
           } else if (response.status === 400) {
             return response.json();
           } else if (response.status === 403) {
@@ -552,8 +600,6 @@ socket.on('mainPageView', async (msg) => {
 
   tbodyPlayerList.innerHTML = '';
   if (msg.roomUserData && msg.roomUserData[0]) {
-    console.log(msg.roomUserData.length);
-    console.log(msg.roomUserData[0][0]);
     const playlistCount = msg.roomUserData.length;
     th2.textContent = `目前玩家 共${playlistCount}位`;
     for (const i in msg.roomUserData) {
@@ -977,9 +1023,17 @@ playGame.addEventListener('click', function () {
     }).then(function (result) {
       if (result.value) {
         if (!result.value[0]) {
-          alert('NAME不能為空');
+          Swal.fire({
+            timer: 5000,
+            title: 'NAME不能為空',
+            icon: 'error'
+          });
         } else if (!result.value[1]) {
-          alert('PASSWORD不能為空');
+          Swal.fire({
+            timer: 5000,
+            title: 'PASSWORD不能為空',
+            icon: 'error'
+          });
         } else {
           const signInData = {
             name: result.value[0],
@@ -993,7 +1047,11 @@ playGame.addEventListener('click', function () {
             if (response.status === 200) {
               return response.json();
             } else if (response.status === 429) {
-              alert('Too Many Requests');
+              Swal.fire({
+                timer: 5000,
+                title: 'Too Many Requests',
+                icon: 'error'
+              });
             } else if (response.status === 400) {
               return response.json();
             } else if (response.status === 403) {
@@ -1012,127 +1070,128 @@ playGame.addEventListener('click', function () {
                 text: `歡迎${data.data.user.name}玩家`,
                 icon: 'success'
               }).then(() => {
-                Swal.fire({
-                  input: 'select',
-                  inputOptions: {
-                    quick: '快速開始',
-                    create: '創建房間',
-                    single: '單人模式'
-                  },
-                  showCancelButton: true,
-                  inputPlaceholder: '選擇遊戲模式',
-                  inputValidator: (value) => {
-                    if (value === 'quick') {
-                      const checkOnlineUser = onlineUser.filter(function (item) {
-                        return item !== userId;
-                      });
+                // Swal.fire({
+                //   input: 'select',
+                //   inputOptions: {
+                //     quick: '快速開始',
+                //     create: '創建房間',
+                //     single: '單人模式'
+                //   },
+                //   showCancelButton: true,
+                //   inputPlaceholder: '選擇遊戲模式',
+                //   inputValidator: (value) => {
+                //     if (value === 'quick') {
+                //       const checkOnlineUser = onlineUser.filter(function (item) {
+                //         return item !== userId;
+                //       });
 
-                      if (roomList[0]) {
-                        const roomImgs = document.getElementById(`imgs${roomList[0]}`);
-                        if (roomImgs) {
-                          const roomUrl = roomImgs.alt;
-                          Swal.fire({
-                            timer: 2000,
-                            title: '加入遊戲中',
-                            icon: 'info',
-                            showConfirmButton: false
-                          });
-                          return window.location.assign(`${roomUrl}`);
-                        }
-                      } else if (checkOnlineUser[0]) {
-                        let room;
-                        for (let j = 1; j < 10000; j++) {
-                          const check = roomList.indexOf(`${j}`);
-                          if (check === -1) {
-                            room = j;
-                            break;
-                          }
-                        }
-                        Swal.fire({
-                          timer: 2000,
-                          title: '創建房間中',
-                          icon: 'info',
-                          showConfirmButton: false
-                        });
-                        const num = Math.floor(Math.random() * 2);
-                        if (num === 0) {
-                          return window.location.assign(`/draw.html?room=${room}&type=english`);
-                        } else {
-                          return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-                        }
-                      } else {
-                        Swal.fire({
-                          timer: 2000,
-                          title: '單人模式加入中',
-                          icon: 'info',
-                          showConfirmButton: false
-                        });
-                        const num = Math.floor(Math.random() * 2);
-                        if (num === 0) {
-                          return window.location.assign('/single.html?type=english');
-                        } else {
-                          return window.location.assign('/single.html?type=idiom');
-                        }
-                      }
-                    } else if (value === 'create') {
-                      let room;
-                      for (let j = 1; j < 10000; j++) {
-                        const check = roomList.indexOf(`${j}`);
-                        if (check === -1) {
-                          room = j;
-                          break;
-                        }
-                      }
-                      Swal.fire({
-                        title: '準備開始連線模式',
-                        input: 'select',
-                        inputOptions: {
-                          english: 'ENGLISH',
-                          idiom: '四字成語'
-                        },
-                        inputPlaceholder: '選擇您喜歡的題型',
-                        showCancelButton: true,
-                        inputValidator: (value) => {
-                          if (value === 'english') {
-                            return window.location.assign(`/draw.html?room=${room}&type=english`);
-                          } else if (value === 'idiom') {
-                            return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-                          } else {
-                            return window.location.assign('/');
-                          }
-                        }
-                      });
-                    } else if (value === 'single') {
-                      Swal.fire({
-                        title: '準備開始單人模式',
-                        input: 'select',
-                        inputOptions: {
-                          english: 'ENGLISH',
-                          idiom: '四字成語'
-                        },
-                        inputPlaceholder: '選擇您喜歡的題型',
-                        showCancelButton: true,
-                        inputValidator: (value) => {
-                          if (value === 'english') {
-                            return window.location.assign('/single.html?type=english');
-                          } else if (value === 'idiom') {
-                            return window.location.assign('/single.html?type=idiom');
-                          } else {
-                            return window.location.assign('/');
-                          }
-                        }
-                      });
-                    } else {
-                      Swal.fire({
-                        timer: 2000,
-                        title: '未選擇 取消！',
-                        showConfirmButton: false
-                      });
+                //       if (roomList[0]) {
+                //         const roomImgs = document.getElementById(`imgs${roomList[0]}`);
+                //         if (roomImgs) {
+                //           const roomUrl = roomImgs.alt;
+                //           Swal.fire({
+                //             timer: 2000,
+                //             title: '加入遊戲中',
+                //             icon: 'info',
+                //             showConfirmButton: false
+                //           });
+                //           return window.location.assign(`${roomUrl}`);
+                //         }
+                //       } else if (checkOnlineUser[0]) {
+                //         let room;
+                //         for (let j = 1; j < 10000; j++) {
+                //           const check = roomList.indexOf(`${j}`);
+                //           if (check === -1) {
+                //             room = j;
+                //             break;
+                //           }
+                //         }
+                //         Swal.fire({
+                //           timer: 2000,
+                //           title: '創建房間中',
+                //           icon: 'info',
+                //           showConfirmButton: false
+                //         });
+                //         const num = Math.floor(Math.random() * 2);
+                //         if (num === 0) {
+                //           return window.location.assign(`/draw.html?room=${room}&type=english`);
+                //         } else {
+                //           return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+                //         }
+                //       } else {
+                //         Swal.fire({
+                //           timer: 2000,
+                //           title: '單人模式加入中',
+                //           icon: 'info',
+                //           showConfirmButton: false
+                //         });
+                //         const num = Math.floor(Math.random() * 2);
+                //         if (num === 0) {
+                //           return window.location.assign('/single.html?type=english');
+                //         } else {
+                //           return window.location.assign('/single.html?type=idiom');
+                //         }
+                //       }
+                //     } else if (value === 'create') {
+                //       let room;
+                //       for (let j = 1; j < 10000; j++) {
+                //         const check = roomList.indexOf(`${j}`);
+                //         if (check === -1) {
+                //           room = j;
+                //           break;
+                //         }
+                //       }
+                //       Swal.fire({
+                //         title: '準備開始連線模式',
+                //         input: 'select',
+                //         inputOptions: {
+                //           english: 'ENGLISH',
+                //           idiom: '四字成語'
+                //         },
+                //         inputPlaceholder: '選擇您喜歡的題型',
+                //         showCancelButton: true,
+                //         inputValidator: (value) => {
+                //           if (value === 'english') {
+                //             return window.location.assign(`/draw.html?room=${room}&type=english`);
+                //           } else if (value === 'idiom') {
+                //             return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+                //           } else {
+                //             return window.location.assign('/');
+                //           }
+                //         }
+                //       });
+                //     } else if (value === 'single') {
+                //       Swal.fire({
+                //         title: '準備開始單人模式',
+                //         input: 'select',
+                //         inputOptions: {
+                //           english: 'ENGLISH',
+                //           idiom: '四字成語'
+                //         },
+                //         inputPlaceholder: '選擇您喜歡的題型',
+                //         showCancelButton: true,
+                //         inputValidator: (value) => {
+                //           if (value === 'english') {
+                //             return window.location.assign('/single.html?type=english');
+                //           } else if (value === 'idiom') {
+                //             return window.location.assign('/single.html?type=idiom');
+                //           } else {
+                //             return window.location.assign('/');
+                //           }
+                //         }
+                //       });
+                //     } else {
+                //       Swal.fire({
+                //         timer: 2000,
+                //         title: '未選擇 取消！',
+                //         showConfirmButton: false
+                //       });
 
-                      return window.location.assign('/');
-                    }
-                  }
-                });
+                //       return window.location.assign('/');
+                //     }
+                //   }
+                // });
+                return window.location.assign('/');
               });
             }
           });
