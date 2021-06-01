@@ -761,7 +761,15 @@ z-index: 1059;
   background-position: 100% 50% ;
   opacity:0.6;
 } */
-
+#room-tab,
+#rules-tab{
+  border: rgb(247, 247, 247) 1px solid;
+  background-color: rgb(247, 247, 247);
+  box-shadow:10px 10px 20px 0px rgba(0,0,0,0.25);
+  margin-left: 15px;
+  padding: 10px 20px;
+  border-radius: 30px;
+}
 #rules{
   padding-left: 25px;
   padding-right: 25px;
