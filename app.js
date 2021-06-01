@@ -12,7 +12,7 @@ app.set('trust proxy', true);
 app.set('json spaces', 2);
 
 app.use(express.static('public'));
-app.use(express.json({ limit: '2100000kb' }));
+app.use(express.json({ limit: '210000kb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // CORS allow all
@@ -87,7 +87,13 @@ app.use('/api/' + API_VERSION,
 // }
 // socket.io
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
 

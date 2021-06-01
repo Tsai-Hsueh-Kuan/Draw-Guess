@@ -8,12 +8,14 @@ const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
 
-const socket = io({
+const socket = io(('localhost:3000'), {
   auth: {
     room: 'homePage',
     type: 'homePage',
     token: token
-  }
+  },
+  withCredentials: true
+
   // transports: ['websocket']
 });
 if (token) {
