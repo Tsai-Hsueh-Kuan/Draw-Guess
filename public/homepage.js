@@ -8,7 +8,7 @@ const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
 console.log(window.location.origin);
-const socket = io((''), {
+const socket = io(('http://3.135.182.236/'), {
   auth: {
     room: 'homePage',
     type: 'homePage',
