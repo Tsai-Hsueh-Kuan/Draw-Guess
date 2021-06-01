@@ -268,22 +268,22 @@ const socketCon = (io) => {
             socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
           }
 
-          for (const i in roomUserId[inRoom]) {
-            if (roomUserId[inRoom][i] === verifyHost.id) {
-              socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
-              return;
-            }
-          }
+          // for (const i in roomUserId[inRoom]) {
+          //   if (roomUserId[inRoom][i] === verifyHost.id) {
+          //     socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+          //     return;
+          //   }
+          // }
           const userIdGET = await promisifyget('userId');
           const userId = JSON.parse(userIdGET).data;
-          if (!userId[inRoom]) {
-            userId[inRoom] = [verifyHost.id];
-            await promisifyset('userId', JSON.stringify({ data: userId }));
-          } else {
+          if (userId[inRoom]) {
             userId[inRoom].push(verifyHost.id);
             await promisifyset('userId', JSON.stringify({ data: userId }));
+          } else {
+            userId[inRoom] = [verifyHost.id];
+            await promisifyset('userId', JSON.stringify({ data: userId }));
           }
-          const roomUserDataGET = await promisifyget('userId');
+          const roomUserDataGET = await promisifyget('roomUserData');
           const roomUserData = JSON.parse(roomUserDataGET).data;
           if (roomUserId[inRoom]) {
             roomUserId[inRoom].push(verifyHost.id);
@@ -307,8 +307,8 @@ const socketCon = (io) => {
             await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
             const roomUserDataGET = await promisifyget('roomUserData');
             const roomUserData = JSON.parse(roomUserDataGET).data;
-            roomUserData[inRoom] = [];
-            await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
+            // roomUserData[inRoom] = [];
+            // await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
             const userDetail = await getUser(verifyHost.id);
             roomUserData[inRoom] = [userDetail];
             await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));

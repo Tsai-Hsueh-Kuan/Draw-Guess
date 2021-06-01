@@ -552,6 +552,8 @@ socket.on('mainPageView', async (msg) => {
 
   tbodyPlayerList.innerHTML = '';
   if (msg.roomUserData && msg.roomUserData[0]) {
+    console.log(msg.roomUserData.length);
+    console.log(msg.roomUserData[0][0]);
     const playlistCount = msg.roomUserData.length;
     th2.textContent = `目前玩家 共${playlistCount}位`;
     for (const i in msg.roomUserData) {
