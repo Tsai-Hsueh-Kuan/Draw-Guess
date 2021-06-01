@@ -29,7 +29,9 @@
     "socket.io-redis": "^6.1.1",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.0.11",
-    "validator": "^13.6.0"
+    "validator": "^13.6.0",
+    "ws": "^7.4.6",
+    "wss": "^3.3.4"
   },
   "devDependencies": {
     "eslint": "^7.26.0",
