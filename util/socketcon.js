@@ -181,6 +181,7 @@ const socketCon = (io) => {
     // const gameTime = JSON.parse(gameTimeGET).data;
     const userIdGET = await promisifyget('userId');
     const userId = JSON.parse(userIdGET).data;
+    console.log(userId);
     const roomUserIdGET = await promisifyget('roomUserId');
     const roomUserId = JSON.parse(roomUserIdGET).data;
     const hostDetailGET = await promisifyget('hostDetail');

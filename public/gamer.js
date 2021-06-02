@@ -37,8 +37,8 @@ const socket = io((''), {
     room: room,
     type: 'player',
     limitTime: limitTime
-  }
-
+  },
+  reconnect: true
 });
 
 const Toast2 = Swal.mixin({

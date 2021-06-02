@@ -28,8 +28,8 @@ const socket = io((''), {
     type: 'host',
     roomType: type,
     limitTime: limitTime
-  }
-
+  },
+  reconnect: true
 });
 
 fetch('/api/1.0/user/profile', {

@@ -7,7 +7,6 @@ let onlineUser;
 const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
-console.log(window.location.origin);
 const socket = io((''), {
   auth: {
     room: 'homePage',
@@ -136,7 +135,11 @@ if (token) {
                         timer: 1500
                       });
                       const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
-                      userinfoPhotoElement.setAttribute('src', `${data.photo}`);
+                      const newPhoto = document.getElementById('userPhotoSignIn');
+                      if (userinfoPhotoElement) {
+                        userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
+                      }
+
                       newPhoto.setAttribute('src', `${data.photo}`);
                     }
                   });
@@ -177,7 +180,11 @@ if (token) {
                   timer: 1500
                 });
                 const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
-                userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
+                if (userinfoPhotoElement) {
+                  userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
+                }
+
+                const newPhoto = document.getElementById('userPhotoSignIn');
                 newPhoto.setAttribute('src', `./images/${photo}`);
               }
             });
@@ -1228,6 +1235,25 @@ playGame.addEventListener('click', function () {
 //     }
 //   });
 // });
+
+const owl = $('.owl-carousel');
+owl.owlCarousel({
+  items: 1,
+  loop: true,
+  margin: 10,
+  autoplay: false,
+  autoplayTimeout: 10000,
+  nav: true,
+  autoplayHoverPause: true,
+  navText: ['<<<', '>>>']
+});
+// $('.play').on('click', function () {
+//   owl.trigger('play.owl.autoplay', [5000]);
+// });
+// $('.stop').on('click', function () {
+//   owl.trigger('stop.owl.autoplay');
+// });
+
 const createGame = document.getElementById('createGame');
 createGame.addEventListener('click', function () {
   let room;
