@@ -1241,18 +1241,18 @@ owl.owlCarousel({
   items: 1,
   loop: true,
   margin: 10,
-  autoplay: false,
+  autoplay: true,
   autoplayTimeout: 10000,
   nav: true,
   autoplayHoverPause: true,
   navText: ['<<<', '>>>']
 });
-// $('.play').on('click', function () {
-//   owl.trigger('play.owl.autoplay', [5000]);
-// });
-// $('.stop').on('click', function () {
-//   owl.trigger('stop.owl.autoplay');
-// });
+$('.play').on('click', function () {
+  owl.trigger('play.owl.autoplay', [10000]);
+});
+$('.stop').on('click', function () {
+  owl.trigger('stop.owl.autoplay');
+});
 
 const createGame = document.getElementById('createGame');
 createGame.addEventListener('click', function () {

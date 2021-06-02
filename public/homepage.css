@@ -1378,28 +1378,32 @@ flex-direction: row;
 .owl-dots {
   position: absolute !important;
   text-align: center;
-  top: -45px !important;
-  left: 331px;
+  top: -44px !important;
+  left: 324px;
 
 }
 .owl-nav{
   position: absolute !important;
   text-align: center;
   top: -58px !important;
-  left: 282px;
+  left: 250px;
   width: auto;
 
 }
 .owl-prev{
-margin-right: 50px !important;
+margin-right: 80px !important;
+font-size: 20px !important;
 }
 .owl-next{
-margin-left: 50px !important;
+margin-left: 80px !important;
+font-size: 20px !important;
 }
 
 .itemMsg{
   margin-top: 30px;
-
+  color: black;
+  font-weight: 400;
+  font-size: 1.4375rem;
 }
 
 @media(min-width: 1281px) {

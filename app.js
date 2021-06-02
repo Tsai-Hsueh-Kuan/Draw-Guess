@@ -1,7 +1,7 @@
 
 require('dotenv').config();
 const { rateLimiterRoute } = require('./util/ratelimiter');
-const { PORT_TEST, PORT, NODE_ENV, API_VERSION } = process.env;
+const { PORT_TEST, PORT, NODE_ENV, API_VERSION, REDIS_HOST } = process.env;
 const port = NODE_ENV === 'test' ? PORT_TEST : PORT;
 // Express Initialization
 const express = require('express');
@@ -93,6 +93,12 @@ const io = require('socket.io')(server, {
     methods: ['GET', 'POST'],
     credentials: true
   }
+});
+const redis = require('socket.io-redis');
+io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
+io.emit('hi', 'all sockets');
+io.on('hi', (msg) => {
+  console.log('1');
 });
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
