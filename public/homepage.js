@@ -8,15 +8,15 @@ const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
 console.log(window.location.origin);
-const socket = io(('http://3.135.182.236/'), {
+const socket = io((''), {
   auth: {
     room: 'homePage',
     type: 'homePage',
     token: token
   },
   // withCredentials: true,
-  reconnect: true,
-  transports: ['websocket']
+  reconnect: true
+  // transports: ['websocket']
 });
 if (token) {
   fetch('/api/1.0/user/profile', {
