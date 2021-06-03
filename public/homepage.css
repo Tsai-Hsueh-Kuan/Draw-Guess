@@ -767,7 +767,7 @@ z-index: 1059;
 }
 .noRoomDiv{
   font-size: 18px;
-  margin: 100px auto;
+  margin: 100px auto 470px;
   width: 600px;
   align-content: center;
   justify-content: center;
@@ -1043,6 +1043,26 @@ background-color: khaki;
   z-index: 0;
   color: #ffffff;
   margin: 0% auto;
+}
+.copyDraw{
+  display: inline-block;
+  font-size: 20px;
+  cursor: pointer;
+  text-align: center;   
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: 	#3f53d9;
+  border: none;
+  border-radius: 30px;;
+  width: 110px;
+  height: 36px;
+  z-index: 0;
+  color: #ffffff;
+  margin: 0% auto;
+}
+#drawNeedHide{
+  visibility: hidden;
 }
 .searchInput{
   display: inline-block;

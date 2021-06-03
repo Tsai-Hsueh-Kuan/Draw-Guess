@@ -140,7 +140,7 @@ if (token) {
                       const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
                       const newPhoto = document.getElementById('userPhotoSignIn');
                       if (userinfoPhotoElement) {
-                        userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
+                        userinfoPhotoElement.setAttribute('src', `${data.photo}`);
                       }
 
                       newPhoto.setAttribute('src', `${data.photo}`);
@@ -907,7 +907,7 @@ playGame.addEventListener('click', function () {
       input: 'select',
       inputOptions: {
         quick: '快速開始',
-        create: '創建房間',
+        create: '連線模式',
         single: '單人模式'
       },
       inputPlaceholder: '選擇遊戲模式',
@@ -1082,127 +1082,6 @@ playGame.addEventListener('click', function () {
                 text: `歡迎${data.data.user.name}玩家`,
                 icon: 'success'
               }).then(() => {
-                // Swal.fire({
-                //   input: 'select',
-                //   inputOptions: {
-                //     quick: '快速開始',
-                //     create: '創建房間',
-                //     single: '單人模式'
-                //   },
-                //   showCancelButton: true,
-                //   inputPlaceholder: '選擇遊戲模式',
-                //   inputValidator: (value) => {
-                //     if (value === 'quick') {
-                //       const checkOnlineUser = onlineUser.filter(function (item) {
-                //         return item !== userId;
-                //       });
-
-                //       if (roomList[0]) {
-                //         const roomImgs = document.getElementById(`imgs${roomList[0]}`);
-                //         if (roomImgs) {
-                //           const roomUrl = roomImgs.alt;
-                //           Swal.fire({
-                //             timer: 2000,
-                //             title: '加入遊戲中',
-                //             icon: 'info',
-                //             showConfirmButton: false
-                //           });
-                //           return window.location.assign(`${roomUrl}`);
-                //         }
-                //       } else if (checkOnlineUser[0]) {
-                //         let room;
-                //         for (let j = 1; j < 10000; j++) {
-                //           const check = roomList.indexOf(`${j}`);
-                //           if (check === -1) {
-                //             room = j;
-                //             break;
-                //           }
-                //         }
-                //         Swal.fire({
-                //           timer: 2000,
-                //           title: '創建房間中',
-                //           icon: 'info',
-                //           showConfirmButton: false
-                //         });
-                //         const num = Math.floor(Math.random() * 2);
-                //         if (num === 0) {
-                //           return window.location.assign(`/draw.html?room=${room}&type=english`);
-                //         } else {
-                //           return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-                //         }
-                //       } else {
-                //         Swal.fire({
-                //           timer: 2000,
-                //           title: '單人模式加入中',
-                //           icon: 'info',
-                //           showConfirmButton: false
-                //         });
-                //         const num = Math.floor(Math.random() * 2);
-                //         if (num === 0) {
-                //           return window.location.assign('/single.html?type=english');
-                //         } else {
-                //           return window.location.assign('/single.html?type=idiom');
-                //         }
-                //       }
-                //     } else if (value === 'create') {
-                //       let room;
-                //       for (let j = 1; j < 10000; j++) {
-                //         const check = roomList.indexOf(`${j}`);
-                //         if (check === -1) {
-                //           room = j;
-                //           break;
-                //         }
-                //       }
-                //       Swal.fire({
-                //         title: '準備開始連線模式',
-                //         input: 'select',
-                //         inputOptions: {
-                //           english: 'ENGLISH',
-                //           idiom: '四字成語'
-                //         },
-                //         inputPlaceholder: '選擇您喜歡的題型',
-                //         showCancelButton: true,
-                //         inputValidator: (value) => {
-                //           if (value === 'english') {
-                //             return window.location.assign(`/draw.html?room=${room}&type=english`);
-                //           } else if (value === 'idiom') {
-                //             return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-                //           } else {
-                //             return window.location.assign('/');
-                //           }
-                //         }
-                //       });
-                //     } else if (value === 'single') {
-                //       Swal.fire({
-                //         title: '準備開始單人模式',
-                //         input: 'select',
-                //         inputOptions: {
-                //           english: 'ENGLISH',
-                //           idiom: '四字成語'
-                //         },
-                //         inputPlaceholder: '選擇您喜歡的題型',
-                //         showCancelButton: true,
-                //         inputValidator: (value) => {
-                //           if (value === 'english') {
-                //             return window.location.assign('/single.html?type=english');
-                //           } else if (value === 'idiom') {
-                //             return window.location.assign('/single.html?type=idiom');
-                //           } else {
-                //             return window.location.assign('/');
-                //           }
-                //         }
-                //       });
-                //     } else {
-                //       Swal.fire({
-                //         timer: 2000,
-                //         title: '未選擇 取消！',
-                //         showConfirmButton: false
-                //       });
-
-                //       return window.location.assign('/');
-                //     }
-                //   }
-                // });
                 return window.location.assign('/');
               });
             }
