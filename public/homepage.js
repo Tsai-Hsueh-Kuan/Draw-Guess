@@ -18,6 +18,8 @@ const socket = io((''), {
   // transports: ['websocket']
 });
 socket.emit('join', 'get');
+socket.emit('hi', '123');
+
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',
