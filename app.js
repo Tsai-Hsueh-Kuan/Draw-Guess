@@ -48,9 +48,12 @@ app.use('/api/' + API_VERSION,
 // io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const redisAdapter = require('socket.io-redis');
-io.adapter(redisAdapter({ host: REDIS_HOST, port: 6379 }));
 
+const { createClient } = require('redis');
+const redisAdapter = require('@socket.io/redis-adapter');
+const pubClient = createClient({ host: REDIS_HOST, port: 6379 });
+const subClient = pubClient.duplicate();
+io.adapter(redisAdapter(pubClient, subClient));
 io.emit('hello', 'to all clients');
 io.to('room42').emit('hello', "to all clients in 'room42' room");
 
@@ -61,7 +64,6 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('hello', 'to all clients except sender');
   socket.to('room42').emit('hello', "to all clients in 'room42' room except sender");
 });
-
 // const io2 = io.of('');
 
 // setTimeout(() => {
