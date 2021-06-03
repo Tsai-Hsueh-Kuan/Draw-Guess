@@ -49,7 +49,7 @@ app.use('/api/' + API_VERSION,
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const redisAdapter = require('socket.io-redis');
-io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
+io.adapter(redisAdapter({ host: REDIS_HOST, port: 6379 }));
 io.emit('hello', 'to all clients');
 io.to('room42').emit('hello', "to all clients in 'room42' room");
 
