@@ -33,36 +33,42 @@ app.use('/api/' + API_VERSION,
 );
 
 // socket.io
-const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-  cors: {
-    origin: 'localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
-const { socketCon } = require('./util/socketcon');
-socketCon(io);
-
-// const redis = require('redis').createClient();
-// redis.subscribe('rt-change');
-
-// io.on('connection', function (socket) {
-//   socket.on('disconnect', function () {
-//     console.log('A user disconnected');
-//   });
-
-//   redis.on('message', function (channel, msg) {
-//     console.log('123');
-//     socket.emit('rt-change', msg);
-//   });
+// const server = require('http').createServer(app);
+// const io = require('socket.io')(server, {
+//   cors: {
+//     origin: 'localhost:3000',
+//     methods: ['GET', 'POST'],
+//     credentials: true
+//   }
 // });
+// const { socketCon } = require('./util/socketcon');
+// socketCon(io);
+
+// const redis = require('socket.io-redis');
+// io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const redisAdapter = require('socket.io-redis');
+io.adapter(redisAdapter({ host: 'localhost', port: 6379 }));
+io.emit('hello', 'to all clients');
+io.to('room42').emit('hello', "to all clients in 'room42' room");
+
+io.on('connection', (socket) => {
+  socket.broadcast.emit('hello', 'to all clients except sender');
+  socket.to('room42').emit('hello', "to all clients in 'room42' room except sender");
+  socket.on('hello', async (msg) => {
+    console.log(msg);
+  });
+});
 
 // Page not found
 app.use(function (req, res, next) {
   res.status(404).redirect('/404.html');
 });
 
+io.on('hello', async (msg) => {
+  console.log(msg);
+});
 // Error handling
 app.use(function (err, req, res, next) {
   console.log(err);
