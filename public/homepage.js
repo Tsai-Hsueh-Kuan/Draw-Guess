@@ -17,6 +17,9 @@ const socket = io((''), {
   reconnect: true
   // transports: ['websocket']
 });
+socket.on('rt-change', function (data) {
+  console.log("Receive 'rt-change' notification. data=" + JSON.stringify(data));
+});
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',
@@ -497,7 +500,7 @@ socket.on(`getRank${homeTime}`, async (msg) => {
     if (rankPhoto) {
       photo.setAttribute('src', `${rankPhoto}`);
     } else {
-      photo.setAttribute('src', './images/player.png');
+      photo.setAttribute('src', './images/member2.png');
     }
     photoTd.appendChild(photo);
   }

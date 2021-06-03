@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
-@font-face {
+/* @font-face {
   font-family: 'cwTeXYen';
   font-style: normal;
   font-weight: 500;
@@ -10,9 +10,9 @@
        url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff2) format('woff2'),
        url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.woff) format('woff'),
        url(//fonts.gstatic.com/ea/cwtexyen/v3/cwTeXYen-zhonly.ttf) format('truetype');
-}
+} */
 
-/* @import '~@sweetalert2/theme-borderless/borderless.scss'; */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400&display=swap');
 
 a:link, a:visited, a:hover, a:active {
   text-decoration: none;
@@ -22,15 +22,11 @@ i.fas, i.far {
   user-select: none;
 }
 
-/* html{
-  height: 100% !important;
-  position: relative !important;
-} */
-
 body {
   height: 750px;
   /* font-family: 'Chivo', 'cwTeXYen', Verdana;   */
-  font-family: 'Josefin Sans', 'cwTeXYen', Verdana;
+  font-family: 'Josefin Sans','Noto Sans TC', sans-serif, 'cwTeXYen', Verdana;
+
   position: relative;
  /* font-family: 'Kalam', Verdana;    need check */
 
@@ -1257,6 +1253,10 @@ align-items:flex-start
     color: #777777;
 }
 
+#btn-input{
+  font-size: 16px;
+}
+
 .panel .slidedown .glyphicon, .chat .glyphicon
 {
     margin-right: 5px;
@@ -1403,7 +1403,7 @@ font-size: 20px !important;
   margin-top: 30px;
   color: black;
   font-weight: 400;
-  font-size: 1.4375rem;
+  font-size: 1.1375rem;
 }
 
 @media(min-width: 1281px) {
