@@ -17,9 +17,7 @@ const socket = io((''), {
   reconnect: true
   // transports: ['websocket']
 });
-socket.on('rt-change', function (data) {
-  console.log("Receive 'rt-change' notification. data=" + JSON.stringify(data));
-});
+socket.emit('join', 'get');
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',

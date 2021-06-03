@@ -50,14 +50,25 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const redisAdapter = require('socket.io-redis');
 io.adapter(redisAdapter({ host: REDIS_HOST, port: 6379 }));
-io.emit('hello', 'to all clients');
-io.to('room42').emit('hello', "to all clients in 'room42' room");
 
-io.on('connection', (socket) => {
-  socket.broadcast.emit('hello', 'to all clients except sender');
-  socket.to('room42').emit('hello', "to all clients in 'room42' room except sender");
-  socket.on('hello', async (msg) => {
-    console.log(msg);
+const io2 = io.of('');
+io2.on('connection', (socket) => {
+  socket.on('message-all', (data) => {
+    console.log(data);
+    io2.emit('message-all', data);
+  });
+
+  socket.on('join', (room) => {
+    socket.join(room);
+    console.log(room);
+    io2.emit('message-all', 'Socket ' + socket.id + ' joined to room ' + room);
+  });
+
+  socket.on('message-room', (data) => {
+    const room = data.room;
+    const message = data.message;
+    console.log(data);
+    io2.to(room).emit('message-room', data);
   });
 });
 
