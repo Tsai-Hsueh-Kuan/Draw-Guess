@@ -47,6 +47,16 @@ socketCon(io);
 const redis = require('socket.io-redis');
 io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 
+const your_namespace_socket = io.of('');
+your_namespace_socket.on('connection', function (socket) {
+  socket.on('join', function (room) {
+    console.log('2');
+    socket.join(room); // log other socket.io-id's in the room
+    your_namespace_socket.adapter.clients([room], (err, clients) => {
+      console.log(clients);
+    });
+  });
+});
 // const redisClient = require('redis').createClient();
 // redisClient.publish('channelName', '123');
 
