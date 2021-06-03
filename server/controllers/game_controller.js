@@ -8,6 +8,11 @@ const getSingleGame = async (req, res) => {
   res.status(200).send(gameData);
 };
 
+const getSingleGameTest = async (req, res) => {
+  const gameData = await Game.getSingleGameTest(req.user.id, req.body.gameId);
+  res.status(200).send(gameData);
+};
+
 const updateHistory = async (req, res) => {
   await Game.updateHistory(req.body.gameId, req.user.id, req.body.record);
   res.status(200).send('done');
@@ -21,6 +26,11 @@ const checkAnswer = async (req, res) => {
 const getAnswer = async (req, res) => {
   const answer = await Game.getAnswer(req.body.answerId);
   res.status(200).send(answer);
+};
+
+const checkGame = async (req, res) => {
+  const data = await Game.checkGame(req.body.gameId);
+  res.status(200).send({ data: data });
 };
 
 const getcrawler = async (req, res) => {
@@ -70,8 +80,10 @@ const getcrawler = async (req, res) => {
 
 module.exports = {
   getSingleGame,
+  getSingleGameTest,
   updateHistory,
   checkAnswer,
   getAnswer,
-  getcrawler
+  getcrawler,
+  checkGame
 };

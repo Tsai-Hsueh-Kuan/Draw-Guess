@@ -39,6 +39,36 @@ const getSingleGame = async (id, type) => {
   }
 };
 
+const getSingleGameTest = async (id, gameId) => {
+  try {
+    const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? order by draw.history.record', gameId);
+    for (const i in historyCheck[0]) {
+      delete historyCheck[0][i].password;
+      if (historyCheck[0][i].photo) {
+        historyCheck[0][i].photo = IP + historyCheck[0][i].photo;
+      }
+    }
+
+    const gameCheck = await pool.query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.id = ?', gameId);
+    const data = {
+      game: gameCheck[0],
+      history: historyCheck[0]
+    };
+    return { data: data };
+  } catch (error) {
+    return error;
+  }
+};
+
+const checkGame = async (gameId) => {
+  try {
+    await pool.query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
+    return 'ok';
+  } catch (error) {
+    return error;
+  }
+};
+
 const updateHistory = async (gameId, userId, record) => {
   try {
     await pool.query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
@@ -81,8 +111,10 @@ const getcrawler = async (all) => {
 
 module.exports = {
   getSingleGame,
+  getSingleGameTest,
   updateHistory,
   checkAnswer,
   getAnswer,
-  getcrawler
+  getcrawler,
+  checkGame
 };

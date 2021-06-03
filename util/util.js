@@ -48,8 +48,32 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+const verifyTokenAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization; // Get the auth header value
+  const token = authHeader.replace('Bearer ', '');
+  if (token === 'null') {
+    console.log('please登入');
+    res.sendStatus(401);
+  } else {
+    jwt.verify(token, TOKEN_SECRET, async (err, result) => {
+      if (err) {
+        console.log('wrong token');
+        return res.sendStatus(403);
+      };
+      result = await User.getUserDetail(result.id);
+      if (result.name !== 'KUAN') {
+        console.log('not admin');
+        res.sendStatus(403);
+      }
+      req.user = result;
+      next();
+    });
+  }
+};
+
 module.exports = {
   upload,
   wrapAsync,
-  verifyToken
+  verifyToken,
+  verifyTokenAdmin
 };

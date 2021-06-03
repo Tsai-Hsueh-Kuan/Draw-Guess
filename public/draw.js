@@ -93,17 +93,6 @@ let colorNow = '#000000';
 let lineWidthNow = 5;
 let isRainbow = true;
 
-// const colorChoose = document.querySelector('#colorChoose');
-
-// colorChoose.addEventListener('change', function () {
-//   isRainbow = 0;
-//   rainbowColor.textContent = ('rainbow:OFF');
-//   rainbowColor.className = 'rainbowOff';
-//   ctx[canvasNum].strokeStyle = colorChoose.value;
-//   rainbowColor.style.backgroundColor = colorChoose.value;
-//   colorNow = colorChoose.value;
-// });
-
 const lineWidthRange = document.getElementById('lineWidthRange');
 lineWidthRange.oninput = function () {
   ctx[canvasNum].lineWidth = this.value;
