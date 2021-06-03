@@ -47,15 +47,15 @@ socketCon(io);
 const redis = require('socket.io-redis');
 io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 
-const redisClient = require('redis').createClient();
-redisClient.publish('channelName', '123');
+// const redisClient = require('redis').createClient();
+// redisClient.publish('channelName', '123');
 
-const redisSub = require('redis').createClient();
-redisSub.subscribe('channelName', 'moreChannels');
+// const redisSub = require('redis').createClient();
+// redisSub.subscribe('channelName', 'moreChannels');
 
-redisSub.on('message', function (channel, message) {
-  io.emit(channel, message);
-});
+// redisSub.on('message', function (channel, message) {
+//   io.emit(channel, message);
+// });
 
 // Page not found
 app.use(function (req, res, next) {
