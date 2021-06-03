@@ -44,19 +44,19 @@ const io = require('socket.io')(server, {
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
 
-const redis = require('redis').createClient();
-redis.subscribe('rt-change');
+// const redis = require('redis').createClient();
+// redis.subscribe('rt-change');
 
-io.on('connection', function (socket) {
-  socket.on('disconnect', function () {
-    console.log('A user disconnected');
-  });
+// io.on('connection', function (socket) {
+//   socket.on('disconnect', function () {
+//     console.log('A user disconnected');
+//   });
 
-  redis.on('message', function (channel, msg) {
-    console.log('123');
-    socket.emit('rt-change', msg);
-  });
-});
+//   redis.on('message', function (channel, msg) {
+//     console.log('123');
+//     socket.emit('rt-change', msg);
+//   });
+// });
 
 // Page not found
 app.use(function (req, res, next) {
