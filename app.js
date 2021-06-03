@@ -33,77 +33,35 @@ app.use('/api/' + API_VERSION,
 );
 
 // socket.io
-// const server = require('http').createServer(app);
-// const io = require('socket.io')(server, {
-//   cors: {
-//     origin: 'localhost:3000',
-//     methods: ['GET', 'POST'],
-//     credentials: true
-//   }
-// });
-// const { socketCon } = require('./util/socketcon');
-// socketCon(io);
-
-// const redis = require('socket.io-redis');
-// io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-
-const { createClient } = require('redis');
-const redisAdapter = require('@socket.io/redis-adapter');
-const pubClient = createClient({ host: REDIS_HOST, port: 6379 });
-const subClient = pubClient.duplicate();
-io.adapter(redisAdapter(pubClient, subClient));
-io.emit('hello', 'to all clients');
-io.to('room42').emit('hello', "to all clients in 'room42' room");
-
-io.on('connection', (socket) => {
-  socket.on('hello', (msg) => {
-    console.log(msg);
-  });
-  socket.broadcast.emit('hello', 'to all clients except sender');
-  socket.to('room42').emit('hello', "to all clients in 'room42' room except sender");
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'localhost:3000',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
 });
-// const io2 = io.of('');
+const { socketCon } = require('./util/socketcon');
+socketCon(io);
 
-// setTimeout(() => {
-//   io.emit('hi', 'all sockets');
-//   io2.emit('hi', 'all sockets');
-// }, 5000);
+const redis = require('socket.io-redis');
+io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 
-// io2.on('connection', (socket) => {
-//   socket.on('message-all', (data) => {
-//     console.log(data);
-//     io2.emit('message-all', data);
-//   });
+const redisClient = require('redis').createClient();
+redisClient.publish('channelName', '123');
 
-//   socket.on('hi', (data) => {
-//     console.log(data);
-//     io2.emit('message-all', data);
-//   });
+const redisSub = require('redis').createClient();
+redisSub.subscribe('channelName', 'moreChannels');
 
-//   socket.on('join', (room) => {
-//     socket.join(room);
-//     console.log(room);
-//     io2.emit('message-all', 'Socket ' + socket.id + ' joined to room ' + room);
-//   });
-
-//   socket.on('message-room', (data) => {
-//     const room = data.room;
-//     const message = data.message;
-//     console.log(data);
-//     io2.to(room).emit('message-room', data);
-//   });
-// });
+redisSub.on('message', function (channel, message) {
+  io.emit(channel, message);
+});
 
 // Page not found
 app.use(function (req, res, next) {
   res.status(404).redirect('/404.html');
 });
 
-io.on('hello', async (msg) => {
-  console.log(msg);
-});
 // Error handling
 app.use(function (err, req, res, next) {
   console.log(err);
