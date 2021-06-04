@@ -1,35 +1,35 @@
 require('dotenv').config();
 
-const Game = require('../models/game_model');
+const game = require('../models/game_model');
 const cheerio = require('cheerio');
 
 const getSingleGame = async (req, res) => {
-  const gameData = await Game.getSingleGame(req.user.id, req.body.type);
+  const gameData = await game.getSingleGame(req.user.id, req.body.type);
   res.status(200).send(gameData);
 };
 
 const getSingleGameTest = async (req, res) => {
-  const gameData = await Game.getSingleGameTest(req.user.id, req.body.gameId);
+  const gameData = await game.getSingleGameTest(req.user.id, req.body.gameId);
   res.status(200).send(gameData);
 };
 
 const updateHistory = async (req, res) => {
-  await Game.updateHistory(req.body.gameId, req.user.id, req.body.record);
+  await game.updateHistory(req.body.gameId, req.user.id, req.body.record);
   res.status(200).send('done');
 };
 
 const checkAnswer = async (req, res) => {
-  const answer = await Game.checkAnswer(req.body.answerId, req.body.answerCheck);
+  const answer = await game.checkAnswer(req.body.answerId, req.body.answerCheck);
   res.status(200).send(answer);
 };
 
 const getAnswer = async (req, res) => {
-  const answer = await Game.getAnswer(req.body.answerId);
+  const answer = await game.getAnswer(req.body.answerId);
   res.status(200).send(answer);
 };
 
 const checkGame = async (req, res) => {
-  const data = await Game.checkGame(req.body.gameId);
+  const data = await game.checkGame(req.body.gameId);
   res.status(200).send({ data: data });
 };
 
@@ -48,7 +48,7 @@ const getcrawler = async (req, res) => {
 
         if (weathers[0][0].length === 4) {
           console.log(weathers[0][0]);
-          Game.getcrawler(weathers[0][0]);
+          game.getcrawler(weathers[0][0]);
         }
 
         return;

@@ -1,9 +1,7 @@
 const url = new URLSearchParams(window.location.search);
 const type = url.get('type');
-let userId;
 let userName;
 let userPhoto;
-let userScore;
 let canvasAll;
 let i = 0;
 let gameStatus = 0;
@@ -41,10 +39,8 @@ fetch('/api/1.0/user/profile', {
       });
   }
 }).then(data => {
-  userId = data.data.id;
   userName = data.data.name;
   userPhoto = data.data.photo;
-  userScore = data.data.score;
   const info = document.getElementById('info');
 
   const name = document.createElement('div');

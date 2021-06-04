@@ -1,6 +1,5 @@
 require('dotenv').config();
 const mysql = require('mysql2/promise');
-// const multipleStatements = (process.env.NODE_ENV === 'test');
 const { NODE_ENV, DB_HOST, DB_USER, DB_PWD, DB_DB } = process.env;
 const env = NODE_ENV || 'production';
 

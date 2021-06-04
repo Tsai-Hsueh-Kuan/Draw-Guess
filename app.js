@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const { rateLimiterRoute } = require('./util/ratelimiter');
 const { PORT_TEST, PORT, NODE_ENV, API_VERSION, REDIS_HOST } = process.env;
@@ -31,7 +30,6 @@ app.use('/api/' + API_VERSION,
     require('./server/routes/game_route')
   ]
 );
-
 // socket.io
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
@@ -41,10 +39,8 @@ const io = require('socket.io')(server, {
     credentials: true
   }
 });
-
 const redis = require('socket.io-redis');
 io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
-
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
 

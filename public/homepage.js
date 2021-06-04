@@ -1,8 +1,6 @@
-
 let userId;
 let userName;
 let userPhoto;
-let userScore;
 let onlineUser;
 const signUp = document.getElementById('signUp');
 const signIn = document.getElementById('signIn');
@@ -13,9 +11,7 @@ const socket = io((''), {
     type: 'homePage',
     token: token
   },
-  // withCredentials: true,
   reconnect: true
-  // transports: ['websocket']
 });
 
 if (token) {
@@ -39,12 +35,9 @@ if (token) {
       userId = data.data.id;
       userName = data.data.name;
       userPhoto = data.data.photo;
-      userScore = data.data.score;
       signIn.style = 'display:none;';
       signUp.style = 'display:none;';
       signOutButton.style = 'display:block;';
-      // createGame.style = 'display:block;';
-      // singlePlay.style = 'display:block;';
       const info = document.getElementById('info');
       const name = document.createElement('div');
       name.textContent = `NAME: ${userName}`;
@@ -770,61 +763,6 @@ socket.on('onlineUserShow', async (msg) => {
   const onlineUserCount = document.getElementById('onlineUserCount');
   onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
 });
-
-// const quickStart = document.getElementById('quickStart');
-// quickStart.addEventListener('click', function () {
-//   const checkOnlineUser = onlineUser.filter(function (item) {
-//     return item !== userId;
-//   });
-
-//   if (roomList[0]) {
-//     const roomImgs = document.getElementById(`imgs${roomList[0]}`);
-//     if (roomImgs) {
-//       const roomUrl = roomImgs.alt;
-//       Swal.fire({
-//         timer: 2000,
-//         title: '加入遊戲中',
-//         icon: 'info',
-//         showConfirmButton: false
-//       });
-//       return window.location.assign(`${roomUrl}`);
-//     }
-//   } else if (checkOnlineUser[0]) {
-//     let room;
-//     for (let j = 1; j < 10000; j++) {
-//       const check = roomList.indexOf(`${j}`);
-//       if (check === -1) {
-//         room = j;
-//         break;
-//       }
-//     }
-//     Swal.fire({
-//       timer: 2000,
-//       title: '創建房間中',
-//       icon: 'info',
-//       showConfirmButton: false
-//     });
-//     const num = Math.floor(Math.random() * 2);
-//     if (num === 0) {
-//       return window.location.assign(`/draw.html?room=${room}&type=english`);
-//     } else {
-//       return window.location.assign(`/draw.html?room=${room}&type=idiom`);
-//     }
-//   } else {
-//     Swal.fire({
-//       timer: 2000,
-//       title: '單人模式加入中',
-//       icon: 'info',
-//       showConfirmButton: false
-//     });
-//     const num = Math.floor(Math.random() * 2);
-//     if (num === 0) {
-//       return window.location.assign('/single.html?type=english');
-//     } else {
-//       return window.location.assign('/single.html?type=idiom');
-//     }
-//   }
-// });
 
 socket.on('mainPageViewClose', async (msg) => {
   const roomId = msg.room;

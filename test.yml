@@ -3,8 +3,8 @@ config:
   http:
     pool: 20
   phases:
-    - duration: 10
-      arrivalRate: 8
+    - duration: 1200
+      arrivalRate: 40
 scenarios:
   - flow:
     - get:

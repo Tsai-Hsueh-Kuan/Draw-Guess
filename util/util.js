@@ -1,9 +1,5 @@
-// const crypto = require('crypto');
-// const fs = require('fs');
-// const path = require('path');
-// const port = process.env.PORT;
 const User = require('../server/models/user_model');
-const { TOKEN_SECRET } = process.env; // 30 days by seconds
+const { TOKEN_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
 const aws = require('aws-sdk');
 const multerS3 = require('multer-s3');

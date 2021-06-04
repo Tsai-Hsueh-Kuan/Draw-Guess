@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
-/* @import url('https://fonts.googleapis.com/css2?family=Chivo&display=swap'); */
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400&display=swap');
 
 a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
-/* for fontawesome */
+
 i.fas, i.far {
   user-select: none;
 }
@@ -43,10 +42,10 @@ header.index {
 header.index .title-container .title {
  display: block;
  text-align: center;
- font-size: 3rem;  /*   need check */
- color: #ffffff;  /*   need check */
- font-family: 'Kalam', Verdana;  /*   need check */
- font-weight: 600;  /*   need check */
+ font-size: 3rem;
+ color: #ffffff;
+ font-family: 'Kalam', Verdana;
+ font-weight: 600;
  margin-left: 50px;
  margin-top: 10px;
 }
@@ -54,14 +53,13 @@ header.index .title-container .title {
 #onlineUserCount{
   display: block;
   text-align: center;
-  font-size: 1.4rem;  /*   need check */
-  color: #ffffff;  /*   need check */
-  font-family: 'Kalam', Verdana;  /*   need check */
-  font-weight: 400;  /*   need check */
+  font-size: 1.4rem;
+  color: #ffffff;
+  font-family: 'Kalam', Verdana;
+  font-weight: 400;
   margin-left: auto;
   margin-right: 30px;
 }
-
 
 header.index .member-container {
  display: flex;
@@ -181,14 +179,6 @@ header.index .member-container .signup-form-btn:hover {
 .mainpart{
  margin-top: 10px;
 }
-/* 
-.mainPart{
-  box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
-}
-.rankPart{
-  box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5)
-} */
-
 
 #mainPart,
 #rankShow{
@@ -715,7 +705,6 @@ z-index: 1059;
   display: block;
  }
 #dashboardArea{
-  margin;
   display: flex;
   position: relative;
 }

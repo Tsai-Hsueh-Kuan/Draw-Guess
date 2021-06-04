@@ -10,7 +10,7 @@ let userId;
 let userName;
 let userPhoto;
 let userScore;
-let limitTime;
+let limitTime = 60;
 let roomId = [];
 let correctUserList = [];
 if (type === 'english') {
@@ -460,13 +460,8 @@ socket.on(`userCorrect${room}`, (msg) => {
   }, 3000);
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
   msgTdArea.className = 'msgTd correct';
-  // setTimeout(() => {
-  //   msgTdArea.classList.remove('correct');
-  // }, (limitTime - countIndex) * 1000);
   const updateHost = document.getElementById('hostScore');
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
-  // const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  // msgArea.textContent = `答對摟！ 加${msg.score}分`;
 });
 
 socket.on(`reportOk${room}`, (msg) => {
@@ -583,11 +578,6 @@ socket.on(`roomUserId${room}`, (msg) => {
     gameMsgTd.className = 'msgTd';
     gameMsgTd.id = 'msgTdHost';
     hostinfo.appendChild(gameMsgTd);
-
-    // const gameMsg = document.createElement('p');
-    // gameMsg.className = 'msg fas fa-heart';
-    // gameMsg.id = 'msg' + hostName;
-    // gameMsgTd.appendChild(gameMsg);
   }
   if (msg.roomUserId) {
     roomId = msg.roomUserId;
@@ -691,7 +681,6 @@ socket.on(`roomMsgShow${room}`, (msg) => {
 
 const Toast = Swal.mixin({
   toast: true,
-  // position: 'top-end',
   showConfirmButton: false,
   timer: 8000,
 
