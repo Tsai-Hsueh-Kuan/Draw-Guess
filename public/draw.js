@@ -296,6 +296,10 @@ getQuestion.addEventListener('click', function () {
     for (const i in correctEle) {
       correctEle[i].className = 'msgTd';
     }
+    const msg = document.getElementsByClassName('msg');
+    for (const i in msg) {
+      msg[i].textContent = '';
+    }
   } else {
     Swal.fire({
       timer: 3000,

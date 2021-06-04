@@ -236,6 +236,8 @@ answerCheckButton.addEventListener('click', function (ev) {
       }
     }).then((data) => {
       if (answerCheck === getAnswer) {
+        const audio = document.getElementById('mp3');
+        audio.play();
         // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
         title.textContent = `正確答案！ ${getAnswer}`;
         Toast.fire({
@@ -271,6 +273,8 @@ answerCheckButton.addEventListener('click', function (ev) {
           });
       } else {
         // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        const audio = document.getElementById('wrongMp3');
+        audio.play();
         Toast2.fire({
           icon: 'error',
           title: '猜錯了！',
@@ -342,6 +346,8 @@ $('#answerCheck').on('keypress', function (e) {
         }
       }).then((data) => {
         if (answerCheck === getAnswer) {
+          const audio = document.getElementById('mp3');
+          audio.play();
           // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
           title.textContent = `正確答案！ ${getAnswer}`;
           Toast.fire({
@@ -377,6 +383,8 @@ $('#answerCheck').on('keypress', function (e) {
             });
         } else {
           // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+          const audio = document.getElementById('wrongMp3');
+          audio.play();
           Toast2.fire({
             icon: 'error',
             title: '猜錯了！',
@@ -396,7 +404,6 @@ $('#answerCheck').on('keypress', function (e) {
         background: '#ffffff'
       });
     } else if (gameStatus === 2) {
-      // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
       Toast2.fire({
         icon: 'warning',
         title: '已經答對囉',

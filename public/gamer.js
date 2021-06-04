@@ -259,12 +259,16 @@ answerCheckButton.addEventListener('click', function (ev) {
           padding: '30px'
 
         });
+        const audio = document.getElementById('mp3');
+        audio.play();
         const answerShow = document.getElementById('answerShow');
         answerShow.textContent = `ANSWER: ${answerCheck}`;
         answerGet = answerCheck;
         gameStatus = 2;
       } else {
         // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+        const audio = document.getElementById('wrongMp3');
+        audio.play();
         Toast2.fire({
           icon: 'error',
           title: '猜錯了！',
@@ -329,12 +333,16 @@ $('#answerCheck').on('keypress', function (e) {
             padding: '30px'
 
           });
+          const audio = document.getElementById('mp3');
+          audio.play();
           const answerShow = document.getElementById('answerShow');
           answerShow.textContent = `ANSWER:${answerCheck}`;
           answerGet = answerCheck;
           gameStatus = 2;
         } else {
           // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
+          const audio = document.getElementById('wrongMp3');
+          audio.play();
           Toast2.fire({
             icon: 'error',
             title: '猜錯了！',
