@@ -1090,32 +1090,6 @@ playGame.addEventListener('click', function () {
   }
 });
 
-// singlePlay.addEventListener('click', function () {
-//   Swal.fire({
-//     title: '準備開始單人模式',
-//     input: 'select',
-//     inputOptions: {
-//       english: 'ENGLISH',
-//       idiom: '四字成語'
-//     },
-//     inputPlaceholder: '選擇您喜歡的題型',
-//     showCancelButton: true,
-//     inputValidator: (value) => {
-//       if (value === 'english') {
-//         return window.location.assign('/single.html?type=english');
-//       } else if (value === 'idiom') {
-//         return window.location.assign('/single.html?type=idiom');
-//       } else {
-//         Swal.fire({
-//           timer: 2000,
-//           title: '未選擇 取消！',
-//           showConfirmButton: false
-//         });
-//       }
-//     }
-//   });
-// });
-
 const owl = $('.owl-carousel');
 owl.owlCarousel({
   items: 1,

@@ -4,8 +4,6 @@ const protocol = window.location.protocol;
 const urlhost = window.location.host;
 const type = url.get('type');
 const room = url.get('room');
-const urlGamer = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
-const urlDraw = protocol + '//' + urlhost + '/draw.html?room=' + room + '&type=' + type;
 const urlAll = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type=' + type;
 
 const typeShow = document.getElementById('question');
@@ -210,11 +208,13 @@ socket.on(`answer${room}`, (msg) => {
   for (const i in correctEle) {
     correctEle[i].className = 'msgTd';
   }
+  const correctMsg = document.getElementsByClassName('msg');
+  for (const i in correctMsg) {
+    correctMsg[i].innerHTML = '';
+  }
 
   title.className = 'timePlaying';
-  // likeButton.className = 'like';
   gameDone = false;
-  // message.textContent = '請開始作答';
   socket.emit('checkPlayerInGame', { userId: userId, room: room });
 });
 
@@ -249,6 +249,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       answerLimit = true;
     }, 2000);
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
+
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
         // message.textContent = `正確答案！ ${answerCheck}`;
