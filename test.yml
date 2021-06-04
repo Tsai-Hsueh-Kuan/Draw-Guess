@@ -1,0 +1,11 @@
+config:
+  target: "http://0531onlydraw-126381337.us-east-2.elb.amazonaws.com"
+  http:
+    pool: 20
+  phases:
+    - duration: 10
+      arrivalRate: 8
+scenarios:
+  - flow:
+    - get:
+        url: "/api/1.0/user/testRate"

@@ -47,27 +47,6 @@ io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 
 const { socketCon } = require('./util/socketcon');
 socketCon(io);
-// const your_namespace_socket = io.of('');
-// your_namespace_socket.on('connection', function (socket) {
-//   io.to('room1').emit('some event');
-//   socket.on('join', function (room) {
-//     console.log('2');
-//     console.log(room);
-//     socket.join(room); // log other socket.io-id's in the room
-//     your_namespace_socket.adapter.clients([room], (err, clients) => {
-//       console.log(clients);
-//     });
-//   });
-// });
-// const redisClient = require('redis').createClient();
-// redisClient.publish('channelName', '123');
-
-// const redisSub = require('redis').createClient();
-// redisSub.subscribe('channelName', 'moreChannels');
-
-// redisSub.on('message', function (channel, message) {
-//   io.emit(channel, message);
-// });
 
 // Page not found
 app.use(function (req, res, next) {

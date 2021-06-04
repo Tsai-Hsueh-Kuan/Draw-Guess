@@ -113,10 +113,20 @@ const uploadPhoto = async (id, photo) => {
   }
 };
 
+const testRate = async () => {
+  try {
+    await pool.query('SELECT * FROM draw.canvas');
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
   getUserDetail,
   replacePhoto,
-  uploadPhoto
+  uploadPhoto,
+  testRate
 };

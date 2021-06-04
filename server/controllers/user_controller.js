@@ -93,6 +93,7 @@ const uploadPhoto = async (req, res) => {
 };
 
 const testRate = async (req, res) => {
+  await User.testRate();
   res.status(200).send({ ok: 'ok' });
 };
 
