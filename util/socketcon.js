@@ -160,6 +160,11 @@ cache.set('startTime', JSON.stringify({ data: [] }), 'NX', function (err) {
 
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
+    socket.on('test', (msg) => {
+      socket.emit('test', msg);
+      socket.broadcast.emit('test', msg);
+    });
+
     const inToken = socket.handshake.auth.token;
     const inRoom = socket.handshake.auth.room;
     const intype = socket.handshake.auth.type;

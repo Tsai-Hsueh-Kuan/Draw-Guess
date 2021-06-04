@@ -18,6 +18,14 @@ const socket = io((''), {
   // transports: ['websocket']
 });
 
+const test = document.getElementById('test');
+test.addEventListener('click', () => {
+  socket.emit('test', 'test');
+  socket.on('test', (msg) => {
+    console.log(msg);
+  });
+});
+
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',

@@ -41,12 +41,12 @@ const io = require('socket.io')(server, {
     credentials: true
   }
 });
-const { socketCon } = require('./util/socketcon');
-socketCon(io);
 
 const redis = require('socket.io-redis');
 io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 
+const { socketCon } = require('./util/socketcon');
+socketCon(io);
 // const your_namespace_socket = io.of('');
 // your_namespace_socket.on('connection', function (socket) {
 //   io.to('room1').emit('some event');

@@ -62,7 +62,7 @@ const getSingleGameTest = async (id, gameId) => {
 
 const checkGame = async (gameId) => {
   try {
-    await pool.query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
+    await pool.query('UPDATE draw.game SET need_check = 2 where id = ?', gameId);
     return 'ok';
   } catch (error) {
     return error;

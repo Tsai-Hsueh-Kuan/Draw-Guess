@@ -9,7 +9,7 @@ let canvasAll;
 let i = 0;
 let gameStatus = 0;
 let gameDone = true;
-let answerLimit = true;
+const answerLimit = true;
 let getAnswerId;
 let gameId;
 let getAnswer;
@@ -61,8 +61,6 @@ fetch('/api/1.0/user/profileAdmin', {
   return err;
 });
 
-const title = document.getElementById('title');
-// const message = document.getElementById('message');
 const start = document.getElementById('start');
 const checkGame = document.getElementById('checkGame');
 checkGame.addEventListener('click', function () {
@@ -132,6 +130,8 @@ start.addEventListener('click', function () {
         });
       } else {
         canvasAll = data.data.game;
+        console.log(canvasAll[0].need_check);
+        console.log(canvasAll[0].report);
         gameId = canvasAll[0].game_id;
         if (canvasAll[0].canvas_data) {
           getAnswerId = canvasAll[0].question_id;
@@ -142,8 +142,7 @@ start.addEventListener('click', function () {
           alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
         }
         gameStatus = 1;
-        title.textContent = ('遊戲開始');
-        title.className = 'timeSinglePlaying';
+
         // message.textContent = '請開始作答';
         const recordDiv = document.getElementById('record');
         recordDiv.innerHTML = '';
@@ -220,227 +219,14 @@ function startCountdown (interval) {
         }
       }).then((data) => {
         getAnswer = data.answer[0].question;
-        title.textContent = ('請按START GAME開始遊戲');
-        title.className = 'timeSingle';
-        // message.textContent = '請等待下一局';
+        const roomAnsDiv = document.getElementById('roomAnsDiv');
+        roomAnsDiv.textContent = getAnswer;
 
         gameDone = true;
       });
     }
   }, interval);
 }
-const answerCheckButton = document.getElementById('answerCheckButton');
-
-answerCheckButton.addEventListener('click', function (ev) {
-  const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
-  const answerElement = document.getElementById('answerCheck');
-  answerElement.value = '';
-  if (gameStatus === 1 && answerLimit) {
-    answerLimit = false;
-    setTimeout(() => {
-      answerLimit = true;
-    }, 2000);
-    const data = {
-      answerId: getAnswerId,
-      answerCheck: answerCheck
-    };
-    fetch('/api/1.0/game/answer', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-    }).then(function (response) {
-      if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
-      }
-    }).then((data) => {
-      if (data.answer) {
-        getAnswer = data.answer[0].question;
-        return getAnswer;
-      } else {
-        return getAnswer;
-      }
-    }).then((data) => {
-      if (answerCheck === getAnswer) {
-        // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
-        title.textContent = `正確答案！ ${getAnswer}`;
-        Toast.fire({
-          icon: 'success',
-          title: '太厲害了！',
-          text: `您的紀錄是${countIndex}`,
-          width: '400px',
-          padding: '30px',
-          background: '#FFFFFF'
-        });
-        gameStatus = 2;
-        i = 99999;
-
-        const historyData = {
-          record: countIndex,
-          gameId: gameId
-        };
-
-        fetch('/api/1.0/game/history', {
-          method: 'post',
-          body: JSON.stringify(historyData),
-          headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-        })
-          .then(function (response) {
-            if (response.status === 200) {
-              return response.json(); // 內建promise , send type need json
-            }
-          }).then(data => {
-            console.log('update record ok');
-          })
-          .catch(function (err) {
-            return err;
-          });
-      } else {
-        // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
-        Toast2.fire({
-          icon: 'error',
-          title: '猜錯了！',
-          width: '400px',
-          padding: '30px',
-          background: '#ffffff'
-        });
-      }
-    });
-  } else if (gameStatus === 0) {
-    // message.textContent = 'please wait for next game';
-    Toast2.fire({
-      icon: 'warning',
-      title: 'please wait for next game',
-      width: '400px',
-      padding: '30px',
-      background: '#ffffff'
-    });
-  } else if (gameStatus === 2) {
-    // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
-    Toast2.fire({
-      icon: 'warning',
-      title: '已經答對囉',
-      width: '400px',
-      padding: '30px',
-      background: '#ffffff'
-    });
-  } else if (!answerLimit) {
-    // message.textContent = '作答時間間隔太短';
-    Toast2.fire({
-      icon: 'warning',
-      title: '作答時間間隔太短',
-      width: '400px',
-      padding: '30px',
-      background: '#ffffff'
-    });
-  }
-  ev.preventDefault();
-}, false);
-
-$('#answerCheck').on('keypress', function (e) {
-  if (e.key === 'Enter' || e.keyCode === 13) {
-    const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
-    const answerElement = document.getElementById('answerCheck');
-    answerElement.value = '';
-    if (gameStatus === 1 && answerLimit) {
-      answerLimit = false;
-      setTimeout(() => {
-        answerLimit = true;
-      }, 2000);
-      const data = {
-        answerId: getAnswerId,
-        answerCheck: answerCheck
-      };
-      fetch('/api/1.0/game/answer', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-      }).then(function (response) {
-        if (response.status === 200) {
-          return response.json(); // 內建promise , send type need json
-        }
-      }).then((data) => {
-        if (data.answer) {
-          getAnswer = data.answer[0].question;
-          return getAnswer;
-        } else {
-          return getAnswer;
-        }
-      }).then((data) => {
-        if (answerCheck === getAnswer) {
-          // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
-          title.textContent = `正確答案！ ${getAnswer}`;
-          Toast.fire({
-            icon: 'success',
-            title: '太厲害了！',
-            text: `您的紀錄是${countIndex}`,
-            width: '400px',
-            padding: '30px',
-            background: '#ffffff'
-          });
-          gameStatus = 2;
-          i = 99999;
-
-          const historyData = {
-            record: countIndex,
-            gameId: gameId
-          };
-
-          fetch('/api/1.0/game/history', {
-            method: 'post',
-            body: JSON.stringify(historyData),
-            headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-          })
-            .then(function (response) {
-              if (response.status === 200) {
-                return response.json(); // 內建promise , send type need json
-              }
-            }).then(data => {
-              console.log('update record ok');
-            })
-            .catch(function (err) {
-              return err;
-            });
-        } else {
-          // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
-          Toast2.fire({
-            icon: 'error',
-            title: '猜錯了！',
-            width: '400px',
-            padding: '30px',
-            background: '#ffffff'
-          });
-        }
-      });
-    } else if (gameStatus === 0) {
-      // message.textContent = 'please wait for next game';
-      Toast2.fire({
-        icon: 'warning',
-        title: 'please wait for next game',
-        width: '400px',
-        padding: '30px',
-        background: '#ffffff'
-      });
-    } else if (gameStatus === 2) {
-      // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
-      Toast2.fire({
-        icon: 'warning',
-        title: '已經答對囉',
-        width: '400px',
-        padding: '30px',
-        background: '#ffffff'
-      });
-    } else if (!answerLimit) {
-      // message.textContent = '作答時間間隔太短';
-      Toast2.fire({
-        icon: 'warning',
-        title: '作答時間間隔太短',
-        width: '400px',
-        padding: '30px',
-        background: '#ffffff'
-      });
-    }
-  }
-});
 
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
