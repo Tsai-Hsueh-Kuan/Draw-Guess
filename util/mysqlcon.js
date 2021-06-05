@@ -10,7 +10,7 @@ const mysqlConfig = {
     password: DB_PWD,
     database: DB_DB,
     waitForConnections: true,
-    connectionLimit: 100
+    connectionLimit: 100000
   },
   development: {
     host: DB_HOST,
@@ -18,7 +18,7 @@ const mysqlConfig = {
     password: DB_PWD,
     database: DB_DB,
     waitForConnections: true,
-    connectionLimit: 100
+    connectionLimit: 100000
   },
   test: {
     host: DB_HOST,
@@ -26,7 +26,7 @@ const mysqlConfig = {
     password: DB_PWD,
     database: DB_DB,
     waitForConnections: true,
-    connectionLimit: 100
+    connectionLimit: 100000
   }
 };
 
