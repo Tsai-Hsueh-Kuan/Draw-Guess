@@ -1,10 +1,10 @@
 config:
-  target: "http://0531onlydraw-126381337.us-east-2.elb.amazonaws.com"
+  target: "https://drawguess.tw"
   http:
     pool: 20
   phases:
     - duration: 1200
-      arrivalRate: 40
+      arrivalRate: 30
 scenarios:
   - flow:
     - get:
