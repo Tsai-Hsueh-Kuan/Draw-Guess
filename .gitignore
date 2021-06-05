@@ -84,5 +84,6 @@ midterm*
 # Mac
 .DS_Store
 
-*test.yml
+# test.yml
+test.yml
 
