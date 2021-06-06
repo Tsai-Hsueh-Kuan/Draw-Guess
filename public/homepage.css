@@ -46,8 +46,8 @@ header.index .title-container .title {
  color: #ffffff;
  font-family: 'Kalam', Verdana;
  font-weight: 600;
- margin-left: 50px;
- margin-top: 10px;
+ margin-left: 40px;
+ margin-top: 0px;
 }
 
 #onlineUserCount{
@@ -1439,7 +1439,11 @@ margin-bottom: 10px;
   margin-top: 10px;
 }
 
-
+#favicon{
+  height: 40px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 @media(min-width: 1281px) {
 
   .rowMain,
