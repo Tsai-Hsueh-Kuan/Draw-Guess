@@ -1260,6 +1260,11 @@ th{
   background-color: #ffffff !important;
   border-color: #3f53d9 !important
 }
+.panel-heading-msg{
+  color:  white !important;
+  background-color: #3f53d9 !important;
+  border-color: #3f53d9 !important
+}
 
 .panel-primary {
   border-color:  #3f53d9 !important

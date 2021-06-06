@@ -626,6 +626,13 @@ $('#btn-input').on('keypress', function (e) {
 });
 const chat = document.getElementById('chat');
 socket.on(`roomMsgShow${room}`, (msg) => {
+  if (msg.userName !== userName) {
+    const accordion = document.getElementById('accordion');
+    accordion.className = 'panel-heading panel-heading-msg';
+    setTimeout(() => {
+      accordion.className = 'panel-heading';
+    }, 2000);
+  }
   const li = document.createElement('li');
   li.className = 'left clearfix';
   chat.appendChild(li);
@@ -659,8 +666,10 @@ socket.on(`roomMsgShow${room}`, (msg) => {
 
   const newDate = new Date();
   const hour = newDate.getHours();
-  const mins = newDate.getMinutes();
-
+  let mins = newDate.getMinutes();
+  if (mins < 10) {
+    mins = '0' + mins;
+  }
   const small = document.createElement('small');
 
   small.textContent = hour + ':' + mins;
