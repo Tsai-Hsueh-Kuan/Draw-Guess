@@ -710,27 +710,11 @@ z-index: 1059;
 }
 
 
- /* .main{
-   justify-content: center;
-   align-items: center;
- } */
  .msg{
   padding: 0%;
 }
 
-/* .correct {
-  position: relative;
-}
-.correct:before {
-  content : "";
-  display: block;
-  position: absolute;
-  background-image: url("./images/correctGreen.png") !important;
-  background-size: 50px 50px;
-  background-repeat: no-repeat;
-  background-position: 100% 50% ;
-  opacity:0.6;
-} */
+
 #room-tab,
 #rules-tab{
   border: #d7d7d7 1px solid !important;

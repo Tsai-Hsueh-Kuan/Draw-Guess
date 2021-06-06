@@ -1,8 +1,8 @@
 require('dotenv').config();
 const { NODE_ENV, RATE_LIMIT_WINDOW, RATE_LIMIT_COUNT } = process.env;
 const Cache = require('./cache');
-// const QUOTA = (NODE_ENV === 'test' ? 10000 : (RATE_LIMIT_COUNT || 10));
-const QUOTA = 100000000000;
+const QUOTA = (NODE_ENV === 'test' ? 10000 : (RATE_LIMIT_COUNT || 10));
+// const QUOTA = 100000000000;
 const WINDOW = (RATE_LIMIT_WINDOW || 1);
 
 function rateLimiter (token) {
