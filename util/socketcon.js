@@ -220,6 +220,12 @@ const socketCon = (io) => {
             socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
             socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
           }
+          if (roomUserId[inRoom]) {
+            if (roomUserId[inRoom].indexOf(verifyHost.id) !== -1) {
+              socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+              socket.broadcast.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+            }
+          }
           const userIdGET = await promisifyget('userId');
           const userId = JSON.parse(userIdGET).data;
           if (userId[inRoom]) {
