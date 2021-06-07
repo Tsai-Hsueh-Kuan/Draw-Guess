@@ -4,7 +4,7 @@ config:
     pool: 200
   phases:
     - duration: 6000
-      arrivalRate: 8
+      arrivalRate: 1
 scenarios:
   - flow:
     - get:
