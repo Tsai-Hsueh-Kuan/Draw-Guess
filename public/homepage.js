@@ -634,18 +634,20 @@ socket.on('mainPageView', async (msg) => {
 
 const roomTab = document.getElementById('room-tab');
 roomTab.addEventListener('click', function () {
-  if (roomList[0]) {
-    const noRoom = document.getElementById('noRoom');
-    noRoom.className = 'haveRoom';
-  } else {
-    Swal.fire({
-      timer: 3000,
-      title: '目前無房間可以加入',
-      icon: 'warning',
-      showConfirmButton: false
-    });
-    const noRoom = document.getElementById('noRoom');
-    noRoom.className = 'noRoom';
+  if (roomList) {
+    if (roomList[0]) {
+      const noRoom = document.getElementById('noRoom');
+      noRoom.className = 'haveRoom';
+    } else {
+      Swal.fire({
+        timer: 3000,
+        title: '目前無房間可以加入',
+        icon: 'warning',
+        showConfirmButton: false
+      });
+      const noRoom = document.getElementById('noRoom');
+      noRoom.className = 'noRoom';
+    }
   }
 });
 
