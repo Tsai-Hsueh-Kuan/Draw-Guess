@@ -522,7 +522,7 @@ socket.on('mainPageView', async (msg) => {
   }
   const imgs = document.createElement('a');
   imgs.id = `imgs${roomId}`;
-  imgs.className = 'imgs col-10';
+  imgs.className = 'imgs col-10 homePageImgs';
   imgs.alt = `/gamer.html?room=${roomId}&type=${roomType}`;
   imgs.setAttribute('href', `/gamer.html?room=${roomId}&type=${roomType}`);
   room.appendChild(imgs);

@@ -842,6 +842,10 @@ padding:3px */
  flex-direction: column;
 }
  
+.homePageImgs:hover{
+  -webkit-filter:brightness(.7);
+  background-color:rgba(150,150,150,0.1)
+}
 
 #imgs{
  border: 1px solid #999;
