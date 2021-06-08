@@ -3,13 +3,17 @@ const { upload } = require('../../util/util');
 const cpUpload = upload.single('photo');
 const {
   wrapAsync,
-  verifyToken
+  verifyToken,
+  verifyTokenAdmin
 } = require('../../util/util');
 
 const {
   signUp,
   signIn,
-  getUserProfile
+  getUserProfile,
+  replacePhoto,
+  uploadPhoto,
+  testRate
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
@@ -20,5 +24,17 @@ router.route('/user/signin')
 
 router.route('/user/profile')
   .get(verifyToken, wrapAsync(getUserProfile));
+
+router.route('/user/profileAdmin')
+  .get(verifyTokenAdmin, wrapAsync(getUserProfile));
+
+router.route('/user/replacePhoto')
+  .post(verifyToken, cpUpload, wrapAsync(replacePhoto));
+
+router.route('/user/uploadPhoto')
+  .post(verifyToken, cpUpload, wrapAsync(uploadPhoto));
+
+router.route('/user/testRate')
+  .get(wrapAsync(testRate));
 
 module.exports = router;

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="./images/favicon.png" />
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link rel="stylesheet" href="/reset.css">
+  <link rel="stylesheet" href="/homepage.css">
+  <title>Admin | Draw & Guess</title>
+</head>
+<body>
+  <div class="padding2">
+    <header class="index">
+      <div class="title-container">
+        <a href="/" class="title">Draw<img src="./images/favicon.png" alt="favicon" id="favicon">Guess</a href="/">
+     
+      </div>
+      <div class="member-container">
+        <button type="button" class="singleButton signup-form-btn button" id="leave">LEAVE <i class="fas fa-door-open"></i></button>    
+        <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
+      </div>
+    </header>
+
+    <div class="container-fluid main mainpart" id="main">
+      <div class="row rowMain rowGame">
+        <div class="mainPart col-7 container-fluid" id="mainPart">
+
+
+          <div id="startDiv">
+            <div id="questionData">
+              <input type="text" id="gameInput">
+            
+              <div id="question" class="question"></div>
+            
+                <button id="start" class="singleStart">START</button>  
+
+                <button id="checkGame" class="singleStart">MARK</button>  
+         
+            </div>
+
+           
+          </div>
+
+          <div id="dashboardArea">
+            <!-- <h1 id="title" class="timeSingle">請按START GAME開始遊戲</h1> -->
+            <div id="imgs"></div>
+          </div>
+
+          <div id="roomAnsDiv">
+            <div id="needCheck"></div>
+            <div id="reportCheck"></div>
+            <!-- <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區">
+            <button id="answerCheckButton" class="form-control">確認   <i class="fas fa-paper-plane"></i></button> -->
+          </div>
+
+        </div>
+
+        <div class="rankPart col-4" id="rankShow">
+          <div class="tableDivSingle">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">玩家</th>
+                  <th scope="col">紀錄 筆劃</th>
+                </tr>
+              </thead>
+              <tbody class="record" id="record"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="index">
+      <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+    </footer>
+
+  </div>
+        
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+        <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
+        <!-- <script src="/all.min.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/singleCheck.js"></script>
+</body>
+</html>

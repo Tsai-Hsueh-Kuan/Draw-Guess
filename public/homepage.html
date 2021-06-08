@@ -4,106 +4,245 @@
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>User sign up</title>
-     
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
-<link rel="stylesheet" href="/homepage.css">
+      <link rel="shortcut icon" href="./images/favicon.png" />
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="/reset.css">
+      <link rel="stylesheet" href="/homepage.css">
+      <link rel="stylesheet" href="/mainpage.css">
+      <title>Welcome | Draw & Guess</title>
 </head>
 <body>
-  <!-- <nav class="navbar navbar-dark bg-dark nav justify-content-end">
-  <ul class="nav justify-content-end">
-    <li class="nav-item">
-      <button type="button" class="btn btn-primary test" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign Up</button>
-    </li>
-    <li class="nav-item">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Sign In</button>
-    </li>
-    <li class="nav-item">
-      <button id="exampleModal2">Sign Out</button>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-    </li>
-  </ul>
-</nav> -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light navbar navbar-dark bg-dark nav justify-content-end">
-  <div class="justify-content-end">
-  <div class="navbar-brand">
-        <button type="button" class="btn btn-primary test" data-bs-toggle="modal" data-bs-target="#exampleModal">Sign Up</button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">Sign In</button>
-        <button type="button" class="btn btn-primary" id="exampleModal2">Sign Out</button>
-        
-  </div>
-</div>
-</nav>
-<div>user info</div>
-<div class="info" id="info"></div>
-<div>rank</div>
-<div class="rank" id="rank"></div>
+  <div class="padding2">
+    <header class="index">
+      <div class="title-container">
+        <a href="/" class="title">Draw<img src="./images/favicon.png" alt="favicon" id="favicon">Guess</a href="/">
+          
+      </div>
+      <div id="onlineUserCount" class="signUpButton button">
+        <!-- 在線人數：0人 -->
+      </div>
+      <div class="member-container">
+        <button type="button" class="createButton signup-form-btn button" id="playGame">PLAY GAME <i class="fas fa-arrow-right"></i></button>
 
-      <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Open modal for @getbootstrap</button>
-       -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">註冊</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form name="signUpForm">
-                <div class="mb-3">
-                  <label for="recipient-name" class="col-form-label">NAME:</label>
-                  <input type="text" name="name" class="form-control" id="recipient-name1">
+        <button type="button" class="signUpButton signup-form-btn button" id="signUp">SIGN UP <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="signInButton signin-form-btn button" id="signIn">SIGN IN <i class="fas fa-arrow-right"></i></button>
+ 
+        <!-- <button type="button" class="createButton signup-form-btn button" id="createGame">CREATE GAME <i class="fas fa-arrow-right"></i></button>
+        <button type="button" class="singleButton signup-form-btn button" id="singlePlay">SINGLE PLAY <i class="fas fa-arrow-right"></i></button> -->
+        <button type="button" class="signOutButton signout-btn button" id="exampleModal2">SIGN OUT</button>
+        <div class="info signup-btn item" id="info"><img class="userPhoto userPhotoHome" id="userPhoto" src="./images/member2.png"></div>
+      </div>
+    </header>
+
+    <div class="container-fluid main homeMainpart">
+      <div class="row homerow">
+        <div class=" col-7 container-fluid homePart tabPart">
+          <div class="mainTableDiv">
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link active" id="rules-tab" data-bs-toggle="tab" href="#rules" role="tab" aria-controls="rules" aria-selected="false">INTRODUCTION</a>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                      <a class="nav-link " id="room-tab" data-bs-toggle="tab" href="#room" role="tab" aria-controls="room" aria-selected="true">ROOM LIST</a>
+                    </li>
+                   
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+
+                  <div class="tab-pane fade show active" id="rules" role="tabpanel" aria-labelledby="rules-tab">
+
+                    <div class="owl-carousel owl-theme">
+
+                        <div class="item">
+                          <h4>連線模式</h4> 
+                          <video autoplay muted loop class="rule">
+                            <source src="https://d3cek75nx38k91.cloudfront.net/draw/rules/draw.mov" type="video/mp4" >
+                          </video> 
+                          <div class="itemMsg">Draw & Guess 與在線玩家一同遊戲！</div>
+                        </div>
+
+                        <div class="item">
+                          <h4>單人模式</h4> 
+                          <video autoplay muted loop class="rule">
+                            <source src="https://d3cek75nx38k91.cloudfront.net/draw/rules/singleMode.mov" type="video/mp4" >
+                          </video> 
+                          <div class="itemMsg">挑戰紀錄榜上 其他玩家的紀錄！</div>
+                        </div>
+
+                        <!-- <div class="item">
+                          <h4>積分系統</h4> 
+                          <video autoplay muted loop class="rule">
+                            <source src="./images/rules/report.mov" type="video/mp4" >
+                          </video> 
+                          <div class="itemMsg">快速答題 盡早回答正確答案 來獲得更多分數！</div>
+                        </div> -->
+
+                        <div class="item">
+                          <h4>檢舉功能</h4> 
+                          <video autoplay muted loop class="rule">
+                            <source src="https://d3cek75nx38k91.cloudfront.net/draw/rules/report.mov" type="video/mp4" >
+                          </video> 
+                          <div class="itemMsg">不可以將答案直接寫出來 這是犯規的喔！</div>
+                        </div>
+
+                        <div class="item">
+                          <h4>更換頭貼</h4>  
+                          <video autoplay muted loop class="rule">
+                            <source src="https://d3cek75nx38k91.cloudfront.net/draw/rules/replacePhoto.mov" type="video/mp4">
+                          </video>
+                          <!-- <img src="./images/rules/replacePhoto.gif" alt="gif"> -->
+                          <div class="itemMsg">點擊右上角頭像 選擇喜歡圖片當作頭貼 也可以上傳照片喔！</div>
+                        </div>                   
+
+                    </div>
+
+                    
+              
+
+                     
+              
+                    <div class="feature-item-container">
+
+                
+
+                      <div class="feature-item">
+                        <div class="icon-container">
+                          <i class="fas fa-shapes"></i>
+                        </div>
+                        <div class="feature-title">
+                          <span>Learning through playing</span>
+                          <br>
+                          <span>Anywhere</span> 
+                        </div>
+                        <div class="feature-text">
+                          <span>
+                            <!-- 123 -->
+                          </span>
+                        </div>
+                      </div>
+
+           
+                      <div class="feature-item">
+                        <div class="icon-container">
+                          <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-title">
+                          <span>Enjoy a game with</span>
+                          <br>
+                          <span>Anyone</span> 
+                        </div>
+                        <div class="feature-text">
+                          <span>
+                            <!-- 123 -->
+                          </span>
+                        </div>
+                      </div> 
+
+                      <div class="feature-item">
+                        <div class="icon-container">
+                          <i class="fas fa-chalkboard"></i>
+                        </div>
+                        <div class="feature-title">
+                          <span>Play a game</span>
+                          <br>
+                          <span>Anytime</span> 
+                        </div>
+                        <div class="feature-text">
+                          <span>
+                            <!-- Single-player mode is available, and you can start a game by yourself challenging the best record. -->
+                          </span>
+                        </div>
+                      </div>
+               
+                           
+
+                    </div>
+              
+                    
+
+
+
+                    
+
+                  </div>
+
+                  <div class="tab-pane fade " id="room" role="tabpanel" aria-labelledby="room-tab">
+                      
+                      
+                      <div id="startOption">
+
+                        <!-- <button class="startOptionButton" id="quickStart">QUICK START<i class="fas fa-arrow-right"></i></button> -->
+                        <div id="joinRoom">JOIN ROOM</div>
+                        <div class="optionInputButton" id="roomIdSearchDiv">
+                          <!-- <div>By ID</div> -->
+                          <input class="searchInput" id="roomIdSearch" placeholder="ROOM ID" maxlength="5" style="width: 180px;">
+                          <button class="startOptionButton" id="roomIdJoin">JOIN</button> 
+                        </div>
+
+                        <div class="optionInputButton" id="hostNameSearchDiv">
+                          <!-- <div>By Name</div> -->
+                          <input class="searchInput" id="hostNameSearch" placeholder="HOST" maxlength="10" style="width: 180px;">
+                          <button class="startOptionButton" id="hostNameJoin"> JOIN</button> 
+                        </div>
+                        
+                      </div>
+                      <!-- <img id='noRoom' src="./images/cow.jpeg" alt="just a picture" width="300px"> -->
+                      <div id="noRoom">
+                        <div class="noRoomDiv">
+                          噢！ 看起來沒有房間可以加入... 試試自己創建！  <button type="button" class="createGame" id="createGame">CREATE GAME <i class="fas fa-marker"></i></button>
+                    
+               
+                        </div>
+                      </div>
+                      
+                      <div id="mainPart" class="homePageMainPart"></div>
+
+                  </div>
+
                 </div>
-                <div class="mb-3">
-                  <label for="message-text" class="col-form-label">PASSWORD:</label>
-                  <input type="password" class="form-control" name="password" id="message-text1"></textarea>
-                </div>
-                <div class="mb-3">
-                  <label for="message-text" class="col-form-label">PHOTO:</label>
-                  <input type="file" name="photo" name="photo" class="form-control" id="photo"></textarea>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" id="signUpButton" class="btn btn-primary">Send message</button>
-            </div>
+          </div>
+        </div>
+        
+        <div class=" col-3 homePart" id="homeRankShow"><div">
+          <div class="mainTableDiv">
+            <table class="table">
+              <thead>
+                <tr class="trTop">
+                  <!-- <div class="tableTitle"> -->
+                    <th scope="col" id="thRank" >#RANK</th>
+                    <th scope="col" id="thName">NAME</th>
+                    <th scope="col" id="thScore">SCORE</th>
+                    <th scope="col" id="thPhoto">PHOTO</th>
+                  <!-- </div> -->
+                </tr>
+              </thead>
+              <tbody class="rank" id="rank"></tbody>
+            </table>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">登入</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form name="signInForm">
-                    <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">NAME:</label>
-                      <input type="text" name="name" class="form-control" id="recipient-name">
-                    </div>
-                    <div class="mb-3">
-                      <label for="message-text" class="col-form-label">PASSWORD:</label>
-                      <input type="password" class="form-control" name="password" id="message-text"></textarea>
-                    </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" id="signInButton" class="btn btn-primary">Send message</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <script src="/socket.io/socket.io.js"></script>
+    <footer class="index" id="footer">
+      <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+    </footer>
+
+  </div>
+
+      <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+      <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+      <link rel="stylesheet" href="/owl/owl.carousel.min.css">
+      <link rel="stylesheet" href="/owl/owl.theme.default.min.css">
+      <script src="/owl/owl.carousel.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
       <script src="homepage.js"></script>
-      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8" crossorigin="anonymous"></script>
-</body>
+
+    </body>
 </html>

@@ -4,30 +4,175 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-  <link rel="stylesheet" href="/draw.css">
-  <title>game</title>
+  <link rel="shortcut icon" href="./images/favicon.png" />
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <link rel="stylesheet" href="/reset.css">
+  <link rel="stylesheet" href="/homepage.css">
+  <title>Guess | Draw & Guess</title>
 </head>
 <body>
-  <div>user info-----</div>
-  <div class="info" id="info"></div>
-  <br>
-  <div>host-----</div>
-  <div id="host" class="host"></div>
-  <br>
-  <div>player list-----</div>
-  <div id="playerList" class="playerList"></div>
-  <h1 id="title">準備開始</h1>
-  <h4 id="message">please wait next game</h1>
-    <div id="imgs"></div>
-    <form id="answer">
-      <input type="text" id="answerCheck">
-      <input type="submit">
-    </form>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <!-- <a id="save" href="#" class="color-btn-green">Save Canvas</a> -->
-</body>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/gamer.js"></script>
+  <div class="padding2">
 
+   
+    <header class="index">
+      
+          <div class="title-container">
+            <a href="/" class="title">Draw<img src="./images/favicon.png" alt="favicon" id="favicon">Guess</a href="/">
+     
+          </div>
+          <div id="onlineUserCount" class="signUpButton button">
+          </div>
+          <div class="member-container">
+      
+            <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-user-plus"></i></button>
+            <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE <i class="fas fa-door-open"></i></button>  
+            <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="./images/member2.png"></div>
+          </div>
+    
+    </header>
+   
+
+    <div class="container-fluid main mainpart" id="main">
+      <div class="row rowMain rowGame">
+        <div class="mainPart col-7" id="mainPart">
+
+          <div id="startDiv">
+            <div id="questionData">
+              <div class="question">題庫：</div>
+              <div id="question" class="question"></div>
+                <div class="stage">
+                    <div class="heart" id="heart"></div>
+                </div>
+              <button id="report" class="form-control">report  <i class="fas fa-exclamation-triangle"></i></button>
+           
+            </div>
+          </div>
+
+          <div id="dashboardArea">
+            <div id="answerShow"></div>
+            <h1 id="title" class="time">等待開始下局遊戲</h1>
+            <div id="imgs"></div>
+          </div>
+
+          <div id="roomAnsDiv">
+            <input type="text" id="answerCheck" class="form-control" placeholder="作答輸入區" maxlength="20">
+            <button id="answerCheckButton" class="form-control">確認  <i class="fas fa-paper-plane"></i></button>
+          </div>
+        
+          
+        </div>
+        <div class="rankPart col-4" id="rankShow">
+
+          <div class="tableDivGameHost">
+            <table class="table">
+              <thead>
+                <tr>
+                    <th scope="col" class="colPhoto"></th>
+                    <th scope="col" class="colNameHost">房主</th>
+                    <th scope="col" class="colScore">分數</th>
+                    <th scope="col" class="colGuess">喜歡</th>
+                </tr>
+              </thead>
+              <tbody id="host" class="host"></tbody>
+            </table>
+          </div>
+
+      
+          <div class="tableDivGame">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="colPhoto"></th>
+                  <th scope="col" class="colName">玩家</th>
+                  <th scope="col" class="colScore">分數</th>
+                  <th scope="col" class="colGuess">答題 猜測</th>
+                </tr>
+              </thead>
+              <tbody class="playerList" id="playerList"></tbody>
+            </table>
+          </div>
+
+            
+                   
+        </div>
+      </div>
+    </div>
+   
+
+ 
+
+  <div class="container" style="width: 30%; position: fixed;left: 70%; bottom: 0%; z-index: 200;">
+    <div class="row">
+      <div>
+        <div class="panel panel-primary" style="padding:0%;">
+              <div class="panel-heading" id="accordion">
+                  <span class="glyphicon glyphicon-comment"></span> Chat
+                  <div class="btn-group pull-right">
+                      <a type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                          <span class="glyphicon glyphicon-chevron-up"></span>
+                      </a>
+                  </div>
+              </div>
+          <div class="panel-collapse collapse" id="collapseOne">
+            <div class="panel-body">
+                <ul id="chat" class="chat">
+
+                    <li class="right clearfix"><span class="chat-img pull-right"><img src="./images/handsome.jpg" alt="HsuehKuan" class="img-circle" /></span>
+                        <div class="chat-body clearfix">
+                            <div class="header">
+                                <small class=" text-muted"><i class="	far fa-comment-alt"></i>系統訊息</small>
+                                <strong class="pull-right primary-font">HsuehKuan</strong>
+                            </div>
+                            <p>
+                              請不要在聊天室告訴別人正確答案喔～～    良好的遊戲風氣需要大家努力 祝遊戲愉快
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <div class="input-group">
+                    <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." maxlength="29" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-warning btn-sm" id="btn-chat">Send</button>
+                    </span>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+   </div>
+ </div> 
+
+  <footer class="index">
+    <div class="copyright">Copyright © 2021 HsuehKuan All rights reserved.</div>
+  </footer>
+</div>
+<audio controls id="mp3" style="display: none;">
+  <source src="https://d3cek75nx38k91.cloudfront.net/draw/622.wav" type="audio/ogg">
+  <source src="https://d3cek75nx38k91.cloudfront.net/draw/622.wav" type="audio/mpeg">
+</audio>
+<audio controls id="wrongMp3" style="display: none;">
+  <source src="https://d3cek75nx38k91.cloudfront.net/draw/12607.wav" type="audio/ogg">
+  <source src="https://d3cek75nx38k91.cloudfront.net/draw/12607.wav" type="audio/mpeg">
+</audio>
+<script type="text/javascript">
+  function copyUrl() {
+      var input = document.getElementById("text");
+      input.select(); 
+      document.execCommand("copy");
+  }
+</script>
+  
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+    <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/gamer.js"></script>
+</body>
 </html>

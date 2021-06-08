@@ -1,9 +1,19 @@
 let userId;
 let userName;
 let userPhoto;
-let userScore;
-const button = document.getElementsByClassName('btn');
+let onlineUser;
+const signUp = document.getElementById('signUp');
+const signIn = document.getElementById('signIn');
 const token = localStorage.getItem('token');
+const socket = io((''), {
+  auth: {
+    room: 'homePage',
+    type: 'homePage',
+    token: token
+  },
+  reconnect: true
+});
+
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',
@@ -14,166 +24,1062 @@ if (token) {
         return response.json(); // 內建promise , send type need json
       } else if (response.status === 403) {
         localStorage.removeItem('token');
-        sweetAlert('登入逾期！', '請重新登入', 'error', { button: { text: 'Click Me!' } })
+        Swal.fire('登入逾期！', '請重新登入', 'error')
           .then(() => {
             return window.location.assign('/');
           });
+      } else if (response.status === 401) {
+        console.log('尚未登入');
       }
     }).then(data => {
       userId = data.data.id;
       userName = data.data.name;
       userPhoto = data.data.photo;
-      userScore = data.data.score;
-      button[0].style = 'display:none;';
-      button[1].style = 'display:none;';
+      signIn.style = 'display:none;';
+      signUp.style = 'display:none;';
       signOutButton.style = 'display:block;';
       const info = document.getElementById('info');
-
       const name = document.createElement('div');
       name.textContent = `NAME: ${userName}`;
+      name.className = 'userName hover';
       info.appendChild(name);
-
-      const photo = document.createElement('img');
+      const photoTd = document.createElement('td');
+      info.appendChild(photoTd);
+      const photo = document.getElementById('userPhoto');
+      photo.remove();
+      const newPhoto = document.createElement('img');
+      newPhoto.id = 'userPhotoSignIn';
+      newPhoto.className = 'userPhoto';
       if (userPhoto) {
-        photo.setAttribute('src', `${userPhoto}`);
+        newPhoto.setAttribute('src', `${userPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member.png');
+        newPhoto.setAttribute('src', './images/member2.png');
       }
-      photo.style.width = '5%';
-      info.appendChild(photo);
+      photoTd.appendChild(newPhoto);
+
+      newPhoto.addEventListener('click', async function () {
+        const inputOptions = new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({
+              'member2.png': '<img src="./images/member2.png" class="userPhotoReplace" >',
+              'chipmunk.jpeg': '<img src="./images/chipmunk.jpeg" class="userPhotoReplace" >',
+              'cow.jpeg': '<img src="./images/cow.jpeg" class="userPhotoReplace" >',
+              'dog.jpeg': '<img src="./images/dog.jpeg" class="userPhotoReplace" >',
+              'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhotoReplace" >',
+              'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhotoReplace" >',
+              'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhotoReplace" >',
+              upload: '<div id="uploadText" >上傳</div>'
+            });
+          }, 1000);
+        });
+
+        const { value: photo } = await Swal.fire({
+          title: 'CHANGE PHOTO',
+          input: 'radio',
+          width: '1100px',
+          inputOptions: inputOptions,
+          inputValidator: (value) => {
+            if (!value) {
+              return 'You need to choose something!';
+            }
+          }
+        });
+
+        if (photo) {
+          if (photo === 'upload') {
+            Swal.fire({
+              title: '上傳新的頭像',
+              html:
+              '<form enctype="multipart/form-data" method="POST" name="file">' +
+              '<input type="file" name="photo">' +
+              '</form>'
+
+            }).then(function (result) {
+              const file = document.forms.namedItem('file');
+              const formData = new FormData(file);
+              if (result.isConfirmed) {
+                if (file) {
+                  fetch('/api/1.0/user/uploadPhoto', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { authorization: `Bearer ${token}` }
+                  }).then(function (response) {
+                    if (response.status === 200) {
+                      return response.json();
+                    } else if (response.status === 429) {
+                      Swal.fire({
+                        timer: 5000,
+                        title: 'Too Many Requests',
+                        icon: 'error'
+                      });
+                    } else if (response.status === 400) {
+                      return response.json();
+                    } else if (response.status === 403) {
+                      return response.json();
+                    } else if (response.status === 500) {
+                      return response.json();
+                    }
+                  }).then(data => {
+                    if (data.ok) {
+                      Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: '您頭像已更新',
+                        showConfirmButton: false,
+                        timer: 1500
+                      });
+                      const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
+                      const newPhoto = document.getElementById('userPhotoSignIn');
+                      if (userinfoPhotoElement) {
+                        userinfoPhotoElement.setAttribute('src', `${data.photo}`);
+                      }
+
+                      newPhoto.setAttribute('src', `${data.photo}`);
+                    }
+                  });
+                }
+              }
+            });
+          } else {
+            const data = {
+              photo: photo
+            };
+            fetch('/api/1.0/user/replacePhoto', {
+              method: 'POST',
+              body: JSON.stringify(data),
+              headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+            }).then(function (response) {
+              if (response.status === 200) {
+                return response.json();
+              } else if (response.status === 429) {
+                Swal.fire({
+                  timer: 5000,
+                  title: 'Too Many Requests',
+                  icon: 'error'
+                });
+              } else if (response.status === 400) {
+                return response.json();
+              } else if (response.status === 403) {
+                return response.json();
+              } else if (response.status === 500) {
+                return response.json();
+              }
+            }).then(data => {
+              if (data.ok) {
+                Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: '您頭像已更新',
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+                const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
+                if (userinfoPhotoElement) {
+                  userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
+                }
+
+                const newPhoto = document.getElementById('userPhotoSignIn');
+                newPhoto.setAttribute('src', `./images/${photo}`);
+              }
+            });
+          }
+        }
+      });
     })
     .catch(function (err) {
       return err;
     });
 }
 
-const signUpForm = document.forms.namedItem('signUpForm');
-const signUpButton = document.getElementById('signUpButton');
-signUpButton.addEventListener('click', function (ev) {
-  const signUpFormData = new FormData(signUpForm);
-  fetch('/api/1.0/user/signup', {
-    method: 'POST',
-    body: signUpFormData
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        alert('Too Many Requests');
-      } else if (response.status === 400) {
-        return response.json();
-      } else if (response.status === 403) {
-        return response.json();
-      } else if (response.status === 500) {
-        return response.json();
-      }
-    })
-    .then(data => {
-      if (data.error) {
-        sweetAlert('OOPS！', `${data.error}`, 'error', { button: { text: '確認' } });
-      } else if (data.data) {
-        localStorage.setItem('token', `${data.data.access_token}`);
-        sweetAlert('註冊成功！', `歡迎${data.data.user.name}`, 'success', { button: { text: 'Click Me!' } })
-          .then((value) => {
-            return window.location.assign('/');
-          });
-      }
-    });
-  ev.preventDefault();
-}, false);
+const userPhotoImg = document.getElementById('userPhoto');
+userPhotoImg.addEventListener('click', function () {
+  Swal.fire({
+    title: '已有帳號 請登入',
+    html:
+    '<div>NAME</div>' +
+    '<input id="swal-input1" type="text" class="swal2-input">' +
+    '<div>PASSWORD</div>' +
+    '<input id="swal-input2" type="password" class="swal2-input">',
 
-const signInForm = document.forms.namedItem('signInForm');
-const signInButton = document.getElementById('signInButton');
-signInButton.addEventListener('click', function (ev) {
-  const signIpFormData = new FormData(signInForm);
-  fetch('/api/1.0/user/signin', {
-    method: 'POST',
-    body: signIpFormData
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        alert('Too Many Requests');
-      } else if (response.status === 400) {
-        return response.json();
-      } else if (response.status === 403) {
-        return response.json();
-      } else if (response.status === 500) {
-        return response.json();
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input1').val(),
+          $('#swal-input2').val()
+        ]);
+      });
+    }
+
+  }).then(function (result) {
+    if (result.value) {
+      if (!result.value[0]) {
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME不能為空',
+          icon: 'error'
+        });
+      } else if (!result.value[1]) {
+        Swal.fire({
+          timer: 5000,
+          title: 'PASSWORD不能為空',
+          icon: 'error'
+        });
+      } else {
+        const signInData = {
+          name: result.value[0],
+          password: result.value[1]
+        };
+        fetch('/api/1.0/user/signin', {
+          method: 'POST',
+          body: JSON.stringify(signInData),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 429) {
+            Swal.fire({
+              timer: 5000,
+              title: 'Too Many Requests',
+              icon: 'error'
+            });
+          } else if (response.status === 400) {
+            return response.json();
+          } else if (response.status === 403) {
+            return response.json();
+          } else if (response.status === 500) {
+            return response.json();
+          }
+        }).then(data => {
+          if (data.error) {
+            Swal.fire('OOPS！', `${data.error}`, 'error');
+          } else if (data.data) {
+            localStorage.setItem('token', `${data.data.access_token}`);
+            Swal.fire({
+              timer: 5000,
+              title: '登入成功',
+              text: `歡迎${data.data.user.name}玩家`,
+              icon: 'success'
+            }).then(() => {
+              return window.location.assign('/');
+            });
+          }
+        });
       }
-    })
-    .then(data => {
-      if (data.error) {
-        sweetAlert('OOPS！', `${data.error}`, 'error', { button: { text: '確認' } });
-      } else if (data.data) {
-        localStorage.setItem('token', `${data.data.access_token}`);
-        sweetAlert('登入成功！', `歡迎${data.data.user.name}`, 'success', { button: { text: 'Click Me!' } })
-          .then((value) => {
-            return window.location.assign('/');
-          });
+    }
+  }).catch(Swal.fire.noop);
+});
+
+signUp.addEventListener('click', async function () {
+  Swal.fire({
+    title: '尚未擁有帳號 這邊註冊',
+    html:
+
+    '<div>NAME*</div>' +
+    '<input id="swal-input3" type="text" name="name" class="swal2-input" maxlength="10">' +
+    '<div>PASSWORD*</div>' +
+    '<input id="swal-input4" type="password" name="password" class="swal2-input">',
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input3').val(),
+          $('#swal-input4').val()
+        ]);
+      });
+    }
+
+  }).then(function (result) {
+    if (result.value) {
+      if (!result.value[0]) {
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME不能為空',
+          icon: 'error'
+        });
+      } else if (result.value[0].length > 10) {
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME太長了',
+          icon: 'error'
+        });
+      } else if (!result.value[1]) {
+        Swal.fire({
+          timer: 5000,
+          title: 'PASSWORD不能為空',
+          icon: 'error'
+        });
+      } else {
+        const signUpData = {
+          name: result.value[0],
+          password: result.value[1]
+        };
+        fetch('/api/1.0/user/signup', {
+          method: 'POST',
+          body: JSON.stringify(signUpData),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 429) {
+            Swal.fire({
+              timer: 5000,
+              title: 'Too Many Requests',
+              icon: 'error'
+            });
+          } else if (response.status === 400) {
+            return response.json();
+          } else if (response.status === 403) {
+            return response.json();
+          } else if (response.status === 500) {
+            return response.json();
+          }
+        }).then(data => {
+          if (data.error) {
+            Swal.fire('OOPS！', `${data.error}`, 'error');
+          } else if (data.data) {
+            localStorage.setItem('token', `${data.data.access_token}`);
+            Swal.fire({
+              timer: 5000,
+              title: '註冊成功',
+              text: `歡迎${data.data.user.name}玩家`,
+              icon: 'success'
+            }).then(() => {
+              return window.location.assign('/');
+            });
+          }
+        });
       }
-    });
-  ev.preventDefault();
-}, false);
+    }
+  }).catch(Swal.fire.noop);
+});
+
+signIn.addEventListener('click', async function () {
+  Swal.fire({
+    title: '已有帳號 請登入',
+    html:
+    '<div>NAME</div>' +
+    '<input id="swal-input1" type="text" class="swal2-input">' +
+    '<div>PASSWORD</div>' +
+    '<input id="swal-input2" type="password" class="swal2-input">',
+
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input1').val(),
+          $('#swal-input2').val()
+        ]);
+      });
+    }
+
+  }).then(function (result) {
+    if (result.value) {
+      if (!result.value[0]) {
+        Swal.fire({
+          timer: 5000,
+          title: 'NAME不能為空',
+          icon: 'error'
+        });
+      } else if (!result.value[1]) {
+        Swal.fire({
+          timer: 5000,
+          title: 'PASSWORD不能為空',
+          icon: 'error'
+        });
+      } else {
+        const signInData = {
+          name: result.value[0],
+          password: result.value[1]
+        };
+        fetch('/api/1.0/user/signin', {
+          method: 'POST',
+          body: JSON.stringify(signInData),
+          headers: { 'Content-Type': 'application/json' }
+        }).then(function (response) {
+          if (response.status === 200) {
+            return response.json();
+          } else if (response.status === 429) {
+            Swal.fire({
+              timer: 5000,
+              title: 'Too Many Requests',
+              icon: 'error'
+            });
+          } else if (response.status === 400) {
+            return response.json();
+          } else if (response.status === 403) {
+            return response.json();
+          } else if (response.status === 500) {
+            return response.json();
+          }
+        }).then(data => {
+          if (data.error) {
+            Swal.fire('OOPS！', `${data.error}`, 'error');
+          } else if (data.data) {
+            localStorage.setItem('token', `${data.data.access_token}`);
+            Swal.fire({
+              timer: 5000,
+              title: '登入成功',
+              text: `歡迎${data.data.user.name}玩家`,
+              icon: 'success'
+            }).then(() => {
+              return window.location.assign('/');
+            });
+          }
+        });
+      }
+    }
+  }).catch(Swal.fire.noop);
+});
 
 const signOutButton = document.getElementById('exampleModal2');
-signOutButton.style = 'display:none';
+const playGame = document.getElementById('playGame');
+
+// const singlePlay = document.getElementById('singlePlay');
+
 signOutButton.addEventListener('click', function () {
-  sweetAlert('確定要登出嗎？', `親愛的 ${userId} 玩家`, 'warning', {
-    buttons: {
-      cancel: {
-        text: '取消',
-        visible: true,
-        value: 'cancel'
-      },
-      confirm: {
-        text: 'Confirm',
-        visible: true,
-        value: 'check'
+  Swal.fire({
+    title: '確定要登出嗎？',
+    text: `親愛的 ${userName} 玩家`,
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: '繼續遊戲',
+    confirmButtonText: '確認登出'
+  })
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (token) {
+          localStorage.removeItem('token');
+        }
+        return window.location.assign('/');
       }
-    }
-  }).then((value) => {
-    if (value === 'check') {
-      if (token) {
-        localStorage.removeItem('token');
-      }
-      return window.location.assign('/');
-    }
-  });
+    });
 });
 
-const socket = io((''), {
+const homeTime = new Date().getTime();
+socket.emit('roomData', 'get');
+socket.emit('homeRank', { homeTime: homeTime });
+socket.emit('onlineUser', 'get');
 
-});
-socket.emit('homeRank', 'get');
 const rank = document.getElementById('rank');
-socket.on('getRank', async (msg) => {
+socket.on(`getRank${homeTime}`, async (msg) => {
+  rank.innerHTML = '';
   for (const i in msg.data) {
     const rankId = msg.data[i].id;
     const rankName = msg.data[i].name;
     const rankPhoto = msg.data[i].photo;
     const rankScore = msg.data[i].score;
-    const userinfo = document.createElement('div');
+    const userinfo = document.createElement('tr');
     userinfo.className = 'userinfo';
     rank.appendChild(userinfo);
 
-    const name = document.createElement('div');
-    name.textContent = `NAME: ${rankName}`;
+    const scope = document.createElement('td');
+    scope.textContent = (parseInt(i) + 1);
+    userinfo.appendChild(scope);
+
+    const name = document.createElement('td');
+    name.className = 'userinfoName';
+    name.textContent = `${rankName}`;
     userinfo.appendChild(name);
 
-    const score = document.createElement('div');
-    score.textContent = `SCORE: ${rankScore}`;
+    const score = document.createElement('td');
+    score.className = 'userinfoScore';
+    score.textContent = `${rankScore}`;
     userinfo.appendChild(score);
-
+    const photoTd = document.createElement('td');
+    userinfo.appendChild(photoTd);
     const photo = document.createElement('img');
+    photo.className = 'userinfoPhoto';
+    photo.id = `userinfoPhoto${rankId}`;
     if (rankPhoto) {
       photo.setAttribute('src', `${rankPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member.png');
+      photo.setAttribute('src', './images/member2.png');
     }
-
-    photo.style.width = '5%';
-    userinfo.appendChild(photo);
+    photoTd.appendChild(photo);
   }
+});
+
+const mainPart = document.getElementById('mainPart');
+socket.on('mainPageView', async (msg) => {
+  ;
+  if (roomList[0]) {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'haveRoom';
+  } else {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'noRoom';
+  }
+
+  const roomId = msg.roomId;
+  const roomType = msg.roomType;
+  canvasNum[roomId] = 0;
+  let room = document.getElementById(`room${roomId}`);
+  if (room) {
+    room.innerHTML = '';
+  } else {
+    room = document.createElement('div');
+    room.id = `room${roomId}`;
+    room.className = 'room';
+    mainPart.appendChild(room);
+  }
+  const imgs = document.createElement('a');
+  imgs.id = `imgs${roomId}`;
+  imgs.className = 'imgs col-10 homePageImgs';
+  imgs.alt = `/gamer.html?room=${roomId}&type=${roomType}`;
+  imgs.setAttribute('href', `/gamer.html?room=${roomId}&type=${roomType}`);
+  room.appendChild(imgs);
+
+  const roomIdArea = document.createElement('div');
+  roomIdArea.className = 'roomId';
+  if (roomType === 'english') {
+    roomIdArea.textContent = `ROOM 00${roomId} (ENGLISH)`;
+  } else if (roomType === 'idiom') {
+    roomIdArea.textContent = `ROOM 00${roomId} (四字成語)`;
+  }
+
+  imgs.appendChild(roomIdArea);
+
+  const tbodyHost = document.createElement('div');
+  tbodyHost.id = `tbodyHost${roomId}`;
+  tbodyHost.className = 'tbodyHost';
+  imgs.appendChild(tbodyHost);
+
+  tbodyHost.innerHTML = '';
+  if (msg.hostDetail) {
+    const hostName = msg.hostDetail[0].name;
+    const hostPhoto = msg.hostDetail[0].photo;
+    const hostinfo = document.createElement('tr');
+    hostinfo.className = 'hostinfo roomHostInfo';
+    tbodyHost.appendChild(hostinfo);
+    const name = document.createElement('td');
+    name.textContent = `房主: ${hostName}`;
+    name.className = 'hostName hover';
+
+    const photoTd = document.createElement('td');
+    hostinfo.appendChild(photoTd);
+    const photo = document.createElement('img');
+    photo.className = 'hostPhoto hostPhotoMainPage';
+    photo.id = `hostPhoto${hostName}`;
+    photo.alt = `/gamer.html?room=${roomId}&type=${roomType}`;
+    if (hostPhoto) {
+      photo.setAttribute('src', `${hostPhoto}`);
+    } else {
+      photo.setAttribute('src', './images/member2.png');
+    }
+    photoTd.appendChild(name);
+    photoTd.appendChild(photo);
+  }
+
+  const tableDiv = document.createElement('div');
+  tableDiv.className = 'tableDiv';
+  imgs.appendChild(tableDiv);
+
+  const table = document.createElement('div');
+  table.id = `table${roomId}`;
+  table.className = 'table';
+  tableDiv.appendChild(table);
+
+  const thead = document.createElement('div');
+  thead.id = `thead${roomId}`;
+  thead.className = 'thead';
+  table.appendChild(thead);
+
+  const tr = document.createElement('div');
+  thead.appendChild(tr);
+
+  const th = document.createElement('div');
+  th.scope = 'col';
+  th.textContent = 'NAME';
+  th.className = 'thName';
+  tr.appendChild(th);
+
+  const th2 = document.createElement('div');
+  th2.scope = 'col';
+  th2.textContent = '目前玩家 0位';
+  tr.appendChild(th2);
+
+  const tbodyPlayerList = document.createElement('tbody');
+  tbodyPlayerList.id = `tbodyPlayerList${roomId}`;
+  tbodyPlayerList.className = 'tbodyPlayerList';
+  table.appendChild(tbodyPlayerList);
+
+  tbodyPlayerList.innerHTML = '';
+  if (msg.roomUserData && msg.roomUserData[0]) {
+    const playlistCount = msg.roomUserData.length;
+    th2.textContent = `目前玩家 共${playlistCount}位`;
+    for (const i in msg.roomUserData) {
+      const gamerName = msg.roomUserData[i][0].name;
+      const gamerPhoto = msg.roomUserData[i][0].photo;
+      const gamerScore = msg.roomUserData[i][0].score;
+      const userinfo = document.createElement('tr');
+      userinfo.className = 'userinfo';
+      tbodyPlayerList.appendChild(userinfo);
+      const name = document.createElement('td');
+      name.textContent = `${gamerName}`;
+      name.className = 'playerName hover';
+
+      const photoTd = document.createElement('td');
+      photoTd.className = 'gamerTd';
+      userinfo.appendChild(photoTd);
+      const photo = document.createElement('img');
+      photo.className = 'gamerPhoto';
+      if (gamerPhoto) {
+        photo.setAttribute('src', `${gamerPhoto}`);
+      } else {
+        photo.setAttribute('src', './images/member2.png');
+      }
+      photoTd.appendChild(name);
+      photoTd.appendChild(photo);
+    }
+  }
+});
+
+const roomTab = document.getElementById('room-tab');
+roomTab.addEventListener('click', function () {
+  if (roomList) {
+    if (roomList[0]) {
+      const noRoom = document.getElementById('noRoom');
+      noRoom.className = 'haveRoom';
+    } else {
+      Swal.fire({
+        timer: 3000,
+        title: '目前無房間可以加入',
+        icon: 'warning',
+        showConfirmButton: false
+      });
+      const noRoom = document.getElementById('noRoom');
+      noRoom.className = 'noRoom';
+    }
+  }
+});
+
+const roomIdJoin = document.getElementById('roomIdJoin');
+roomIdJoin.addEventListener('click', function () {
+  const roomIdSearch = document.getElementById('roomIdSearch').value.toLowerCase();
+  const roomIdSearchArea = document.getElementById('roomIdSearch');
+  const roomImgs = document.getElementById(`imgs${roomIdSearch}`);
+  if (roomImgs) {
+    const roomUrl = roomImgs.alt;
+    roomIdSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '加入遊戲中',
+      icon: 'info',
+      showConfirmButton: false
+    });
+    return window.location.assign(`${roomUrl}`);
+  } else {
+    roomIdSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '房號不存在！',
+      icon: 'error',
+      showConfirmButton: false
+    });
+  }
+});
+
+$('#roomIdSearch').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const roomIdSearch = document.getElementById('roomIdSearch').value.toLowerCase();
+    const roomIdSearchArea = document.getElementById('roomIdSearch');
+    const roomImgs = document.getElementById(`imgs${roomIdSearch}`);
+    if (roomImgs) {
+      const roomUrl = roomImgs.alt;
+      roomIdSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '加入遊戲中',
+        icon: 'info',
+        showConfirmButton: false
+      });
+      return window.location.assign(`${roomUrl}`);
+    } else {
+      roomIdSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '房號不存在！',
+        icon: 'error',
+        showConfirmButton: false
+      });
+    }
+  }
+});
+
+const hostNameJoin = document.getElementById('hostNameJoin');
+hostNameJoin.addEventListener('click', function () {
+  const hostNameSearch = document.getElementById('hostNameSearch').value.toLowerCase();
+  const hostNameSearchArea = document.getElementById('hostNameSearch');
+  const hostPhoto = document.getElementById(`hostPhoto${hostNameSearch}`);
+  if (hostPhoto) {
+    const roomUrl = hostPhoto.alt;
+    hostNameSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '加入遊戲中',
+      icon: 'info',
+      showConfirmButton: false
+    });
+    return window.location.assign(`${roomUrl}`);
+  } else {
+    hostNameSearchArea.value = '';
+    Swal.fire({
+      timer: 2000,
+      title: '不存在該房主！',
+      icon: 'error',
+      showConfirmButton: false
+    });
+  }
+});
+
+$('#hostNameSearch').on('keypress', function (e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    const hostNameSearch = document.getElementById('hostNameSearch').value.toLowerCase();
+    const hostNameSearchArea = document.getElementById('hostNameSearch');
+    const hostPhoto = document.getElementById(`hostPhoto${hostNameSearch}`);
+    if (hostPhoto) {
+      const roomUrl = hostPhoto.alt;
+      hostNameSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '加入遊戲中',
+        icon: 'info',
+        showConfirmButton: false
+      });
+      return window.location.assign(`${roomUrl}`);
+    } else {
+      hostNameSearchArea.value = '';
+      Swal.fire({
+        timer: 2000,
+        title: '不存在該房主！',
+        icon: 'error',
+        showConfirmButton: false
+      });
+    }
+  }
+});
+
+socket.on('onlineUserShow', async (msg) => {
+  onlineUser = msg.userAll.filter(function (element, index, arr) {
+    return arr.indexOf(element) === index;
+  });
+  const onlineCount = onlineUser.length;
+  const onlineUserCount = document.getElementById('onlineUserCount');
+  onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
+});
+
+socket.on('mainPageViewClose', async (msg) => {
+  const roomId = msg.room;
+  roomList = roomList.filter(function (item) {
+    return item !== roomId;
+  });
+  if (roomList[0]) {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'haveRoom';
+  } else {
+    const noRoom = document.getElementById('noRoom');
+    noRoom.className = 'noRoom';
+  }
+  const room = document.getElementById(`room${roomId}`);
+  if (room) {
+    room.remove();
+  }
+});
+
+const canvasNum = [];
+socket.on('mainPageCanvasClear', async (msg) => {
+  const roomId = msg.room;
+
+  canvasNum[roomId] = 0;
+  // const imgs = document.getElementById(`imgs${roomId}`);
+  // imgs.innerHTML = '';
+  $(`.img${roomId}`).remove();
+});
+
+socket.on('mainPageConvasData', (msg) => {
+  const roomId = msg.room;
+  const imgs = document.getElementById(`imgs${roomId}`);
+  const img = document.createElement('img');
+  img.src = msg.url;
+  img.className = `img img${roomId}`;
+  img.id = 'img' + roomId + 'step' + canvasNum[roomId];
+  canvasNum[roomId]++;
+  imgs.appendChild(img);
+});
+
+socket.on('mainPageUndo', (msg) => {
+  const roomId = msg.room;
+  if (msg.data) {
+    const myobj = document.getElementById(`img${roomId}step${canvasNum[roomId] - 1}`);
+    myobj.remove();
+    canvasNum[roomId]--;
+  }
+});
+let roomList;
+socket.on('roomList', (msg) => {
+  roomList = msg.roomList;
+});
+
+socket.on('canvasUpdate', (msg) => {
+  const roomId = msg.room;
+  const canvasAll = msg.canvas;
+  const imgs = document.getElementById(`imgs${roomId}`);
+  if (msg.game && imgs) {
+    for (const i in canvasAll) {
+      if (canvasAll[i].canvas_data !== '0') {
+        const img = document.createElement('img');
+        img.src = canvasAll[i].canvas_data;
+        img.className = `img img${roomId}`;
+        img.id = 'img' + roomId + 'step' + i;
+        canvasNum[roomId] = canvasAll[i].canvas_num - 1;
+        imgs.appendChild(img);
+      } else if (canvasAll[i].canvas_undo !== '0') {
+        const img = document.getElementsByClassName(`img${roomId}`);
+        const finalNum = img.length;
+        img[finalNum - 1].remove();
+      }
+    }
+  }
+});
+
+playGame.addEventListener('click', function () {
+  if (userId) {
+    Swal.fire({
+      input: 'select',
+      inputOptions: {
+        quick: '快速開始',
+        create: '連線模式',
+        single: '單人模式'
+      },
+      inputPlaceholder: '選擇遊戲模式',
+      showCancelButton: true,
+      inputValidator: (value) => {
+        if (value === 'quick') {
+          const checkOnlineUser = onlineUser.filter(function (item) {
+            return item !== userId;
+          });
+
+          if (roomList[0]) {
+            const roomImgs = document.getElementById(`imgs${roomList[0]}`);
+            if (roomImgs) {
+              const roomUrl = roomImgs.alt;
+              Swal.fire({
+                timer: 2000,
+                title: '加入遊戲中',
+                icon: 'info',
+                showConfirmButton: false
+              });
+              return window.location.assign(`${roomUrl}`);
+            }
+          } else if (checkOnlineUser[0]) {
+            let room;
+            for (let j = 1; j < 10000; j++) {
+              const check = roomList.indexOf(`${j}`);
+              if (check === -1) {
+                room = j;
+                break;
+              }
+            }
+            Swal.fire({
+              timer: 2000,
+              title: '創建房間中',
+              icon: 'info',
+              showConfirmButton: false
+            });
+            const num = Math.floor(Math.random() * 2);
+            if (num === 0) {
+              return window.location.assign(`/draw.html?room=${room}&type=english`);
+            } else {
+              return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+            }
+          } else {
+            Swal.fire({
+              timer: 2000,
+              title: '單人模式加入中',
+              icon: 'info',
+              showConfirmButton: false
+            });
+            const num = Math.floor(Math.random() * 2);
+            if (num === 0) {
+              return window.location.assign('/single.html?type=english');
+            } else {
+              return window.location.assign('/single.html?type=idiom');
+            }
+          }
+        } else if (value === 'create') {
+          let room;
+          for (let j = 1; j < 10000; j++) {
+            const check = roomList.indexOf(`${j}`);
+            if (check === -1) {
+              room = j;
+              break;
+            }
+          }
+          Swal.fire({
+            title: '準備開始連線模式',
+            input: 'select',
+            inputOptions: {
+              english: 'ENGLISH',
+              idiom: '四字成語'
+            },
+            inputPlaceholder: '選擇您喜歡的題型',
+            showCancelButton: true,
+            inputValidator: (value) => {
+              if (value === 'english') {
+                return window.location.assign(`/draw.html?room=${room}&type=english`);
+              } else if (value === 'idiom') {
+                return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+              }
+            }
+          });
+        } else if (value === 'single') {
+          Swal.fire({
+            title: '準備開始單人模式',
+            input: 'select',
+            inputOptions: {
+              english: 'ENGLISH',
+              idiom: '四字成語'
+            },
+            inputPlaceholder: '選擇您喜歡的題型',
+            showCancelButton: true,
+            inputValidator: (value) => {
+              if (value === 'english') {
+                return window.location.assign('/single.html?type=english');
+              } else if (value === 'idiom') {
+                return window.location.assign('/single.html?type=idiom');
+              }
+            }
+          });
+        } else {
+          return window.location.assign('/');
+        }
+      }
+    });
+  } else {
+    Swal.fire({
+      title: '開始遊戲前 請先登入',
+      html:
+      '<div>NAME</div>' +
+      '<input id="swal-input1" type="text" class="swal2-input">' +
+      '<div>PASSWORD</div>' +
+      '<input id="swal-input2" type="password" class="swal2-input">',
+
+      preConfirm: function () {
+        return new Promise(function (resolve) {
+          resolve([
+            $('#swal-input1').val(),
+            $('#swal-input2').val()
+          ]);
+        });
+      }
+
+    }).then(function (result) {
+      if (result.value) {
+        if (!result.value[0]) {
+          Swal.fire({
+            timer: 5000,
+            title: 'NAME不能為空',
+            icon: 'error'
+          });
+        } else if (!result.value[1]) {
+          Swal.fire({
+            timer: 5000,
+            title: 'PASSWORD不能為空',
+            icon: 'error'
+          });
+        } else {
+          const signInData = {
+            name: result.value[0],
+            password: result.value[1]
+          };
+          fetch('/api/1.0/user/signin', {
+            method: 'POST',
+            body: JSON.stringify(signInData),
+            headers: { 'Content-Type': 'application/json' }
+          }).then(function (response) {
+            if (response.status === 200) {
+              return response.json();
+            } else if (response.status === 429) {
+              Swal.fire({
+                timer: 5000,
+                title: 'Too Many Requests',
+                icon: 'error'
+              });
+            } else if (response.status === 400) {
+              return response.json();
+            } else if (response.status === 403) {
+              return response.json();
+            } else if (response.status === 500) {
+              return response.json();
+            }
+          }).then(data => {
+            if (data.error) {
+              Swal.fire('OOPS！', `${data.error}`, 'error');
+            } else if (data.data) {
+              localStorage.setItem('token', `${data.data.access_token}`);
+              Swal.fire({
+                timer: 5000,
+                title: '登入成功',
+                text: `歡迎${data.data.user.name}玩家`,
+                icon: 'success'
+              }).then(() => {
+                return window.location.assign('/');
+              });
+            }
+          });
+        }
+      }
+    }).catch(Swal.fire.noop);
+  }
+});
+
+const owl = $('.owl-carousel');
+owl.owlCarousel({
+  items: 1,
+  loop: true,
+  margin: 10,
+  autoplay: true,
+  autoplayTimeout: 10000,
+  nav: true,
+  autoplayHoverPause: true,
+  navText: ['<<<', '>>>']
+});
+$('.play').on('click', function () {
+  owl.trigger('play.owl.autoplay', [10000]);
+});
+$('.stop').on('click', function () {
+  owl.trigger('stop.owl.autoplay');
+});
+
+const createGame = document.getElementById('createGame');
+createGame.addEventListener('click', function () {
+  let room;
+  for (let j = 1; j < 10000; j++) {
+    const check = roomList.indexOf(`${j}`);
+    if (check === -1) {
+      room = j;
+      break;
+    }
+  }
+  Swal.fire({
+    title: '準備開始連線模式',
+    input: 'select',
+    inputOptions: {
+      english: 'ENGLISH',
+      idiom: '四字成語'
+    },
+    inputPlaceholder: '選擇您喜歡的題型',
+    showCancelButton: true,
+    inputValidator: (value) => {
+      if (value === 'english') {
+        return window.location.assign(`/draw.html?room=${room}&type=english`);
+      } else if (value === 'idiom') {
+        return window.location.assign(`/draw.html?room=${room}&type=idiom`);
+      } else {
+        Swal.fire({
+          timer: 2000,
+          title: '未選擇 取消！',
+          showConfirmButton: false
+        });
+      }
+    }
+  });
 });

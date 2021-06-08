@@ -10,6 +10,7 @@ cache.on('ready', () => {
 cache.on('error', () => {
   console.log('redis is error');
 });
+
 const promisifyget = promisify(cache.get).bind(cache);
 const promisifyset = promisify(cache.set).bind(cache);
 const promisifydel = promisify(cache.del).bind(cache);
