@@ -787,10 +787,7 @@ socket.on('mainPageViewClose', async (msg) => {
 const canvasNum = [];
 socket.on('mainPageCanvasClear', async (msg) => {
   const roomId = msg.room;
-
   canvasNum[roomId] = 0;
-  // const imgs = document.getElementById(`imgs${roomId}`);
-  // imgs.innerHTML = '';
   $(`.img${roomId}`).remove();
 });
 

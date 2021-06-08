@@ -103,7 +103,8 @@ start.addEventListener('click', function () {
           startTime = new Date().getTime();
           startCountdown(50);
         } else {
-          alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
+          alert('看到這句各位幫我測試的跟我說喔．．．hsuehkuan感謝你');
+          return;
         }
         gameStatus = 1;
         title.textContent = ('遊戲開始');
@@ -180,21 +181,21 @@ function startCountdown (interval) {
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
       }).then(function (response) {
         if (response.status === 200) {
-          return response.json(); // 內建promise , send type need json
+          return response.json();
         }
       }).then((data) => {
         getAnswer = data.answer[0].question;
-        title.textContent = ('請按START GAME開始遊戲');
-        title.className = 'timeSingle';
-        // message.textContent = '請等待下一局';
-        Toast.fire({
-          // icon: 'info',
-          title: '遊戲結束',
-          text: `正確答案:${getAnswer}`,
-          width: '400px',
-          padding: '30px',
-          background: '#ffffff'
-        });
+        setTimeout(() => {
+          title.textContent = ('按START開始遊戲');
+          title.className = 'time';
+          Toast.fire({
+            text: `正確答案 : ${getAnswer}`,
+            width: '400px',
+            padding: '30px',
+            background: '#ffffff'
+          });
+        }, 2000);
+
         gameDone = true;
       });
     }
@@ -234,7 +235,6 @@ answerCheckButton.addEventListener('click', function (ev) {
       if (answerCheck === getAnswer) {
         const audio = document.getElementById('mp3');
         audio.play();
-        // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
         title.textContent = `正確答案！ ${getAnswer}`;
         Toast.fire({
           icon: 'success',
@@ -344,7 +344,6 @@ $('#answerCheck').on('keypress', function (e) {
         if (answerCheck === getAnswer) {
           const audio = document.getElementById('mp3');
           audio.play();
-          // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
           title.textContent = `正確答案！ ${getAnswer}`;
           Toast.fire({
             icon: 'success',
@@ -391,7 +390,6 @@ $('#answerCheck').on('keypress', function (e) {
         }
       });
     } else if (gameStatus === 0) {
-      // message.textContent = 'please wait for next game';
       Toast2.fire({
         icon: 'warning',
         title: 'please wait for next game',
