@@ -683,7 +683,9 @@ const socketCon = (io) => {
           if (timeCheck[parseInt(roomList[i])]) {
             const canvasUpate = await canvasUpdate(gameId[parseInt(roomList[i])]);
             if (canvasUpate[0]) {
-              socket.emit('canvasUpdate', { room: parseInt(roomList[i]), canvas: canvasUpate, game: true });
+              setTimeout(() => {
+                socket.emit('canvasUpdate', { room: parseInt(roomList[i]), canvas: canvasUpate, game: true });
+              }, 1000);
             } else {
               console.log('no canvas');
             }

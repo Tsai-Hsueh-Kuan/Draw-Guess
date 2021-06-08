@@ -14,6 +14,30 @@ const socket = io((''), {
   reconnect: true
 });
 
+socket.on('canvasUpdate', (msg) => {
+  console.log('1');
+  console.log(msg.room);
+  const roomId = msg.room;
+  const canvasAll = msg.canvas;
+  const imgs = document.getElementById(`imgs${roomId}`);
+  if (msg.game && imgs) {
+    for (const i in canvasAll) {
+      if (canvasAll[i].canvas_data !== '0') {
+        const img = document.createElement('img');
+        img.src = canvasAll[i].canvas_data;
+        img.className = `img img${roomId}`;
+        img.id = 'img' + roomId + 'step' + i;
+        canvasNum[roomId] = canvasAll[i].canvas_num - 1;
+        imgs.appendChild(img);
+      } else if (canvasAll[i].canvas_undo !== '0') {
+        const img = document.getElementsByClassName(`img${roomId}`);
+        const finalNum = img.length;
+        img[finalNum - 1].remove();
+      }
+    }
+  }
+});
+
 if (token) {
   fetch('/api/1.0/user/profile', {
     method: 'GET',
@@ -813,28 +837,6 @@ socket.on('mainPageUndo', (msg) => {
 let roomList;
 socket.on('roomList', (msg) => {
   roomList = msg.roomList;
-});
-
-socket.on('canvasUpdate', (msg) => {
-  const roomId = msg.room;
-  const canvasAll = msg.canvas;
-  const imgs = document.getElementById(`imgs${roomId}`);
-  if (msg.game && imgs) {
-    for (const i in canvasAll) {
-      if (canvasAll[i].canvas_data !== '0') {
-        const img = document.createElement('img');
-        img.src = canvasAll[i].canvas_data;
-        img.className = `img img${roomId}`;
-        img.id = 'img' + roomId + 'step' + i;
-        canvasNum[roomId] = canvasAll[i].canvas_num - 1;
-        imgs.appendChild(img);
-      } else if (canvasAll[i].canvas_undo !== '0') {
-        const img = document.getElementsByClassName(`img${roomId}`);
-        const finalNum = img.length;
-        img[finalNum - 1].remove();
-      }
-    }
-  }
 });
 
 playGame.addEventListener('click', function () {
