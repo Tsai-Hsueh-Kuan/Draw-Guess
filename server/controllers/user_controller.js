@@ -13,6 +13,14 @@ const signUp = async (req, res) => {
     return;
   }
   name = validator.escape(name);
+  if (name.length > 10) {
+    res.status(400).send({ error: 'The number of name is limited to 10.' });
+    return;
+  }
+  if (password.length > 18) {
+    res.status(400).send({ error: 'The number of password is limited to 18.' });
+    return;
+  }
   const result = await User.signUp(name, password, photo);
   if (result.error) {
     res.status(403).send({ error: result.error });

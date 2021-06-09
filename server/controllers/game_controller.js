@@ -14,8 +14,8 @@ const getSingleGameTest = async (req, res) => {
 };
 
 const updateHistory = async (req, res) => {
-  await game.updateHistory(req.body.gameId, req.user.id, req.body.record);
-  res.status(200).send('done');
+  const data = await game.updateHistory(req.body.gameId, req.user.id, req.body.record);
+  res.status(200).send(data);
 };
 
 const checkAnswer = async (req, res) => {

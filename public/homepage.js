@@ -15,8 +15,6 @@ const socket = io((''), {
 });
 
 socket.on('canvasUpdate', (msg) => {
-  console.log('1');
-  console.log(msg.room);
   const roomId = msg.room;
   const canvasAll = msg.canvas;
   const imgs = document.getElementById(`imgs${roomId}`);
@@ -64,8 +62,8 @@ if (token) {
       signOutButton.style = 'display:block;';
       const info = document.getElementById('info');
       const name = document.createElement('div');
-      name.textContent = `NAME: ${userName}`;
-      name.className = 'userName hover';
+      // name.textContent = `NAME: ${userName}`;
+      // name.className = 'userNameM hover';
       info.appendChild(name);
       const photoTd = document.createElement('td');
       info.appendChild(photoTd);
@@ -92,13 +90,13 @@ if (token) {
               'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhotoReplace" >',
               'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhotoReplace" >',
               'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhotoReplace" >',
-              upload: '<div id="uploadText" >上傳</div>'
+              upload: '<div id="uploadText" ><i class="fas fa-upload"></i>上傳</div>'
             });
           }, 1000);
         });
 
         const { value: photo } = await Swal.fire({
-          title: 'CHANGE PHOTO',
+          title: `親愛的 ${userName} 玩家 \n</br>\n CHANGE PHOTO `,
           input: 'radio',
           width: '1100px',
           inputOptions: inputOptions,
@@ -221,9 +219,9 @@ userPhotoImg.addEventListener('click', function () {
     title: '已有帳號 請登入',
     html:
     '<div>NAME</div>' +
-    '<input id="swal-input1" type="text" class="swal2-input">' +
+    '<input id="swal-input1" type="text" class="swal2-input" maxlength="10">' +
     '<div>PASSWORD</div>' +
-    '<input id="swal-input2" type="password" class="swal2-input">',
+    '<input id="swal-input2" type="password" class="swal2-input" maxlength="18">',
 
     preConfirm: function () {
       return new Promise(function (resolve) {
@@ -277,7 +275,7 @@ userPhotoImg.addEventListener('click', function () {
           if (data.error) {
             Swal.fire('OOPS！', `${data.error}`, 'error');
           } else if (data.data) {
-            localStorage.setItem('token', `${data.data.access_token}`);
+            s;
             Swal.fire({
               timer: 5000,
               title: '登入成功',
@@ -301,7 +299,7 @@ signUp.addEventListener('click', async function () {
     '<div>NAME*</div>' +
     '<input id="swal-input3" type="text" name="name" class="swal2-input" maxlength="10">' +
     '<div>PASSWORD*</div>' +
-    '<input id="swal-input4" type="password" name="password" class="swal2-input">',
+    '<input id="swal-input4" type="password" name="password" class="swal2-input" maxlength="18">',
     preConfirm: function () {
       return new Promise(function (resolve) {
         resolve([
@@ -381,9 +379,9 @@ signIn.addEventListener('click', async function () {
     title: '已有帳號 請登入',
     html:
     '<div>NAME</div>' +
-    '<input id="swal-input1" type="text" class="swal2-input">' +
+    '<input id="swal-input1" type="text" class="swal2-input" maxlength="10">' +
     '<div>PASSWORD</div>' +
-    '<input id="swal-input2" type="password" class="swal2-input">',
+    '<input id="swal-input2" type="password" class="swal2-input" maxlength="18">',
 
     preConfirm: function () {
       return new Promise(function (resolve) {
@@ -523,7 +521,6 @@ socket.on(`getRank${homeTime}`, async (msg) => {
 
 const mainPart = document.getElementById('mainPart');
 socket.on('mainPageView', async (msg) => {
-  ;
   if (roomList[0]) {
     const noRoom = document.getElementById('noRoom');
     noRoom.className = 'haveRoom';
@@ -554,9 +551,9 @@ socket.on('mainPageView', async (msg) => {
   const roomIdArea = document.createElement('div');
   roomIdArea.className = 'roomId';
   if (roomType === 'english') {
-    roomIdArea.textContent = `ROOM 00${roomId} (ENGLISH)`;
+    roomIdArea.textContent = `ROOM ${roomId} (ENGLISH)`;
   } else if (roomType === 'idiom') {
-    roomIdArea.textContent = `ROOM 00${roomId} (四字成語)`;
+    roomIdArea.textContent = `ROOM ${roomId} (四字成語)`;
   }
 
   imgs.appendChild(roomIdArea);
@@ -677,7 +674,7 @@ roomTab.addEventListener('click', function () {
 
 const roomIdJoin = document.getElementById('roomIdJoin');
 roomIdJoin.addEventListener('click', function () {
-  const roomIdSearch = document.getElementById('roomIdSearch').value.toLowerCase();
+  const roomIdSearch = document.getElementById('roomIdSearch').value;
   const roomIdSearchArea = document.getElementById('roomIdSearch');
   const roomImgs = document.getElementById(`imgs${roomIdSearch}`);
   if (roomImgs) {
@@ -703,7 +700,7 @@ roomIdJoin.addEventListener('click', function () {
 
 $('#roomIdSearch').on('keypress', function (e) {
   if (e.key === 'Enter' || e.keyCode === 13) {
-    const roomIdSearch = document.getElementById('roomIdSearch').value.toLowerCase();
+    const roomIdSearch = document.getElementById('roomIdSearch').value;
     const roomIdSearchArea = document.getElementById('roomIdSearch');
     const roomImgs = document.getElementById(`imgs${roomIdSearch}`);
     if (roomImgs) {
@@ -730,7 +727,7 @@ $('#roomIdSearch').on('keypress', function (e) {
 
 const hostNameJoin = document.getElementById('hostNameJoin');
 hostNameJoin.addEventListener('click', function () {
-  const hostNameSearch = document.getElementById('hostNameSearch').value.toLowerCase();
+  const hostNameSearch = document.getElementById('hostNameSearch').value;
   const hostNameSearchArea = document.getElementById('hostNameSearch');
   const hostPhoto = document.getElementById(`hostPhoto${hostNameSearch}`);
   if (hostPhoto) {
@@ -756,7 +753,7 @@ hostNameJoin.addEventListener('click', function () {
 
 $('#hostNameSearch').on('keypress', function (e) {
   if (e.key === 'Enter' || e.keyCode === 13) {
-    const hostNameSearch = document.getElementById('hostNameSearch').value.toLowerCase();
+    const hostNameSearch = document.getElementById('hostNameSearch').value;
     const hostNameSearchArea = document.getElementById('hostNameSearch');
     const hostPhoto = document.getElementById(`hostPhoto${hostNameSearch}`);
     if (hostPhoto) {
@@ -830,6 +827,7 @@ socket.on('mainPageUndo', (msg) => {
   const roomId = msg.room;
   if (msg.data) {
     const myobj = document.getElementById(`img${roomId}step${canvasNum[roomId] - 1}`);
+
     myobj.remove();
     canvasNum[roomId]--;
   }
