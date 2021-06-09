@@ -15,13 +15,6 @@ let gameId;
 let getAnswer;
 const token = localStorage.getItem('token');
 
-// const typeShow = document.getElementById('question');
-// if (type === 'english') {
-//   typeShow.textContent = '動物 單字';
-// } else if (type === 'idiom') {
-//   typeShow.textContent = '四字 成語';
-// }
-
 fetch('/api/1.0/user/profileAdmin', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
