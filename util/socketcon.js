@@ -6,15 +6,15 @@ const {
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../server/models/socketcon_model');
 
-cache.flushdb(function (err, ok) {
-  if (err) {
-    console.log(err);
-    return err;
-  }
-  if (ok) {
-    console.log(ok);
-  }
-});
+// cache.flushdb(function (err, ok) {
+//   if (err) {
+//     console.log(err);
+//     return err;
+//   }
+//   if (ok) {
+//     console.log(ok);
+//   }
+// });
 
 cache.set('timeCheck', JSON.stringify({ data: [] }), 'NX', function (err) {
   if (err) {

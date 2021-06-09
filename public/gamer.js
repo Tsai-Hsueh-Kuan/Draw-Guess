@@ -128,7 +128,10 @@ fetch('/api/1.0/user/profile', {
           correctUserList[0] = msg.correctUserList[i];
         }
         const msgTdArea = document.getElementById(`msgTd${msg.correctUserList[i]}`);
-        msgTdArea.className = 'msgTd correct';
+        if (msgTdArea) {
+          msgTdArea.className = 'msgTd correct';
+        }
+
         if (msg.correctUserList[i] === userName) {
           gameStatus = 2;
         }
