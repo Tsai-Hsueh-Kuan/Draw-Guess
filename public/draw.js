@@ -296,7 +296,7 @@ invite.addEventListener('click', function () {
   '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
   });
 });
-
+let getPassword;
 const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
 getQuestion.addEventListener('click', function () {
@@ -310,7 +310,8 @@ getQuestion.addEventListener('click', function () {
       icon: 'error'
     });
   } else if (gameDone) {
-    socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId });
+    getPassword = 1;
+    socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId, getPassword: getPassword });
     correctUserList = [];
     const correctEle = document.getElementsByClassName('correct');
     for (const i in correctEle) {
@@ -320,6 +321,31 @@ getQuestion.addEventListener('click', function () {
     for (const i in msg) {
       msg[i].textContent = '';
     }
+
+    socket.on(`question${room}${getPassword}`, (msg) => {
+      countIndex = 1; // 倒數計時任務執行次數
+      timeout = 1000; // 觸發倒數計時任務的時間間隙
+      startTime = new Date().getTime();
+      if (msg) {
+        startCountdown(50);
+        const canvasDiv = document.querySelector('#addCanvas');
+        canvasDiv.innerHTML = '';
+        canvasNum = 0;
+        const canvas = document.createElement('canvas');
+        canvas.className = 'draw';
+        canvas.id = 'draw' + canvasNum;
+        canvas.width = '700';
+        canvas.height = '400';
+        canvas.style.zIndex = canvasNum;
+        ctx[canvasNum] = canvas.getContext('2d');
+        canvasDiv.appendChild(canvas);
+        gameDone = false;
+        isDrawing = false;
+        questionSql = msg;
+        question.textContent = `${questionSql}`;
+        time.className = 'timePlaying';
+      }
+    });
   } else {
     Swal.fire({
       timer: 3000,
@@ -336,30 +362,6 @@ let startTime = new Date().getTime();
 
 let questionSql;
 const question = document.querySelector('#question');
-socket.on(`question${room}`, (msg) => {
-  countIndex = 1; // 倒數計時任務執行次數
-  timeout = 1000; // 觸發倒數計時任務的時間間隙
-  startTime = new Date().getTime();
-  if (msg) {
-    startCountdown(50);
-    const canvasDiv = document.querySelector('#addCanvas');
-    canvasDiv.innerHTML = '';
-    canvasNum = 0;
-    const canvas = document.createElement('canvas');
-    canvas.className = 'draw';
-    canvas.id = 'draw' + canvasNum;
-    canvas.width = '700';
-    canvas.height = '400';
-    canvas.style.zIndex = canvasNum;
-    ctx[canvasNum] = canvas.getContext('2d');
-    canvasDiv.appendChild(canvas);
-    gameDone = false;
-    isDrawing = false;
-    questionSql = msg;
-    question.textContent = `${questionSql}`;
-    time.className = 'timePlaying';
-  }
-});
 
 const time = document.getElementById('time');
 function startCountdown (interval) {
