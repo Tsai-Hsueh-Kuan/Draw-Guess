@@ -509,7 +509,8 @@ const socketCon = (io) => {
           gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
           await promisifyset('gameId', JSON.stringify({ data: gameId }));
         }
-        socket.broadcast.emit(`answer${msg.room}`, question[msg.room]);
+
+        socket.broadcast.emit(`answer${msg.room}`, '');
         socket.emit(`question${msg.room}`, question[msg.room]);
         getHistory(gameId[msg.room], roomUserId[inRoom], '999');
 

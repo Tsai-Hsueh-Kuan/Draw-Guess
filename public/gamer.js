@@ -199,7 +199,7 @@ socket.on(`answerGet${room}`, (msg) => {
   answerShow.textContent = '';
 });
 const title = document.getElementById('title');
-socket.on(`answer${room}`, (msg) => {
+socket.on(`answer${room}`, () => {
   const imgs = document.querySelector('#imgs');
   imgs.innerHTML = '';
   canvasNum = 0;

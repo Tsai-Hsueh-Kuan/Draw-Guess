@@ -820,7 +820,9 @@ socket.on('mainPageConvasData', (msg) => {
   img.className = `img img${roomId}`;
   img.id = 'img' + roomId + 'step' + canvasNum[roomId];
   canvasNum[roomId]++;
-  imgs.appendChild(img);
+  if (imgs) {
+    imgs.appendChild(img);
+  }
 });
 
 socket.on('mainPageUndo', (msg) => {
