@@ -223,7 +223,7 @@ answerCheckButton.addEventListener('click', function (ev) {
     answerLimit = false;
     setTimeout(() => {
       answerLimit = true;
-    }, 2000);
+    }, 1000);
     const data = {
       answerId: getAnswerId,
       answerCheck: answerCheck
@@ -247,7 +247,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       if (answerCheck === getAnswer) {
         const audio = document.getElementById('mp3');
         audio.play();
-        // title.textContent = `正確答案！ ${getAnswer}`;
+        audio.volume = 0.7;
         title.textContent = '';
         Toast.fire({
           icon: 'success',
@@ -315,6 +315,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       } else {
         const audio = document.getElementById('wrongMp3');
         audio.play();
+        audio.volume = 0.7;
         Toast2.fire({
           icon: 'error',
           title: '猜錯了！',
@@ -361,7 +362,7 @@ $('#answerCheck').on('keypress', function (e) {
       answerLimit = false;
       setTimeout(() => {
         answerLimit = true;
-      }, 2000);
+      }, 1000);
       const data = {
         answerId: getAnswerId,
         answerCheck: answerCheck
@@ -387,7 +388,7 @@ $('#answerCheck').on('keypress', function (e) {
           i = 99999;
           const audio = document.getElementById('mp3');
           audio.play();
-          // title.textContent = `正確答案！ ${getAnswer}`;
+          audio.volume = 0.7;
           title.textContent = '';
           Toast.fire({
             icon: 'success',
@@ -454,6 +455,7 @@ $('#answerCheck').on('keypress', function (e) {
           // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
           const audio = document.getElementById('wrongMp3');
           audio.play();
+          audio.volume = 0.7;
           Toast2.fire({
             icon: 'error',
             title: '猜錯了！',

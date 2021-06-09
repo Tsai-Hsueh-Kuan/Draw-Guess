@@ -273,6 +273,7 @@ answerCheckButton.addEventListener('click', function (ev) {
         });
         const audio = document.getElementById('mp3');
         audio.play();
+        audio.volume = 0.7;
         const answerShow = document.getElementById('answerShow');
         answerShow.textContent = `ANS : ${answerCheck}`;
         answerGet = answerCheck;
@@ -281,6 +282,7 @@ answerCheckButton.addEventListener('click', function (ev) {
         // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
         const audio = document.getElementById('wrongMp3');
         audio.play();
+        audio.volume = 0.7;
         Toast2.fire({
           icon: 'error',
           title: '猜錯了！',
@@ -347,6 +349,7 @@ $('#answerCheck').on('keypress', function (e) {
           });
           const audio = document.getElementById('mp3');
           audio.play();
+          audio.volume = 0.7;
           const answerShow = document.getElementById('answerShow');
           answerShow.textContent = `ANS : ${answerCheck}`;
           answerGet = answerCheck;
@@ -355,6 +358,7 @@ $('#answerCheck').on('keypress', function (e) {
           // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
           const audio = document.getElementById('wrongMp3');
           audio.play();
+          audio.volume = 0.7;
           Toast2.fire({
             icon: 'error',
             title: '猜錯了！',

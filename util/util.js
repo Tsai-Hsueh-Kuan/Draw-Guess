@@ -16,8 +16,12 @@ const upload = multer({
     key: function (req, file, cb) {
       cb(null, file.originalname);
     }
-  })
-});
+  }),
+  limits: {
+    fileSize: 1000000
+  }
+})
+  .single('photo');
 
 const wrapAsync = (fn) => {
   return function (req, res, next) {

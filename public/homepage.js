@@ -110,7 +110,7 @@ if (token) {
         if (photo) {
           if (photo === 'upload') {
             Swal.fire({
-              title: '上傳新的頭像',
+              title: 'Choose Photo',
               html:
               '<form enctype="multipart/form-data" method="POST" name="file">' +
               '<input type="file" name="photo">' +
@@ -139,6 +139,13 @@ if (token) {
                     } else if (response.status === 403) {
                       return response.json();
                     } else if (response.status === 500) {
+                      Swal.fire({
+                        icon: 'error',
+                        title: '上傳圖片太大',
+                        text: '限制1Mb',
+                        showConfirmButton: false,
+                        timer: 3000
+                      });
                       return response.json();
                     }
                   }).then(data => {

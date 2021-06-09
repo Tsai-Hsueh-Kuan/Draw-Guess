@@ -6,15 +6,15 @@ const {
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../server/models/socketcon_model');
 
-// cache.flushdb(function (err, ok) {
-//   if (err) {
-//     console.log(err);
-//     return err;
-//   }
-//   if (ok) {
-//     console.log(ok);
-//   }
-// });
+cache.flushdb(function (err, ok) {
+  if (err) {
+    console.log(err);
+    return err;
+  }
+  if (ok) {
+    console.log(ok);
+  }
+});
 
 cache.set('timeCheck', JSON.stringify({ data: [] }), 'NX', function (err) {
   if (err) {
@@ -229,72 +229,76 @@ const socketCon = (io) => {
           if (verifyHost.id === hostId[inRoom]) {
             socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
             socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
-          }
-          if (roomUserId[inRoom]) {
-            if (roomUserId[inRoom].indexOf(verifyHost.id) !== -1) {
-              socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
-              socket.broadcast.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+            return;
+          } else {
+            if (roomUserId[inRoom]) {
+              if (roomUserId[inRoom].indexOf(verifyHost.id) !== -1) {
+                socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+                socket.broadcast.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+                return;
+              }
             }
-          }
-          const userIdGET = await promisifyget('userId');
-          const userId = JSON.parse(userIdGET).data;
-          if (userId[inRoom]) {
-            userId[inRoom].push(verifyHost.id);
-            await promisifyset('userId', JSON.stringify({ data: userId }));
-          } else {
-            userId[inRoom] = [verifyHost.id];
-            await promisifyset('userId', JSON.stringify({ data: userId }));
-          }
-          const roomUserDataGET = await promisifyget('roomUserData');
-          const roomUserData = JSON.parse(roomUserDataGET).data;
-          if (roomUserId[inRoom]) {
-            roomUserId[inRoom].push(verifyHost.id);
-            await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
-            const userDetail = await getUser(verifyHost.id);
-            roomUserData[inRoom].push(userDetail);
-            await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
-            const hostIdGET = await promisifyget('hostId');
-            const hostId = JSON.parse(hostIdGET).data;
-            const hostDetailGET = await promisifyget('hostDetail');
-            const hostDetail = JSON.parse(hostDetailGET).data;
-            const roomTypeGET = await promisifyget('roomType');
-            const roomType = JSON.parse(roomTypeGET).data;
-
-            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-            socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-            socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-            setTimeout(async () => {
-              const heartCountGET = await promisifyget('heartCount');
-              const heartCount = JSON.parse(heartCountGET).data;
-              socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
-              socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
-            }, 300);
-          } else {
-            const roomUserIdGET = await promisifyget('roomUserId');
-            const roomUserId = JSON.parse(roomUserIdGET).data;
-            roomUserId[inRoom] = [verifyHost.id];
-            await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
+            console.log('1');
+            const userIdGET = await promisifyget('userId');
+            const userId = JSON.parse(userIdGET).data;
+            if (userId[inRoom]) {
+              userId[inRoom].push(verifyHost.id);
+              await promisifyset('userId', JSON.stringify({ data: userId }));
+            } else {
+              userId[inRoom] = [verifyHost.id];
+              await promisifyset('userId', JSON.stringify({ data: userId }));
+            }
             const roomUserDataGET = await promisifyget('roomUserData');
             const roomUserData = JSON.parse(roomUserDataGET).data;
-            const userDetail = await getUser(verifyHost.id);
-            roomUserData[inRoom] = [userDetail];
-            await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
-            const hostIdGET = await promisifyget('hostId');
-            const hostId = JSON.parse(hostIdGET).data;
-            const hostDetailGET = await promisifyget('hostDetail');
-            const hostDetail = JSON.parse(hostDetailGET).data;
-            const roomTypeGET = await promisifyget('roomType');
-            const roomType = JSON.parse(roomTypeGET).data;
+            if (roomUserId[inRoom]) {
+              roomUserId[inRoom].push(verifyHost.id);
+              await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
+              const userDetail = await getUser(verifyHost.id);
+              roomUserData[inRoom].push(userDetail);
+              await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
+              const hostIdGET = await promisifyget('hostId');
+              const hostId = JSON.parse(hostIdGET).data;
+              const hostDetailGET = await promisifyget('hostDetail');
+              const hostDetail = JSON.parse(hostDetailGET).data;
+              const roomTypeGET = await promisifyget('roomType');
+              const roomType = JSON.parse(roomTypeGET).data;
 
-            socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-            socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-            socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-            setTimeout(async () => {
-              const heartCountGET = await promisifyget('heartCount');
-              const heartCount = JSON.parse(heartCountGET).data;
-              socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
-              socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
-            }, 300);
+              socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              setTimeout(async () => {
+                const heartCountGET = await promisifyget('heartCount');
+                const heartCount = JSON.parse(heartCountGET).data;
+                socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+              }, 300);
+            } else {
+              const roomUserIdGET = await promisifyget('roomUserId');
+              const roomUserId = JSON.parse(roomUserIdGET).data;
+              roomUserId[inRoom] = [verifyHost.id];
+              await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
+              const roomUserDataGET = await promisifyget('roomUserData');
+              const roomUserData = JSON.parse(roomUserDataGET).data;
+              const userDetail = await getUser(verifyHost.id);
+              roomUserData[inRoom] = [userDetail];
+              await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
+              const hostIdGET = await promisifyget('hostId');
+              const hostId = JSON.parse(hostIdGET).data;
+              const hostDetailGET = await promisifyget('hostDetail');
+              const hostDetail = JSON.parse(hostDetailGET).data;
+              const roomTypeGET = await promisifyget('roomType');
+              const roomType = JSON.parse(roomTypeGET).data;
+
+              socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              setTimeout(async () => {
+                const heartCountGET = await promisifyget('heartCount');
+                const heartCount = JSON.parse(heartCountGET).data;
+                socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+              }, 300);
+            }
           }
         }
       }

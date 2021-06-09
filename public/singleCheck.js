@@ -139,7 +139,8 @@ start.addEventListener('click', function () {
           startTime = new Date().getTime();
           startCountdown(50);
         } else {
-          alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
+          gameDone = true;
+          return;
         }
         gameStatus = 1;
 

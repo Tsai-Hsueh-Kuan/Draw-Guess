@@ -232,7 +232,6 @@ canvasDiv.addEventListener('mouseout', () => {
 
 canvasDiv.addEventListener('mousedown', (e) => {
   if (gameDone) {
-    // alert('請按開始');
     return;
   }
   isDrawing = true;
