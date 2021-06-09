@@ -1,10 +1,11 @@
 const router = require('express').Router();
-const { upload } = require('../../util/util');
-const cpUpload = upload.single('photo');
+
+// const cpUpload = upload.single('photo');
 const {
   wrapAsync,
   verifyToken,
-  verifyTokenAdmin
+  verifyTokenAdmin,
+  upload
 } = require('../../util/util');
 
 const {
@@ -17,10 +18,10 @@ const {
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
-  .post(cpUpload, wrapAsync(signUp));
+  .post(upload, wrapAsync(signUp));
 
 router.route('/user/signin')
-  .post(cpUpload, wrapAsync(signIn));
+  .post(upload, wrapAsync(signIn));
 
 router.route('/user/profile')
   .get(verifyToken, wrapAsync(getUserProfile));
@@ -29,10 +30,10 @@ router.route('/user/profileAdmin')
   .get(verifyTokenAdmin, wrapAsync(getUserProfile));
 
 router.route('/user/replacePhoto')
-  .post(verifyToken, cpUpload, wrapAsync(replacePhoto));
+  .post(verifyToken, upload, wrapAsync(replacePhoto));
 
 router.route('/user/uploadPhoto')
-  .post(verifyToken, cpUpload, wrapAsync(uploadPhoto));
+  .post(verifyToken, upload, wrapAsync(uploadPhoto));
 
 router.route('/user/testRate')
   .get(wrapAsync(testRate));

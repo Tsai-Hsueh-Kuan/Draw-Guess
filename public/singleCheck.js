@@ -15,13 +15,6 @@ let gameId;
 let getAnswer;
 const token = localStorage.getItem('token');
 
-// const typeShow = document.getElementById('question');
-// if (type === 'english') {
-//   typeShow.textContent = '動物 單字';
-// } else if (type === 'idiom') {
-//   typeShow.textContent = '四字 成語';
-// }
-
 fetch('/api/1.0/user/profileAdmin', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -139,7 +132,8 @@ start.addEventListener('click', function () {
           startTime = new Date().getTime();
           startCountdown(50);
         } else {
-          alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
+          gameDone = true;
+          return;
         }
         gameStatus = 1;
 

@@ -57,91 +57,103 @@ fetch('/api/1.0/user/profile', {
 });
 
 const title = document.getElementById('title');
-// const message = document.getElementById('message');
 const start = document.getElementById('start');
 const imgs = document.getElementById('imgs');
-start.addEventListener('click', function () {
-  if (!gameDone) {
-    Swal.fire({
-      timer: 3000,
-      icon: 'warning',
-      title: '這題還沒答對呢！',
-      showConfirmButton: false
-    });
-    return;
-  }
-  gameDone = false;
-  const typeData = {
-    type: type
-  };
+let getSingleNewGameDelay = 1;
+function getSingleNewGame (e) {
+  document.getElementById('answerDiv').innerHTML = '';
+  if (getSingleNewGameDelay) {
+    getSingleNewGameDelay = 0;
+    setTimeout(() => {
+      getSingleNewGameDelay = 1;
+    }, 300);
+    if (!gameDone) {
+      Swal.fire({
+        timer: 1000,
+        icon: 'warning',
+        title: '這題還沒答對呢！',
+        showConfirmButton: false
+      });
+      return;
+    }
+    gameDone = false;
+    const typeData = {
+      type: type
+    };
 
-  fetch('/api/1.0/game/single', {
-    method: 'post',
-    body: JSON.stringify(typeData),
-    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
-      }
-    }).then(data => {
-      if (data.error) {
-        Swal.fire({
-          timer: 5000,
-          title: '已無更多題目！',
-          text: '何不試試連線模式？',
-          icon: 'warning'
-        }).then(() => {
-          return window.location.assign('/');
-        });
-      } else {
-        canvasAll = data.data.game;
-        gameId = canvasAll[0].game_id;
-        if (canvasAll[0].canvas_data) {
-          getAnswerId = canvasAll[0].question_id;
-          imgs.innerHTML = '';
-          startTime = new Date().getTime();
-          startCountdown(50);
-        } else {
-          alert('不好意思 爛題目 請再按下一題 看到這句各位幫我測試的跟我說喔．．．．hsuehkuan感謝你');
-        }
-        gameStatus = 1;
-        title.textContent = ('遊戲開始');
-        title.className = 'timeSinglePlaying';
-        // message.textContent = '請開始作答';
-        const recordDiv = document.getElementById('record');
-        recordDiv.innerHTML = '';
-        for (const i in data.data.history) {
-          const recordName = data.data.history[i].name;
-          const recordPhoto = data.data.history[i].photo;
-          const recordRecord = data.data.history[i].record;
-          const recordInfo = document.createElement('tr');
-          recordInfo.className = 'recordInfo';
-          recordDiv.appendChild(recordInfo);
-
-          const photo = document.createElement('img');
-          if (recordPhoto) {
-            photo.setAttribute('src', `${recordPhoto}`);
-          } else {
-            photo.setAttribute('src', './images/member2.png');
-          }
-          photo.className = 'singleGamerPhoto';
-          recordInfo.appendChild(photo);
-
-          const name = document.createElement('td');
-          name.textContent = `${recordName}`;
-          recordInfo.appendChild(name);
-
-          const record = document.createElement('td');
-          record.textContent = `${recordRecord}`;
-          recordInfo.appendChild(record);
-        }
-      }
+    fetch('/api/1.0/game/single', {
+      method: 'post',
+      body: JSON.stringify(typeData),
+      headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
     })
-    .catch(function (err) {
-      return err;
-    });
-});
+      .then(function (response) {
+        if (response.status === 200) {
+          return response.json(); // 內建promise , send type need json
+        }
+      }).then(data => {
+        if (data.error) {
+          Swal.fire({
+            timer: 5000,
+            title: '已無更多題目！',
+            text: '何不試試連線模式？',
+            icon: 'warning'
+          }).then(() => {
+            return window.location.assign('/');
+          });
+        } else {
+          canvasAll = data.data.game;
+          gameId = canvasAll[0].game_id;
+          if (canvasAll[0].canvas_data) {
+            getAnswerId = canvasAll[0].question_id;
+            imgs.innerHTML = '';
+            startTime = new Date().getTime();
+            startCountdown(50);
+
+            gameStatus = 1;
+            title.textContent = ('遊戲開始');
+            title.className = 'timeSinglePlaying';
+            const recordDiv = document.getElementById('record');
+            recordDiv.innerHTML = '';
+            for (const i in data.data.history) {
+              const recordName = data.data.history[i].name;
+              const recordPhoto = data.data.history[i].photo;
+              const recordRecord = data.data.history[i].record;
+              const recordInfo = document.createElement('tr');
+              recordInfo.className = 'recordInfo';
+              recordDiv.appendChild(recordInfo);
+
+              const photo = document.createElement('img');
+              if (recordPhoto) {
+                photo.setAttribute('src', `${recordPhoto}`);
+              } else {
+                photo.setAttribute('src', './images/member2.png');
+              }
+              photo.className = 'singleGamerPhoto';
+              recordInfo.appendChild(photo);
+
+              const name = document.createElement('td');
+              name.textContent = `${recordName}`;
+              recordInfo.appendChild(name);
+
+              const record = document.createElement('td');
+              record.textContent = `${recordRecord}`;
+              recordInfo.appendChild(record);
+            }
+          } else {
+            gameDone = true;
+            getSingleNewGame();
+          }
+        }
+      })
+      .catch(function (err) {
+        return err;
+      });
+  }
+  e.preventDefault(); // 停止預設功能
+}
+
+start.addEventListener('click', getSingleNewGame, true);
+
 const timeout = 2000; // 觸發倒數計時任務的時間間隙
 let countIndex = 1; // 倒數計時任務執行次數
 const limitTime = 60;
@@ -180,22 +192,23 @@ function startCountdown (interval) {
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
       }).then(function (response) {
         if (response.status === 200) {
-          return response.json(); // 內建promise , send type need json
+          return response.json();
         }
       }).then((data) => {
-        getAnswer = data.answer[0].question;
-        title.textContent = ('請按START GAME開始遊戲');
-        title.className = 'timeSingle';
-        // message.textContent = '請等待下一局';
-        Toast.fire({
-          // icon: 'info',
-          title: '遊戲結束',
-          text: `正確答案:${getAnswer}`,
-          width: '400px',
-          padding: '30px',
-          background: '#ffffff'
-        });
         gameDone = true;
+        getAnswer = data.answer[0].question;
+
+        setTimeout(() => {
+          title.textContent = ('按START開始遊戲');
+          title.className = 'time';
+        }, 2000);
+        document.getElementById('answerDiv').innerHTML = `正確答案 : ${getAnswer}`;
+        // Toast.fire({
+        //   text: `正確答案 : ${getAnswer}`,
+        //   width: '400px',
+        //   padding: '30px',
+        //   background: '#ffffff'
+        // });
       });
     }
   }, interval);
@@ -210,7 +223,7 @@ answerCheckButton.addEventListener('click', function (ev) {
     answerLimit = false;
     setTimeout(() => {
       answerLimit = true;
-    }, 2000);
+    }, 1000);
     const data = {
       answerId: getAnswerId,
       answerCheck: answerCheck
@@ -234,13 +247,12 @@ answerCheckButton.addEventListener('click', function (ev) {
       if (answerCheck === getAnswer) {
         const audio = document.getElementById('mp3');
         audio.play();
-        // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
-        title.textContent = `正確答案！ ${getAnswer}`;
+        audio.volume = 0.7;
+        title.textContent = '';
         Toast.fire({
           icon: 'success',
-          title: '太厲害了！',
-          text: `您的紀錄是${countIndex}`,
-          width: '400px',
+          text: `太厲害了！ 您的紀錄是${countIndex}`,
+          width: '500px',
           padding: '30px',
           background: '#FFFFFF'
         });
@@ -262,15 +274,48 @@ answerCheckButton.addEventListener('click', function (ev) {
               return response.json(); // 內建promise , send type need json
             }
           }).then(data => {
-            console.log('update record ok');
+            const recordDiv = document.getElementById('record');
+            recordDiv.innerHTML = '';
+            for (const i in data.data.history) {
+              const recordName = data.data.history[i].name;
+
+              const recordPhoto = data.data.history[i].photo;
+              const recordRecord = data.data.history[i].record;
+              const recordInfo = document.createElement('tr');
+
+              if (recordName === userName) {
+                recordInfo.className = 'recordInfo recordInfoNew';
+              } else {
+                recordInfo.className = 'recordInfo';
+              }
+
+              recordDiv.appendChild(recordInfo);
+
+              const photo = document.createElement('img');
+              if (recordPhoto) {
+                photo.setAttribute('src', `${recordPhoto}`);
+              } else {
+                photo.setAttribute('src', './images/member2.png');
+              }
+              photo.className = 'singleGamerPhoto';
+              recordInfo.appendChild(photo);
+
+              const name = document.createElement('td');
+              name.textContent = `${recordName}`;
+              recordInfo.appendChild(name);
+
+              const record = document.createElement('td');
+              record.textContent = `${recordRecord}`;
+              recordInfo.appendChild(record);
+            }
           })
           .catch(function (err) {
             return err;
           });
       } else {
-        // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
         const audio = document.getElementById('wrongMp3');
         audio.play();
+        audio.volume = 0.7;
         Toast2.fire({
           icon: 'error',
           title: '猜錯了！',
@@ -281,7 +326,6 @@ answerCheckButton.addEventListener('click', function (ev) {
       }
     });
   } else if (gameStatus === 0) {
-    // message.textContent = 'please wait for next game';
     Toast2.fire({
       icon: 'warning',
       title: 'please wait for next game',
@@ -290,7 +334,6 @@ answerCheckButton.addEventListener('click', function (ev) {
       background: '#ffffff'
     });
   } else if (gameStatus === 2) {
-    // message.textContent = `您已答對 答案就是${getAnswer} please wait next game`;
     Toast2.fire({
       icon: 'warning',
       title: '已經答對囉',
@@ -299,7 +342,6 @@ answerCheckButton.addEventListener('click', function (ev) {
       background: '#ffffff'
     });
   } else if (!answerLimit) {
-    // message.textContent = '作答時間間隔太短';
     Toast2.fire({
       icon: 'warning',
       title: '作答時間間隔太短',
@@ -320,7 +362,7 @@ $('#answerCheck').on('keypress', function (e) {
       answerLimit = false;
       setTimeout(() => {
         answerLimit = true;
-      }, 2000);
+      }, 1000);
       const data = {
         answerId: getAnswerId,
         answerCheck: answerCheck
@@ -342,20 +384,19 @@ $('#answerCheck').on('keypress', function (e) {
         }
       }).then((data) => {
         if (answerCheck === getAnswer) {
+          gameStatus = 2;
+          i = 99999;
           const audio = document.getElementById('mp3');
           audio.play();
-          // message.textContent = `太厲害了！ 您的紀錄是${countIndex}`;
-          title.textContent = `正確答案！ ${getAnswer}`;
+          audio.volume = 0.7;
+          title.textContent = '';
           Toast.fire({
             icon: 'success',
-            title: '太厲害了！',
-            text: `您的紀錄是${countIndex}`,
+            text: `太厲害了！ 您的紀錄是${countIndex}`,
             width: '400px',
             padding: '30px',
             background: '#ffffff'
           });
-          gameStatus = 2;
-          i = 99999;
 
           const historyData = {
             record: countIndex,
@@ -372,7 +413,40 @@ $('#answerCheck').on('keypress', function (e) {
                 return response.json(); // 內建promise , send type need json
               }
             }).then(data => {
-              console.log('update record ok');
+              const recordDiv = document.getElementById('record');
+              recordDiv.innerHTML = '';
+              for (const i in data.data.history) {
+                const recordName = data.data.history[i].name;
+                const recordPhoto = data.data.history[i].photo;
+                const recordRecord = data.data.history[i].record;
+                const recordInfo = document.createElement('tr');
+
+                recordInfo.className = 'recordInfo';
+                recordDiv.appendChild(recordInfo);
+
+                const photo = document.createElement('img');
+                if (recordPhoto) {
+                  photo.setAttribute('src', `${recordPhoto}`);
+                } else {
+                  photo.setAttribute('src', './images/member2.png');
+                }
+                photo.className = 'singleGamerPhoto';
+                recordInfo.appendChild(photo);
+
+                const name = document.createElement('td');
+                name.textContent = `${recordName}`;
+                recordInfo.appendChild(name);
+
+                const record = document.createElement('td');
+                if (recordName === userName) {
+                  record.innerHTML = `${recordRecord} &nbsp &nbsp 新紀錄!`;
+                  record.style.color = 'red';
+                } else {
+                  record.textContent = `${recordRecord}`;
+                }
+
+                recordInfo.appendChild(record);
+              }
             })
             .catch(function (err) {
               return err;
@@ -381,6 +455,7 @@ $('#answerCheck').on('keypress', function (e) {
           // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
           const audio = document.getElementById('wrongMp3');
           audio.play();
+          audio.volume = 0.7;
           Toast2.fire({
             icon: 'error',
             title: '猜錯了！',
@@ -391,7 +466,6 @@ $('#answerCheck').on('keypress', function (e) {
         }
       });
     } else if (gameStatus === 0) {
-      // message.textContent = 'please wait for next game';
       Toast2.fire({
         icon: 'warning',
         title: 'please wait for next game',
@@ -423,7 +497,7 @@ $('#answerCheck').on('keypress', function (e) {
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
   Swal.fire({
-    title: '確定要離開嗎？',
+    title: '確定要離開房間嗎？',
     text: `親愛的 ${userName} 玩家`,
     icon: 'warning',
     showCancelButton: true,
@@ -440,18 +514,13 @@ leave.addEventListener('click', function () {
 const Toast2 = Swal.mixin({
   toast: true,
   showConfirmButton: false,
-  timer: 5000
+  timer: 1000
 });
 
 const Toast = Swal.mixin({
   toast: true,
   showConfirmButton: false,
-  timer: 8000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
+  timer: 2000
 });
 
 const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];

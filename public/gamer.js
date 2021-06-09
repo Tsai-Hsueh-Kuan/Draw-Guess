@@ -42,7 +42,18 @@ const socket = io((''), {
 const Toast2 = Swal.mixin({
   toast: true,
   showConfirmButton: false,
-  timer: 5000
+  timer: 1000
+});
+
+const Toast = Swal.mixin({
+  toast: true,
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  }
 });
 
 const imgs = document.querySelector('#imgs');
@@ -109,9 +120,7 @@ fetch('/api/1.0/user/profile', {
       startCountdown(50);
       title.textContent = ('遊戲開始');
       title.className = 'timePlaying';
-      // likeButton.className = 'like';
       gameDone = false;
-
       for (const i in msg.correctUserList) {
         if (correctUserList[0]) {
           correctUserList.push(msg.correctUserList[i]);
@@ -119,7 +128,13 @@ fetch('/api/1.0/user/profile', {
           correctUserList[0] = msg.correctUserList[i];
         }
         const msgTdArea = document.getElementById(`msgTd${msg.correctUserList[i]}`);
-        msgTdArea.className = 'msgTd correct';
+        if (msgTdArea) {
+          msgTdArea.className = 'msgTd correct';
+        }
+
+        if (msg.correctUserList[i] === userName) {
+          gameStatus = 2;
+        }
       }
 
       socket.emit('checkPlayerInGame', { userId: userId, room: room });
@@ -146,7 +161,6 @@ function startCountdown (interval) {
     // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime && !gameDone) {
-      // console.log(`${10 - countIndex}: 偏差${deviation}ms`);
       title.textContent = (`剩 ${limitTime - countIndex} 秒`);
       if ((limitTime - countIndex) === 5) {
         title.className = 'time5';
@@ -164,7 +178,6 @@ function startCountdown (interval) {
     }
   }, interval);
 }
-
 socket.on(`answerGet${room}`, (msg) => {
   gameDone = true;
   answerData = msg.answer;
@@ -173,9 +186,7 @@ socket.on(`answerGet${room}`, (msg) => {
   msgTdHost.innerHTML = '';
   // message.textContent = `時間到 正確答案:${answerData}`;
   Toast.fire({
-    // icon: 'info',
-    title: '時間到',
-    text: `正確答案:${answerData}`,
+    text: `時間到 正確答案:${answerData}`,
     width: '400px',
     padding: '30px'
   });
@@ -191,7 +202,7 @@ socket.on(`answerGet${room}`, (msg) => {
   answerShow.textContent = '';
 });
 const title = document.getElementById('title');
-socket.on(`answer${room}`, (msg) => {
+socket.on(`answer${room}`, () => {
   const imgs = document.querySelector('#imgs');
   imgs.innerHTML = '';
   canvasNum = 0;
@@ -262,14 +273,16 @@ answerCheckButton.addEventListener('click', function (ev) {
         });
         const audio = document.getElementById('mp3');
         audio.play();
+        audio.volume = 0.7;
         const answerShow = document.getElementById('answerShow');
-        answerShow.textContent = `ANSWER: ${answerCheck}`;
+        answerShow.textContent = `ANS : ${answerCheck}`;
         answerGet = answerCheck;
         gameStatus = 2;
       } else {
         // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
         const audio = document.getElementById('wrongMp3');
         audio.play();
+        audio.volume = 0.7;
         Toast2.fire({
           icon: 'error',
           title: '猜錯了！',
@@ -336,14 +349,16 @@ $('#answerCheck').on('keypress', function (e) {
           });
           const audio = document.getElementById('mp3');
           audio.play();
+          audio.volume = 0.7;
           const answerShow = document.getElementById('answerShow');
-          answerShow.textContent = `ANSWER:${answerCheck}`;
+          answerShow.textContent = `ANS : ${answerCheck}`;
           answerGet = answerCheck;
           gameStatus = 2;
         } else {
           // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
           const audio = document.getElementById('wrongMp3');
           audio.play();
+          audio.volume = 0.7;
           Toast2.fire({
             icon: 'error',
             title: '猜錯了！',
@@ -383,26 +398,6 @@ $('#answerCheck').on('keypress', function (e) {
     }
   }
 });
-
-// let likeStatus = 0;
-// const likeButton = document.getElementById('heart');
-// likeButton.addEventListener('click', async function () {
-//   if (gameStatus === 0) {
-//     Swal.fire({
-//       timer: 2000,
-//       title: '遊戲開始才能給讚喔',
-//       text: '',
-//       icon: 'warning',
-//       showConfirmButton: false
-//     });
-//   } else if (likeStatus === 1) {
-//     likeButton.className = 'likeClicked';
-//     likeStatus = 0;
-//   } else if (likeStatus === 0) {
-//     likeButton.className = 'like';
-//     likeStatus = 1;
-//   }
-// });
 
 let reportStatus = 0;
 const report = document.getElementById('report');
@@ -480,16 +475,13 @@ socket.on(`userCorrect${room}`, (msg) => {
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
-  msgArea.textContent = `答對！ 加${msg.score}分`;
+  msgArea.textContent = `答對! 加${msg.score}分`;
 
   setTimeout(() => {
-    msgArea.textContent = '答對！';
+    msgArea.textContent = '答對!';
   }, 3000);
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
   msgTdArea.className = 'userinfo correct';
-  // setTimeout(() => {
-  //   msgTdArea.classList.remove('correct');
-  // }, (limitTime - countIndex) * 1000);
   const updateHost = document.getElementById('hostScore');
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
 });
@@ -503,11 +495,15 @@ socket.on(`reportOk${room}`, (msg) => {
   });
 });
 
-socket.on(`heartShow${room}`, () => {
+socket.on(`heartShow${room}`, (msg) => {
+  const count = msg.data;
   const msgTd = document.getElementsByClassName('msgTd');
-  const gameMsg = document.createElement('p');
-  gameMsg.className = 'msg fas fa-heart';
-  msgTd[0].appendChild(gameMsg);
+  msgTd[0].innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const gameMsg = document.createElement('p');
+    gameMsg.className = 'msg fas fa-heart';
+    msgTd[0].appendChild(gameMsg);
+  }
 });
 
 socket.on(`closeRoom${room}`, () => {
@@ -693,73 +689,87 @@ invite.addEventListener('click', function () {
 
 const chat = document.getElementById('chat');
 socket.on(`roomMsgShow${room}`, (msg) => {
-  if (msg.userName !== userName) {
-    const accordion = document.getElementById('accordion');
-    accordion.className = 'panel-heading panel-heading-msg';
-    setTimeout(() => {
-      accordion.className = 'panel-heading';
-    }, 2000);
-  }
-  const li = document.createElement('li');
-  li.className = 'left clearfix';
-  chat.appendChild(li);
-
-  const span = document.createElement('span');
-  span.className = 'chat-img pull-left';
-  li.appendChild(span);
-
-  const img = document.createElement('img');
-  img.className = 'img-circle';
-  img.alt = 'User Img';
-  if (msg.userPhoto) {
-    img.setAttribute('src', `${msg.userPhoto}`);
+  if (msg.err) {
+    if (msg.userName === userName) {
+      Swal.fire({
+        title: '不要在聊天室透露答案！',
+        text: '良好的遊戲體驗需要您我共能維護',
+        icon: 'warning',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        confirmButtonText: '我會改進'
+      });
+    }
   } else {
-    img.setAttribute('src', './images/member2.png');
+    if (msg.userName !== userName) {
+      const accordion = document.getElementById('accordion');
+      accordion.className = 'panel-heading panel-heading-msg';
+      setTimeout(() => {
+        accordion.className = 'panel-heading';
+      }, 2000);
+    }
+    const li = document.createElement('li');
+    li.className = 'left clearfix';
+    chat.appendChild(li);
+
+    const span = document.createElement('span');
+    span.className = 'chat-img pull-left';
+    li.appendChild(span);
+
+    const img = document.createElement('img');
+    img.className = 'img-circle';
+    img.alt = 'User Img';
+    if (msg.userPhoto) {
+      img.setAttribute('src', `${msg.userPhoto}`);
+    } else {
+      img.setAttribute('src', './images/member2.png');
+    }
+    span.appendChild(img);
+
+    const divChatBody = document.createElement('div');
+    divChatBody.className = 'chat-body clearfix';
+    li.appendChild(divChatBody);
+
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'header';
+    divChatBody.appendChild(headerDiv);
+
+    const strong = document.createElement('strong');
+    strong.textContent = msg.userName;
+    strong.className = 'primary-font';
+    headerDiv.appendChild(strong);
+
+    const newDate = new Date();
+    const hour = newDate.getHours();
+    let mins = newDate.getMinutes();
+
+    if (mins < 10) {
+      mins = '0' + mins;
+    }
+    const small = document.createElement('small');
+
+    small.textContent = hour + ':' + mins;
+    small.className = 'pull-right text-muted';
+    headerDiv.appendChild(small);
+
+    const spanTime = document.createElement('span');
+    spanTime.className = 'glyphicon glyphicon-time';
+    small.appendChild(spanTime);
+
+    const p = document.createElement('p');
+    p.textContent = msg.roomMsg;
+    divChatBody.appendChild(p);
+
+    const panel = document.getElementsByClassName('panel-body');
+    panel[0].scrollTo(0, 99999999999999);
   }
-  span.appendChild(img);
-
-  const divChatBody = document.createElement('div');
-  divChatBody.className = 'chat-body clearfix';
-  li.appendChild(divChatBody);
-
-  const headerDiv = document.createElement('div');
-  headerDiv.className = 'header';
-  divChatBody.appendChild(headerDiv);
-
-  const strong = document.createElement('strong');
-  strong.textContent = msg.userName;
-  strong.className = 'primary-font';
-  headerDiv.appendChild(strong);
-
-  const newDate = new Date();
-  const hour = newDate.getHours();
-  let mins = newDate.getMinutes();
-
-  if (mins < 10) {
-    mins = '0' + mins;
-  }
-  const small = document.createElement('small');
-
-  small.textContent = hour + ':' + mins;
-  small.className = 'pull-right text-muted';
-  headerDiv.appendChild(small);
-
-  const spanTime = document.createElement('span');
-  spanTime.className = 'glyphicon glyphicon-time';
-  small.appendChild(spanTime);
-
-  const p = document.createElement('p');
-  p.textContent = msg.roomMsg;
-  divChatBody.appendChild(p);
-
-  const panel = document.getElementsByClassName('panel-body');
-  panel[0].scrollTo(0, 99999999999999);
 });
 
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
   Swal.fire({
-    title: '確定要離開嗎？',
+    title: '確定要離開房間嗎？',
     text: `親愛的 ${userName} 玩家`,
     icon: 'warning',
     showCancelButton: true,
@@ -773,28 +783,41 @@ leave.addEventListener('click', function () {
     });
 });
 
-const Toast = Swal.mixin({
-  toast: true,
-  // position: 'top-end',
-  showConfirmButton: false,
-  timer: 8000,
-
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
-});
-
 let heartStatus = 0;
 const heartButton = document.getElementById('heart');
 heartButton.addEventListener('click', function () {
   if (heartStatus === 0 && gameDone === false) {
     heartStatus = 1;
     $(this).toggleClass('is-active');
+    document.cookie = `heart${room}=1; max-age=${limitTime - countIndex}`;
     socket.emit('giveHeart', { heart: true, room: room });
   }
 });
+
+function parseCookie () {
+  const cookieObj = {};
+  const cookieAry = document.cookie.split(';');
+  let cookie;
+  for (let i = 0, l = cookieAry.length; i < l; ++i) {
+    cookie = jQuery.trim(cookieAry[i]);
+    cookie = cookie.split('=');
+    cookieObj[cookie[0]] = cookie[1];
+  }
+  return cookieObj;
+}
+
+function getCookieByName (name) {
+  let value = parseCookie()[name];
+  if (value) {
+    value = decodeURIComponent(value);
+  }
+  return value;
+}
+
+if (getCookieByName(`heart${room}`)) {
+  heartStatus = 1;
+  $('#heart').toggleClass('is-active');
+}
 
 socket.emit('onlineUser', 'get');
 socket.on('onlineUserShow', async (msg) => {

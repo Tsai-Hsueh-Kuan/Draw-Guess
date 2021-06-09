@@ -34,7 +34,7 @@ const resetInuse = async (id) => {
 
 const getGame = async (questionId, hostId) => {
   try {
-    const result = await pool.query('INSERT into game(question_id,report,need_check,host_id) values(?,?,?,?)', [questionId, 0, 0, hostId]);
+    const result = await pool.query('INSERT into game(question_id,report,need_check,host_id) values(?,?,?,?)', [questionId, 0, 9, hostId]);
     return result[0].insertId;
   } catch (error) {
     return error;

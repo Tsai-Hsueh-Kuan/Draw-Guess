@@ -183,6 +183,9 @@ eraser.addEventListener('click', function () {
 });
 
 function draw (e) {
+  if (gameDone) {
+    return;
+  }
   if (!isDrawing) return;
   if (isRainbow) {
     ctx[canvasNum].strokeStyle = `hsl(${hue},100%,50%)`;
@@ -210,18 +213,27 @@ const createCanvas = function () {
 };
 
 canvasDiv.addEventListener('mouseup', () => {
+  if (gameDone) {
+    return;
+  }
   if (isDrawing) {
     createCanvas();
   }
 });
 
 canvasDiv.addEventListener('mouseout', () => {
+  if (gameDone) {
+    return;
+  }
   if (isDrawing) {
     createCanvas();
   }
 });
 
 canvasDiv.addEventListener('mousedown', (e) => {
+  if (gameDone) {
+    return;
+  }
   isDrawing = true;
   [lastX, lastY] = [e.offsetX, e.offsetY];
 
@@ -248,15 +260,23 @@ const socketUrl = function () {
   if (isDrawing) {
     const cavasNow = document.getElementById(`draw${canvasNum - 1}`);
     const _url = cavasNow.toDataURL();
-    socket.emit('canvasData', { room: room, canvasNum: canvasNum - 1, url: _url });
+    if (!gameDone) {
+      socket.emit('canvasData', { room: room, canvasNum: canvasNum - 1, url: _url });
+    }
   };
   isDrawing = false;
 };
 
 canvasDiv.addEventListener('mouseout', function () {
+  if (gameDone) {
+    return;
+  }
   socketUrl();
 });
 canvasDiv.addEventListener('mouseup', function () {
+  if (gameDone) {
+    return;
+  }
   socketUrl();
 });
 
@@ -276,7 +296,7 @@ invite.addEventListener('click', function () {
   '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
   });
 });
-
+let getPassword;
 const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
 getQuestion.addEventListener('click', function () {
@@ -290,7 +310,8 @@ getQuestion.addEventListener('click', function () {
       icon: 'error'
     });
   } else if (gameDone) {
-    socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId });
+    getPassword = Math.floor(Math.random() * 50);
+    socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId, getPassword: getPassword });
     correctUserList = [];
     const correctEle = document.getElementsByClassName('correct');
     for (const i in correctEle) {
@@ -300,6 +321,31 @@ getQuestion.addEventListener('click', function () {
     for (const i in msg) {
       msg[i].textContent = '';
     }
+
+    socket.on(`question${room}${getPassword}`, (msg) => {
+      countIndex = 1; // 倒數計時任務執行次數
+      timeout = 1000; // 觸發倒數計時任務的時間間隙
+      startTime = new Date().getTime();
+      if (msg) {
+        startCountdown(50);
+        const canvasDiv = document.querySelector('#addCanvas');
+        canvasDiv.innerHTML = '';
+        canvasNum = 0;
+        const canvas = document.createElement('canvas');
+        canvas.className = 'draw';
+        canvas.id = 'draw' + canvasNum;
+        canvas.width = '700';
+        canvas.height = '400';
+        canvas.style.zIndex = canvasNum;
+        ctx[canvasNum] = canvas.getContext('2d');
+        canvasDiv.appendChild(canvas);
+        gameDone = false;
+        isDrawing = false;
+        questionSql = msg;
+        question.textContent = `${questionSql}`;
+        time.className = 'timePlaying';
+      }
+    });
   } else {
     Swal.fire({
       timer: 3000,
@@ -316,31 +362,6 @@ let startTime = new Date().getTime();
 
 let questionSql;
 const question = document.querySelector('#question');
-socket.on(`question${room}`, (msg) => {
-  countIndex = 1; // 倒數計時任務執行次數
-  timeout = 1000; // 觸發倒數計時任務的時間間隙
-  startTime = new Date().getTime();
-  if (msg) {
-    startCountdown(50);
-    const canvasDiv = document.querySelector('#addCanvas');
-    canvasDiv.innerHTML = '';
-    canvasNum = 0;
-    const canvas = document.createElement('canvas');
-    canvas.className = 'draw';
-    canvas.id = 'draw' + canvasNum;
-    canvas.width = '700';
-    canvas.height = '400';
-    canvas.style.zIndex = canvasNum;
-    ctx[canvasNum] = canvas.getContext('2d');
-    canvasDiv.appendChild(canvas);
-    gameDone = false;
-    isDrawing = false;
-    questionSql = msg;
-    question.textContent = `${questionSql}`;
-    time.className = 'timePlaying';
-    // getQuestion.textContent = ('PLAYING');
-  }
-});
 
 const time = document.getElementById('time');
 function startCountdown (interval) {
@@ -369,9 +390,7 @@ function startCountdown (interval) {
       getQuestion.textContent = ('START');
 
       Toast.fire({
-        // icon: 'info',
-        title: '時間到',
-        text: '休息一下 準備下一題',
+        text: '時間到 休息一下 準備下一題',
         width: '400px',
         padding: '30px'
       });
@@ -387,7 +406,9 @@ const undo = function () {
     const c = myobj.getContext('2d');
     c.clearRect(0, 0, 700, 400);
     canvasNum--;
-    socket.emit('undo', { room: room, canvasNum: canvasNum, data: 1 });
+    if (!gameDone) {
+      socket.emit('undo', { room: room, canvasNum: canvasNum, data: 1 });
+    }
   }
 };
 const undoBottom = document.querySelector('#undo');
@@ -476,11 +497,15 @@ socket.on(`reportOk${room}`, (msg) => {
   });
 });
 
-socket.on(`heartShow${room}`, () => {
+socket.on(`heartShow${room}`, (msg) => {
+  const count = msg.data;
   const msgTd = document.getElementsByClassName('msgTd');
-  const gameMsg = document.createElement('p');
-  gameMsg.className = 'msg fas fa-heart';
-  msgTd[0].appendChild(gameMsg);
+  msgTd[0].innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const gameMsg = document.createElement('p');
+    gameMsg.className = 'msg fas fa-heart';
+    msgTd[0].appendChild(gameMsg);
+  }
 });
 
 const playerList = document.getElementById('playerList');
@@ -624,75 +649,89 @@ $('#btn-input').on('keypress', function (e) {
     }
   }
 });
+
 const chat = document.getElementById('chat');
 socket.on(`roomMsgShow${room}`, (msg) => {
-  if (msg.userName !== userName) {
-    const accordion = document.getElementById('accordion');
-    accordion.className = 'panel-heading panel-heading-msg';
-    setTimeout(() => {
-      accordion.className = 'panel-heading';
-    }, 2000);
-  }
-  const li = document.createElement('li');
-  li.className = 'left clearfix';
-  chat.appendChild(li);
-
-  const span = document.createElement('span');
-  span.className = 'chat-img pull-left';
-  li.appendChild(span);
-
-  const img = document.createElement('img');
-  img.className = 'img-circle';
-  img.alt = 'User Img';
-  if (msg.userPhoto) {
-    img.setAttribute('src', `${msg.userPhoto}`);
+  if (msg.err) {
+    if (msg.userName === userName) {
+      Swal.fire({
+        title: '不要在聊天室透露答案！',
+        text: '良好的遊戲體驗需要您我共能維護',
+        icon: 'warning',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        confirmButtonText: '我會改進'
+      });
+    }
   } else {
-    img.setAttribute('src', './images/member2.png');
+    if (msg.userName !== userName) {
+      const accordion = document.getElementById('accordion');
+      accordion.className = 'panel-heading panel-heading-msg';
+      setTimeout(() => {
+        accordion.className = 'panel-heading';
+      }, 2000);
+    }
+    const li = document.createElement('li');
+    li.className = 'left clearfix';
+    chat.appendChild(li);
+
+    const span = document.createElement('span');
+    span.className = 'chat-img pull-left';
+    li.appendChild(span);
+
+    const img = document.createElement('img');
+    img.className = 'img-circle';
+    img.alt = 'User Img';
+    if (msg.userPhoto) {
+      img.setAttribute('src', `${msg.userPhoto}`);
+    } else {
+      img.setAttribute('src', './images/member2.png');
+    }
+    span.appendChild(img);
+
+    const divChatBody = document.createElement('div');
+    divChatBody.className = 'chat-body clearfix';
+    li.appendChild(divChatBody);
+
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'header';
+    divChatBody.appendChild(headerDiv);
+
+    const strong = document.createElement('strong');
+    strong.textContent = msg.userName;
+    strong.className = 'primary-font';
+    headerDiv.appendChild(strong);
+
+    const newDate = new Date();
+    const hour = newDate.getHours();
+    let mins = newDate.getMinutes();
+    if (mins < 10) {
+      mins = '0' + mins;
+    }
+    const small = document.createElement('small');
+
+    small.textContent = hour + ':' + mins;
+    small.className = 'pull-right text-muted';
+    headerDiv.appendChild(small);
+
+    const spanTime = document.createElement('span');
+    spanTime.className = 'glyphicon glyphicon-time';
+    small.appendChild(spanTime);
+
+    const p = document.createElement('p');
+    p.textContent = msg.roomMsg;
+    divChatBody.appendChild(p);
+
+    const panel = document.getElementsByClassName('panel-body');
+    panel[0].scrollTo(0, 999999999);
   }
-  span.appendChild(img);
-
-  const divChatBody = document.createElement('div');
-  divChatBody.className = 'chat-body clearfix';
-  li.appendChild(divChatBody);
-
-  const headerDiv = document.createElement('div');
-  headerDiv.className = 'header';
-  divChatBody.appendChild(headerDiv);
-
-  const strong = document.createElement('strong');
-  strong.textContent = msg.userName;
-  strong.className = 'primary-font';
-  headerDiv.appendChild(strong);
-
-  const newDate = new Date();
-  const hour = newDate.getHours();
-  let mins = newDate.getMinutes();
-  if (mins < 10) {
-    mins = '0' + mins;
-  }
-  const small = document.createElement('small');
-
-  small.textContent = hour + ':' + mins;
-  small.className = 'pull-right text-muted';
-  headerDiv.appendChild(small);
-
-  const spanTime = document.createElement('span');
-  spanTime.className = 'glyphicon glyphicon-time';
-  small.appendChild(spanTime);
-
-  const p = document.createElement('p');
-  p.textContent = msg.roomMsg;
-  divChatBody.appendChild(p);
-
-  const panel = document.getElementsByClassName('panel-body');
-  panel[0].scrollTo(0, 999999999);
 });
 
 const Toast = Swal.mixin({
   toast: true,
   showConfirmButton: false,
-  timer: 8000,
-
+  timer: 2000,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);
@@ -713,7 +752,7 @@ socket.on('onlineUserShow', async (msg) => {
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
   Swal.fire({
-    title: '確定要離開嗎？',
+    title: '確定要離開房間嗎？',
     text: `親愛的 ${userName} 玩家`,
     icon: 'warning',
     showCancelButton: true,

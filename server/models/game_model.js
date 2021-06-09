@@ -17,7 +17,7 @@ const getSingleGame = async (id, type) => {
       return { error: '已無更多題庫給您' };
     } else {
       const rdQuestion = Math.floor(Math.random() * result.length);
-      const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? order by draw.history.record', result[rdQuestion]);
+      const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? AND draw.history.record <> 999 order by draw.history.record', result[rdQuestion]);
       for (const i in historyCheck[0]) {
         delete historyCheck[0][i].password;
         if (historyCheck[0][i].photo) {
@@ -26,7 +26,7 @@ const getSingleGame = async (id, type) => {
       }
 
       const gameCheck = await pool.query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.id = ?', result[rdQuestion]);
-      await pool.query('INSERT into history(game_id,user_id,record) values (?,?,?)', [result[rdQuestion], id, 'fail']);
+      await pool.query('INSERT into history(game_id,user_id,record) values (?,?,?)', [result[rdQuestion], id, '999']);
 
       const data = {
         game: gameCheck[0],
@@ -62,7 +62,7 @@ const getSingleGameTest = async (id, gameId) => {
 
 const checkGame = async (gameId) => {
   try {
-    await pool.query('UPDATE draw.game SET need_check = 2 where id = ?', gameId);
+    await pool.query('UPDATE draw.game SET need_check = 0 where id = ?', gameId);
     return 'ok';
   } catch (error) {
     return error;
@@ -72,7 +72,19 @@ const checkGame = async (gameId) => {
 const updateHistory = async (gameId, userId, record) => {
   try {
     await pool.query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
-    return;
+
+    const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? AND draw.history.record <> 999 order by draw.history.record', gameId);
+    for (const i in historyCheck[0]) {
+      delete historyCheck[0][i].password;
+      if (historyCheck[0][i].photo) {
+        historyCheck[0][i].photo = IP + historyCheck[0][i].photo;
+      }
+    }
+
+    const data = {
+      history: historyCheck[0]
+    };
+    return { data: data };
   } catch (error) {
     return error;
   }
