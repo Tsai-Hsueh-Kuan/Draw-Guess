@@ -310,7 +310,7 @@ getQuestion.addEventListener('click', function () {
       icon: 'error'
     });
   } else if (gameDone) {
-    getPassword = 1;
+    getPassword = Math.floor(Math.random() * 50);
     socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId, getPassword: getPassword });
     correctUserList = [];
     const correctEle = document.getElementsByClassName('correct');
