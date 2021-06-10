@@ -231,7 +231,7 @@ justify-content: stretch;
 .loaded .stamp:after {
   opacity: .75;
   transform: rotate(-15deg) scale(1);
-  z-index: 400;
+  z-index: 0;
 }
 
 #homeRankShow{

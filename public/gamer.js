@@ -185,7 +185,7 @@ socket.on(`answerGet${room}`, (msg) => {
   const msgTdHost = document.getElementById('msgTdHost');
   msgTdHost.innerHTML = '';
   Toast.fire({
-    text: `時間到 正確答案:${answerData}`,
+    text: `正確答案:${answerData}`,
     width: '400px',
     padding: '30px'
   });

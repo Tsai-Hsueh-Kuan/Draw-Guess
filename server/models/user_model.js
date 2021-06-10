@@ -10,6 +10,7 @@ const passwordencryption = function (password) {
     hash.update(password);
     return (hash.digest('hex'));
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -42,6 +43,7 @@ const signUp = async (name, password, photo) => {
     return { user };
   } catch (error) {
     await conn.query('ROLLBACK');
+    console.log(error);
     return { error };
   } finally {
     conn.release();
@@ -94,6 +96,7 @@ const getUserDetail = async (userId) => {
     }
     return userDetail[0][0];
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -102,6 +105,7 @@ const replacePhoto = async (id, photo) => {
   try {
     await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -112,6 +116,7 @@ const uploadPhoto = async (id, photo) => {
     photo = IP + photo;
     return photo;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -130,6 +135,7 @@ const testRate = async () => {
     }
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -139,6 +145,7 @@ const delTest = async () => {
     await pool.query('DELETE FROM draw.history where user_id = 76');
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

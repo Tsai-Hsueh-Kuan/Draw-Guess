@@ -21,6 +21,7 @@ if (type === 'english') {
 
 const socket = io((''), {
   auth: {
+    room: 'singlePlayer',
     token: token,
     type: 'singlePlayer'
   },
@@ -389,7 +390,6 @@ $('#answerCheck').on('keypress', function (e) {
         if (answerCheck === getAnswer) {
           gameStatus = 2;
           timeout = 1;
-
           const audio = document.getElementById('mp3');
           audio.play();
           audio.volume = 0.7;

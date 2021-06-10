@@ -844,6 +844,7 @@ socket.on('mainPageUndo', (msg) => {
     canvasNum[roomId]--;
   }
 });
+
 let roomList;
 socket.on('roomList', (msg) => {
   roomList = msg.roomList;
@@ -1094,55 +1095,62 @@ createGame.addEventListener('click', function () {
 });
 
 if (test === 'test') {
-  const signInData = {
-    name: 'test',
-    password: 'test'
-  };
-  fetch('/api/1.0/user/signin', {
-    method: 'POST',
-    body: JSON.stringify(signInData),
-    headers: { 'Content-Type': 'application/json' }
-  }).then(function (response) {
-    if (response.status === 200) {
-      return response.json();
-    } else if (response.status === 429) {
-      Swal.fire({
-        timer: 5000,
-        title: 'Too Many Requests',
-        icon: 'error'
-      });
-    } else if (response.status === 400) {
-      return response.json();
-    } else if (response.status === 403) {
-      return response.json();
-    } else if (response.status === 500) {
-      return response.json();
-    }
-  }).then(data => {
-    if (data.error) {
-      Swal.fire('OOPS！', `${data.error}`, 'error');
-    } else if (data.data) {
-      localStorage.setItem('token', `${data.data.access_token}`);
-      Swal.fire({
-        timer: 5000,
-        title: '登入成功',
-        text: `歡迎${data.data.user.name}玩家`,
-        icon: 'success'
-      }).then(() => {
-        return window.location.assign('/');
+  Swal.fire({
+    title: '測試帳號 請登入',
+    html:
+    '<div>NAME</div>' +
+    '<input id="swal-input1" type="text" class="swal2-input" value="test" maxlength="10">' +
+    '<div>PASSWORD</div>' +
+    '<input id="swal-input2" type="password" class="swal2-input" value="test" maxlength="18">',
+    // timer: 000,
+    preConfirm: function () {
+      return new Promise(function (resolve) {
+        resolve([
+          $('#swal-input1').val(),
+          $('#swal-input2').val()
+        ]);
       });
     }
+
+  }).then(function (result) {
+    const signInData = {
+      name: result.value[0],
+      password: result.value[1]
+    };
+    fetch('/api/1.0/user/signin', {
+      method: 'POST',
+      body: JSON.stringify(signInData),
+      headers: { 'Content-Type': 'application/json' }
+    }).then(function (response) {
+      if (response.status === 200) {
+        return response.json();
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
+      } else if (response.status === 400) {
+        return response.json();
+      } else if (response.status === 403) {
+        return response.json();
+      } else if (response.status === 500) {
+        return response.json();
+      }
+    }).then(data => {
+      if (data.error) {
+        Swal.fire('OOPS！', `${data.error}`, 'error');
+      } else if (data.data) {
+        localStorage.setItem('token', `${data.data.access_token}`);
+        Swal.fire({
+          timer: 5000,
+          title: '登入成功',
+          text: `歡迎${data.data.user.name}玩家`,
+          icon: 'success'
+        }).then(() => {
+          return window.location.assign('/');
+        });
+      }
+    });
   });
 }
-
-// if (test === 'test') {
-//   fetch('/api/1.0/user/delTest', {
-//     method: 'GET'
-//   }).then(function (response) {
-//     if (response.status === 200) {
-//       return response.json();
-//     }
-//   }).then(data => {
-//     console.log('test');
-//   });
-// }
