@@ -310,17 +310,18 @@ getQuestion.addEventListener('click', function () {
       icon: 'error'
     });
   } else if (gameDone) {
+    setTimeout(function () {
+      $('.rankPart').removeClass('loaded');
+    }, 500);
     getPassword = Math.floor(Math.random() * 50);
     socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId, getPassword: getPassword });
+    for (const i in correctUserList) {
+      const correctEle = document.getElementById(`msgTd${correctUserList[i]}`);
+      const correctMsg = document.getElementById(`msg${correctUserList[i]}`);
+      correctEle.className = 'msgTd';
+      correctMsg.innerHTML = '';
+    }
     correctUserList = [];
-    const correctEle = document.getElementsByClassName('correct');
-    for (const i in correctEle) {
-      correctEle[i].className = 'msgTd';
-    }
-    const msg = document.getElementsByClassName('msg');
-    for (const i in msg) {
-      msg[i].textContent = '';
-    }
 
     socket.on(`question${room}${getPassword}`, (msg) => {
       countIndex = 1; // 倒數計時任務執行次數
@@ -476,11 +477,8 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `答對！ 加${msg.score}分`;
-  setTimeout(() => {
-    msgArea.textContent = '答對！';
-  }, 3000);
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
-  msgTdArea.className = 'msgTd correct';
+  msgTdArea.className = 'userinfo correct';
   const updateHost = document.getElementById('hostScore');
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
 });
@@ -505,6 +503,15 @@ socket.on(`heartShow${room}`, (msg) => {
     const gameMsg = document.createElement('p');
     gameMsg.className = 'msg fas fa-heart';
     msgTd[0].appendChild(gameMsg);
+  }
+});
+
+socket.on(`allCorrect${room}`, (msg) => {
+  if (msg.data) {
+    countIndex = 60;
+    setTimeout(function () {
+      $('.rankPart').addClass('loaded');
+    }, 500);
   }
 });
 
@@ -552,8 +559,8 @@ socket.on(`roomUserId${room}`, (msg) => {
       userinfo.appendChild(gameMsgTd);
 
       const gameMsg = document.createElement('p');
-      gameMsg.className = 'msg';
       gameMsg.id = 'msg' + gamerName;
+      gameMsg.className = 'msg';
       gameMsgTd.appendChild(gameMsg);
 
       for (const i in correctUserList) {
@@ -731,7 +738,7 @@ socket.on(`roomMsgShow${room}`, (msg) => {
 const Toast = Swal.mixin({
   toast: true,
   showConfirmButton: false,
-  timer: 2000,
+  timer: 3000,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);

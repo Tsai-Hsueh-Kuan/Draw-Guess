@@ -48,7 +48,7 @@ const Toast2 = Swal.mixin({
 const Toast = Swal.mixin({
   toast: true,
   showConfirmButton: false,
-  timer: 2000,
+  timer: 3000,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer);
@@ -184,7 +184,6 @@ socket.on(`answerGet${room}`, (msg) => {
   title.textContent = ('等待開始下局遊戲');
   const msgTdHost = document.getElementById('msgTdHost');
   msgTdHost.innerHTML = '';
-  // message.textContent = `時間到 正確答案:${answerData}`;
   Toast.fire({
     text: `時間到 正確答案:${answerData}`,
     width: '400px',
@@ -201,8 +200,14 @@ socket.on(`answerGet${room}`, (msg) => {
   const answerShow = document.getElementById('answerShow');
   answerShow.textContent = '';
 });
+
 const title = document.getElementById('title');
 socket.on(`answer${room}`, () => {
+  const answerShow = document.getElementById('answerShow');
+  answerShow.textContent = '';
+  setTimeout(function () {
+    $('.rankPart').removeClass('loaded');
+  }, 500);
   const imgs = document.querySelector('#imgs');
   imgs.innerHTML = '';
   canvasNum = 0;
@@ -214,15 +219,13 @@ socket.on(`answer${room}`, () => {
   startCountdown(50);
   title.textContent = ('遊戲開始');
 
+  for (const i in correctUserList) {
+    const correctEle = document.getElementById(`msgTd${correctUserList[i]}`);
+    const correctMsg = document.getElementById(`msg${correctUserList[i]}`);
+    correctEle.className = 'msgTd';
+    correctMsg.innerHTML = '';
+  }
   correctUserList = [];
-  const correctEle = document.getElementsByClassName('correct');
-  for (const i in correctEle) {
-    correctEle[i].className = 'msgTd';
-  }
-  const correctMsg = document.getElementsByClassName('msg');
-  for (const i in correctMsg) {
-    correctMsg[i].innerHTML = '';
-  }
 
   title.className = 'timePlaying';
   gameDone = false;
@@ -476,10 +479,6 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `答對! 加${msg.score}分`;
-
-  setTimeout(() => {
-    msgArea.textContent = '答對!';
-  }, 3000);
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
   msgTdArea.className = 'userinfo correct';
   const updateHost = document.getElementById('hostScore');
@@ -503,6 +502,14 @@ socket.on(`heartShow${room}`, (msg) => {
     const gameMsg = document.createElement('p');
     gameMsg.className = 'msg fas fa-heart';
     msgTd[0].appendChild(gameMsg);
+  }
+});
+
+socket.on(`allCorrect${room}`, (msg) => {
+  if (msg.data) {
+    setTimeout(function () {
+      $('.rankPart').addClass('loaded');
+    }, 500);
   }
 });
 

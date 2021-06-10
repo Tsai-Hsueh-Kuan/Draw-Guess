@@ -1,3 +1,6 @@
+const url = new URLSearchParams(window.location.search);
+const test = url.get('test');
+
 let userId;
 let userName;
 let userPhoto;
@@ -282,7 +285,7 @@ userPhotoImg.addEventListener('click', function () {
           if (data.error) {
             Swal.fire('OOPS！', `${data.error}`, 'error');
           } else if (data.data) {
-            s;
+            localStorage.setItem('token', `${data.data.access_token}`);
             Swal.fire({
               timer: 5000,
               title: '登入成功',
@@ -1089,3 +1092,57 @@ createGame.addEventListener('click', function () {
     }
   });
 });
+
+if (test === 'test') {
+  const signInData = {
+    name: 'test',
+    password: 'test'
+  };
+  fetch('/api/1.0/user/signin', {
+    method: 'POST',
+    body: JSON.stringify(signInData),
+    headers: { 'Content-Type': 'application/json' }
+  }).then(function (response) {
+    if (response.status === 200) {
+      return response.json();
+    } else if (response.status === 429) {
+      Swal.fire({
+        timer: 5000,
+        title: 'Too Many Requests',
+        icon: 'error'
+      });
+    } else if (response.status === 400) {
+      return response.json();
+    } else if (response.status === 403) {
+      return response.json();
+    } else if (response.status === 500) {
+      return response.json();
+    }
+  }).then(data => {
+    if (data.error) {
+      Swal.fire('OOPS！', `${data.error}`, 'error');
+    } else if (data.data) {
+      localStorage.setItem('token', `${data.data.access_token}`);
+      Swal.fire({
+        timer: 5000,
+        title: '登入成功',
+        text: `歡迎${data.data.user.name}玩家`,
+        icon: 'success'
+      }).then(() => {
+        return window.location.assign('/');
+      });
+    }
+  });
+}
+
+// if (test === 'test') {
+//   fetch('/api/1.0/user/delTest', {
+//     method: 'GET'
+//   }).then(function (response) {
+//     if (response.status === 200) {
+//       return response.json();
+//     }
+//   }).then(data => {
+//     console.log('test');
+//   });
+// }

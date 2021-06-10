@@ -51,6 +51,9 @@ const signUp = async (name, password, photo) => {
 const signIn = async (name, password) => {
   const conn = await pool.getConnection();
   try {
+    if (name === 'test') {
+      await pool.query('DELETE FROM draw.history where user_id = 76');
+    }
     await conn.query('START TRANSACTION');
     const nameCheck = await conn.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
     if (!nameCheck[0][0]) {
@@ -131,11 +134,21 @@ const testRate = async () => {
   }
 };
 
+const delTest = async () => {
+  try {
+    await pool.query('DELETE FROM draw.history where user_id = 76');
+    return;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports = {
   signUp,
   signIn,
   getUserDetail,
   replacePhoto,
   uploadPhoto,
-  testRate
+  testRate,
+  delTest
 };
