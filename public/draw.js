@@ -310,9 +310,9 @@ getQuestion.addEventListener('click', function () {
       icon: 'error'
     });
   } else if (gameDone) {
-    setTimeout(function () {
-      $('.rankPart').removeClass('loaded');
-    }, 500);
+    $('.rankPart').removeClass('loaded');
+    time.className = 'timePlaying';
+    time.textContent = '';
     getPassword = Math.floor(Math.random() * 50);
     socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId, getPassword: getPassword });
     for (const i in correctUserList) {
@@ -344,7 +344,6 @@ getQuestion.addEventListener('click', function () {
         isDrawing = false;
         questionSql = msg;
         question.textContent = `${questionSql}`;
-        time.className = 'timePlaying';
       }
     });
   } else {

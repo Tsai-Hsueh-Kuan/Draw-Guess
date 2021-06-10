@@ -224,7 +224,7 @@ justify-content: stretch;
   text-transform: uppercase;
   opacity: 0;
   transform-origin: 50% 50%;
-  transform: rotate(-2deg) scale(5);
+  transform: rotate(-2deg) scale(2);
   transition: all 0.3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
 }
 
