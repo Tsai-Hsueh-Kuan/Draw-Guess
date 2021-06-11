@@ -12,7 +12,8 @@ const {
   getAnswer,
   checkAnswer,
   getcrawler,
-  checkGame
+  checkGame,
+  getSingleGameNeedCheck
 } = require('../controllers/game_controller');
 
 router.route('/game/single')
@@ -20,6 +21,9 @@ router.route('/game/single')
 
 router.route('/game/singleTest')
   .post(verifyToken, wrapAsync(getSingleGameTest));
+
+router.route('/game/singleGameNeedCheck')
+  .get(verifyToken, wrapAsync(getSingleGameNeedCheck));
 
 router.route('/game/history')
   .post(verifyToken, wrapAsync(updateHistory));

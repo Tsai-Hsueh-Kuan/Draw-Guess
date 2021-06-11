@@ -105,11 +105,17 @@ const testRate = async (req, res) => {
   res.status(200).send({ ok: 'ok' });
 };
 
+const delTest = async (req, res) => {
+  await User.delTest();
+  res.status(200).send({ ok: 'ok' });
+};
+
 module.exports = {
   signIn,
   signUp,
   getUserProfile,
   replacePhoto,
   uploadPhoto,
-  testRate
+  testRate,
+  delTest
 };

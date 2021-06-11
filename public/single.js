@@ -19,6 +19,15 @@ if (type === 'english') {
   typeShow.textContent = '四字 成語';
 }
 
+const socket = io((''), {
+  auth: {
+    room: 'singlePlayer',
+    token: token,
+    type: 'singlePlayer'
+  },
+  reconnect: true
+});
+
 fetch('/api/1.0/user/profile', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
@@ -126,7 +135,7 @@ function getSingleNewGame (e) {
               if (recordPhoto) {
                 photo.setAttribute('src', `${recordPhoto}`);
               } else {
-                photo.setAttribute('src', './images/member2.png');
+                photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
               }
               photo.className = 'singleGamerPhoto';
               recordInfo.appendChild(photo);
@@ -154,7 +163,7 @@ function getSingleNewGame (e) {
 
 start.addEventListener('click', getSingleNewGame, true);
 
-const timeout = 2000; // 觸發倒數計時任務的時間間隙
+let timeout = 2000; // 觸發倒數計時任務的時間間隙
 let countIndex = 1; // 倒數計時任務執行次數
 const limitTime = 60;
 let startTime;
@@ -180,6 +189,7 @@ function startCountdown (interval) {
       countIndex++;
       startCountdown(timeout - deviation);
     } else {
+      timeout = 2000;
       gameStatus = 0;
       i = 0;
       countIndex = 1;
@@ -203,12 +213,6 @@ function startCountdown (interval) {
           title.className = 'time';
         }, 2000);
         document.getElementById('answerDiv').innerHTML = `正確答案 : ${getAnswer}`;
-        // Toast.fire({
-        //   text: `正確答案 : ${getAnswer}`,
-        //   width: '400px',
-        //   padding: '30px',
-        //   background: '#ffffff'
-        // });
       });
     }
   }, interval);
@@ -257,7 +261,7 @@ answerCheckButton.addEventListener('click', function (ev) {
           background: '#FFFFFF'
         });
         gameStatus = 2;
-        i = 99999;
+        timeout = 1;
 
         const historyData = {
           record: countIndex,
@@ -295,7 +299,7 @@ answerCheckButton.addEventListener('click', function (ev) {
               if (recordPhoto) {
                 photo.setAttribute('src', `${recordPhoto}`);
               } else {
-                photo.setAttribute('src', './images/member2.png');
+                photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
               }
               photo.className = 'singleGamerPhoto';
               recordInfo.appendChild(photo);
@@ -385,7 +389,7 @@ $('#answerCheck').on('keypress', function (e) {
       }).then((data) => {
         if (answerCheck === getAnswer) {
           gameStatus = 2;
-          i = 99999;
+          timeout = 1;
           const audio = document.getElementById('mp3');
           audio.play();
           audio.volume = 0.7;
@@ -428,7 +432,7 @@ $('#answerCheck').on('keypress', function (e) {
                 if (recordPhoto) {
                   photo.setAttribute('src', `${recordPhoto}`);
                 } else {
-                  photo.setAttribute('src', './images/member2.png');
+                  photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
                 }
                 photo.className = 'singleGamerPhoto';
                 recordInfo.appendChild(photo);
@@ -494,6 +498,15 @@ $('#answerCheck').on('keypress', function (e) {
   }
 });
 
+socket.emit('onlineUser', 'get');
+socket.on('onlineUserShow', async (msg) => {
+  const onlineUser = msg.userAll.filter(function (element, index, arr) {
+    return arr.indexOf(element) === index;
+  });
+  const onlineCount = onlineUser.length;
+  const onlineUserCount = document.getElementById('onlineUserCount');
+  onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
+});
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {
   Swal.fire({
@@ -527,7 +540,7 @@ const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
 const randomNumber = Math.floor(Math.random() * 6);
 Swal.fire({
   title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageUrl: `https://d3cek75nx38k91.cloudfront.net/draw/${imgsAll[randomNumber]}.jpeg`,
   imageWidth: 200,
   imageHeight: 200,
   imageAlt: 'image',

@@ -161,7 +161,7 @@ const socketCon = (io) => {
     const roomUserId = JSON.parse(roomUserIdGET).data;
     const roomUserDataGET = await promisifyget('roomUserData');
     const roomUserData = JSON.parse(roomUserDataGET).data;
-
+    socket.join(inRoom);
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (verifyHost.err) {
@@ -179,8 +179,8 @@ const socketCon = (io) => {
         await promisifyset('userAll', JSON.stringify({ data: userAll }));
 
         socket.on('onlineUser', async (msg) => {
-          socket.broadcast.emit('onlineUserShow', { userAll: userAll });
           socket.emit('onlineUserShow', { userAll: userAll });
+          socket.broadcast.emit('onlineUserShow', { userAll: userAll });
         });
         if (`${intype}` === 'host') {
           const roomListGET = await promisifyget('roomList');
@@ -200,7 +200,6 @@ const socketCon = (io) => {
           const hostDisconnect = JSON.parse(hostDisconnectGET).data;
           hostDisconnect[inRoom] = false;
           await promisifyset('hostDisconnect', JSON.stringify({ data: hostDisconnect }));
-
           const hostIdGET = await promisifyget('hostId');
           const hostId = JSON.parse(hostIdGET).data;
           hostId[inRoom] = verifyHost.id;
@@ -219,22 +218,26 @@ const socketCon = (io) => {
           await promisifyset('heartCount', JSON.stringify({ data: heartCount }));
           socket.broadcast.emit('roomList', { roomList: roomList });
           socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-          socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-          socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          // socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          // socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+          io.to(inRoom).emit('roomUserId', { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
         } else if (`${intype}` === 'player') {
           const hostIdGET = await promisifyget('hostId');
           const hostId = JSON.parse(hostIdGET).data;
-          const roomUserIdGET = await promisifyget('roomUserId');
-          const roomUserId = JSON.parse(roomUserIdGET).data;
+
           if (verifyHost.id === hostId[inRoom]) {
-            socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
-            socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
+            // socket.emit(`repeat${inRoom}`, { id: verifyHost.id });
+            // socket.broadcast.emit(`repeat${inRoom}`, { id: verifyHost.id });
+            io.to(inRoom).emit('repeat', { id: verifyHost.id });
             return;
           } else {
+            const roomUserIdGET = await promisifyget('roomUserId');
+            const roomUserId = JSON.parse(roomUserIdGET).data;
             if (roomUserId[inRoom]) {
               if (roomUserId[inRoom].indexOf(verifyHost.id) !== -1) {
-                socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
-                socket.broadcast.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+                // socket.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+                // socket.broadcast.emit(`repeatUser${inRoom}`, { id: verifyHost.id });
+                io.to(inRoom).emit('repeatUser', { id: verifyHost.id });
                 return;
               }
             }
@@ -248,11 +251,12 @@ const socketCon = (io) => {
               userId[inRoom] = [verifyHost.id];
               await promisifyset('userId', JSON.stringify({ data: userId }));
             }
-            const roomUserDataGET = await promisifyget('roomUserData');
-            const roomUserData = JSON.parse(roomUserDataGET).data;
+
             if (roomUserId[inRoom]) {
               roomUserId[inRoom].push(verifyHost.id);
               await promisifyset('roomUserId', JSON.stringify({ data: roomUserId }));
+              const roomUserDataGET = await promisifyget('roomUserData');
+              const roomUserData = JSON.parse(roomUserDataGET).data;
               const userDetail = await getUser(verifyHost.id);
               roomUserData[inRoom].push(userDetail);
               await promisifyset('roomUserData', JSON.stringify({ data: roomUserData }));
@@ -263,14 +267,16 @@ const socketCon = (io) => {
               const roomTypeGET = await promisifyget('roomType');
               const roomType = JSON.parse(roomTypeGET).data;
 
-              socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-              socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-              socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              socket.broadcast.emit('mainPageViewChange', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              // socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              // socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              io.to(inRoom).emit('roomUserId', { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
               setTimeout(async () => {
                 const heartCountGET = await promisifyget('heartCount');
                 const heartCount = JSON.parse(heartCountGET).data;
-                socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
-                socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                // socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                // socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                io.to(inRoom).emit('heartShow', { data: heartCount[inRoom] });
               }, 300);
             } else {
               const roomUserIdGET = await promisifyget('roomUserId');
@@ -290,19 +296,22 @@ const socketCon = (io) => {
               const roomType = JSON.parse(roomTypeGET).data;
 
               socket.broadcast.emit('mainPageView', { roomId: inRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-              socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
-              socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              // socket.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              // socket.broadcast.emit(`roomUserId${inRoom}`, { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
+              io.to(inRoom).emit('roomUserId', { hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomUserId: roomUserId[inRoom], roomUserData: roomUserData[inRoom] });
               setTimeout(async () => {
                 const heartCountGET = await promisifyget('heartCount');
                 const heartCount = JSON.parse(heartCountGET).data;
-                socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
-                socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                // socket.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                // socket.broadcast.emit(`heartShow${inRoom}`, { data: heartCount[inRoom] });
+                io.to(inRoom).emit('heartShow', { data: heartCount[inRoom] });
               }, 300);
             }
           }
         }
       }
     }
+
     if (timeCheck[inRoom]) {
       const gameIdGET = await promisifyget('gameId');
       const gameId = JSON.parse(gameIdGET).data;
@@ -315,7 +324,10 @@ const socketCon = (io) => {
       const userId = JSON.parse(userIdGET).data;
       const correctUserListGET = await promisifyget('correctUserList');
       const correctUserList = JSON.parse(correctUserListGET).data;
-      socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
+
+      // socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
+      io.to(inRoom).emit(`canvasUpdateid${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
+
       await getHistory(gameId[inRoom], userId[inRoom], '999');
       userId[inRoom] = '';
       await promisifyset('userId', JSON.stringify({ data: userId }));
@@ -373,8 +385,9 @@ const socketCon = (io) => {
                 const hostDisconnect = JSON.parse(hostDisconnectGET).data;
                 if (hostDisconnect[outRoom] === true) {
                   socket.broadcast.emit('mainPageViewClose', { room: outRoom });
-                  socket.emit(`closeRoom${outRoom}`);
-                  socket.broadcast.emit(`closeRoom${outRoom}`);
+                  // socket.emit(`closeRoom${outRoom}`);
+                  // socket.broadcast.emit(`closeRoom${outRoom}`);
+                  io.to(inRoom).emit('closeRoom');
                   const timeCheckGET = await promisifyget('timeCheck');
                   const timeCheck = JSON.parse(timeCheckGET).data;
                   timeCheck[outRoom] = '';
@@ -459,9 +472,32 @@ const socketCon = (io) => {
             const hostDetail = JSON.parse(hostDetailGET).data;
             const roomTypeGET = await promisifyget('roomType');
             const roomType = JSON.parse(roomTypeGET).data;
-            socket.broadcast.emit('mainPageView', { roomId: outRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[outRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
-            socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
-            socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+            socket.broadcast.emit('mainPageViewPlayerChange', { roomId: outRoom, hostId: hostId[inRoom], hostDetail: hostDetail[inRoom], roomType: roomType[outRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+            // socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+            // socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+            io.to(inRoom).emit('roomUserId', { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
+
+            // const timeCheckGET = await promisifyget('timeCheck');
+            // const timeCheck = JSON.parse(timeCheckGET).data;
+            // const gameIdGET = await promisifyget('gameId');
+            // const gameId = JSON.parse(gameIdGET).data;
+            // const roomListGET = await promisifyget('roomList');
+            // const roomList = JSON.parse(roomListGET).data;
+            // const result = roomList.filter(function (element, index, arr) {
+            //   return arr.indexOf(element) === index;
+            // });
+            // for (const i in result) {
+            //   if (timeCheck[parseInt(result[i])]) {
+            //     const canvasUpate = await canvasUpdate(gameId[parseInt(result[i])]);
+            //     if (canvasUpate[0]) {
+            //       setTimeout(() => {
+            //         socket.emit('canvasUpdate', { room: parseInt(result[i]), canvas: canvasUpate, game: true });
+            //       }, 300);
+            //     } else {
+            //       console.log('no canvas');
+            //     }
+            //   }
+            // }
           } else {
             console.log('不可能啊');
           }
@@ -469,7 +505,7 @@ const socketCon = (io) => {
       }
     });
     try {
-      socket.on(`getQuestion${inRoom}`, async (msg) => {
+      socket.on('getQuestion', async (msg) => {
         const getPassword = msg.getPassword;
         const timeCheckGET = await promisifyget('timeCheck');
         const timeCheck = JSON.parse(timeCheckGET).data;
@@ -520,35 +556,45 @@ const socketCon = (io) => {
             await promisifyset('gameId', JSON.stringify({ data: gameId }));
           }
 
-          socket.broadcast.emit(`answer${msg.room}`, '');
-          socket.emit(`question${msg.room}${getPassword}`, question[msg.room]);
+          // socket.broadcast.emit(`answer${msg.room}`, '');
+          io.to(inRoom).emit('answer', '');
+          // socket.emit(`question${msg.room}${getPassword}`, question[msg.room]);
+          io.to(inRoom).emit(`question${getPassword}`, question[msg.room]);
           getHistory(gameId[msg.room], roomUserId[inRoom], '999');
 
           userId[msg.room] = '';
           await promisifyset('userId', JSON.stringify({ data: userId }));
-          let gameTime = 1; // 倒數計時任務執行次數
+          const gameTimeGET = await promisifyget('gameTime');
+          const gameTime = JSON.parse(gameTimeGET).data;
+          gameTime[msg.room] = 1;// 倒數計時任務執行次數
+          await promisifyset('gameTime', JSON.stringify({ data: gameTime }));
           const timeout = 1000; // 觸發倒數計時任務的時間間隙
           const startTimeGET = await promisifyget('startTime');
           const startTime = JSON.parse(startTimeGET).data;
           startTime[msg.room] = new Date().getTime();
           await promisifyset('startTime', JSON.stringify({ data: startTime }));
-
+          const timeCheckGET = await promisifyget('timeCheck');
+          const timeCheck = JSON.parse(timeCheckGET).data;
           timeCheck[inRoom] = 1;
           await promisifyset('timeCheck', JSON.stringify({ data: timeCheck }));
           socket.broadcast.emit('mainPageCanvasClear', { room: msg.room });
           async function startCountdown (interval) {
             setTimeout(async () => {
               const endTime = new Date().getTime();
-              const deviation = endTime - (startTime[msg.room] + gameTime * timeout);
-              if (gameTime < limitTime) {
-                gameTime = gameTime + 1;
+              const gameTimeGET = await promisifyget('gameTime');
+              const gameTime = JSON.parse(gameTimeGET).data;
+              const deviation = endTime - (startTime[msg.room] + gameTime[msg.room] * timeout);
+              if (gameTime[msg.room] < limitTime) {
+                gameTime[msg.room] = gameTime[msg.room] + 1;
+                await promisifyset('gameTime', JSON.stringify({ data: gameTime }));
                 startCountdown(timeout - deviation);
               } else {
+                const timeCheckGET = await promisifyget('timeCheck');
+                const timeCheck = JSON.parse(timeCheckGET).data;
                 timeCheck[msg.room] = 0;
                 await promisifyset('timeCheck', JSON.stringify({ data: timeCheck }));
                 const gameIdGET = await promisifyget('gameId');
                 const gameId = JSON.parse(gameIdGET).data;
-
                 const correctUserListGET = await promisifyget('correctUserList');
                 const correctUserList = JSON.parse(correctUserListGET).data;
                 correctUserList[msg.room] = '';
@@ -556,8 +602,9 @@ const socketCon = (io) => {
                 checkGameCanvas(gameId[msg.room]);
                 const questionGET = await promisifyget('question');
                 const question = JSON.parse(questionGET).data;
-                socket.broadcast.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
-                socket.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
+                // socket.broadcast.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
+                // socket.emit(`answerGet${msg.room}`, { answer: question[msg.room] });
+                io.to(inRoom).emit('answerGet', { answer: question[msg.room] });
               }
             }, interval);
           }
@@ -571,8 +618,9 @@ const socketCon = (io) => {
         if (msg.userId === hostId[msg.room]) {
           hostId[msg.room] = '';
           await promisifyset('hostId', JSON.stringify({ data: hostId }));
-          socket.emit(`repeat${msg.room}`, { id: msg.userId });
-          socket.broadcast.emit(`repeat${msg.room}`, { id: msg.userId });
+          // socket.emit(`repeat${msg.room}`, { id: msg.userId });
+          // socket.broadcast.emit(`repeat${msg.room}`, { id: msg.userId });
+          io.to(inRoom).emit('repeat', { id: msg.userId });
         } else {
           const userData = await getUser(msg.userId);
           const timeCheckGET = await promisifyget('timeCheck');
@@ -605,14 +653,34 @@ const socketCon = (io) => {
                 correctUserList[msg.room].push(userData[0].name);
                 await promisifyset('correctUserList', JSON.stringify({ data: correctUserList }));
               }
+
               socket.broadcast.emit('getRank', { data: rankData });
-              socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: true, answer: '' });
-              socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
-              socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
+              // socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: true, answer: '' });
+              io.to(inRoom).emit(`answerCorrect${'and' + msg.userId}`, { check: true, answer: '' });
+              // socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
+              // socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
+              io.to(inRoom).emit('userCorrect', { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
+              const roomUserDataGET = await promisifyget('roomUserData');
+              const roomUserData = JSON.parse(roomUserDataGET).data;
+              let roomUserName = [];
+              roomUserName = roomUserData[msg.room].map(item => item[0].name);
+              if ((correctUserList[msg.room].sort().toString() === roomUserName.sort().toString())) {
+                setTimeout(async () => {
+                  const gameTimeGET = await promisifyget('gameTime');
+                  const gameTime = JSON.parse(gameTimeGET).data;
+                  gameTime[msg.room] = 60;
+                  await promisifyset('gameTime', JSON.stringify({ data: gameTime }));
+                  // socket.emit(`allCorrect${msg.room}`, { data: 'ok' });
+                  // socket.broadcast.emit(`allCorrect${msg.room}`, { data: 'ok' });
+                  io.to(inRoom).emit('allCorrect', { data: 'ok' });
+                }, 1000);
+              }
             } else {
-              socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
-              socket.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
-              socket.broadcast.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
+              // socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
+              io.to(inRoom).emit(`answerCorrect${'and' + msg.userId}`, { check: false, answer: '' });
+              // socket.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
+              // socket.broadcast.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
+              io.to(inRoom).emit('answerShow', { data: msg.answerData, userData: userData });
             }
           } else if (timeCheck[msg.room] === 0) {
             console.log('timeout');
@@ -625,16 +693,18 @@ const socketCon = (io) => {
         const gameId = JSON.parse(gameIdGET).data;
         const report = await updateReport(gameId[msg.room], msg.reason, msg.userId);
         if (report) {
-          socket.emit(`reportOk${msg.room}`, { reason: msg.reason });
-          socket.broadcast.emit(`reportOk${msg.room}`, { reason: msg.reason });
+          // socket.emit(`reportOk${msg.room}`, { reason: msg.reason });
+          // socket.broadcast.emit(`reportOk${msg.room}`, { reason: msg.reason });
+          io.to(inRoom).emit('reportOk', { reason: msg.reason });
         }
       });
 
       socket.on('homeRank', async (msg) => {
         if (msg.homeTime) {
           const rankData = await getRank();
-          socket.broadcast.emit(`getRank${msg.homeTime}`, { data: rankData });
-          socket.emit(`getRank${msg.homeTime}`, { data: rankData });
+          // socket.broadcast.emit(`getRank${msg.homeTime}`, { data: rankData });
+          // socket.emit(`getRank${msg.homeTime}`, { data: rankData });
+          io.to(inRoom).emit(`getRank${msg.homeTime}`, { data: rankData });
         }
       });
 
@@ -646,8 +716,9 @@ const socketCon = (io) => {
         const heartCount = JSON.parse(heartCountGET).data;
         heartCount[msg.room]++;
         await promisifyset('heartCount', JSON.stringify({ data: heartCount }));
-        socket.emit(`heartShow${msg.room}`, { data: heartCount[msg.room] });
-        socket.broadcast.emit(`heartShow${msg.room}`, { data: heartCount[msg.room] });
+        // socket.emit(`heartShow${msg.room}`, { data: heartCount[msg.room] });
+        // socket.broadcast.emit(`heartShow${msg.room}`, { data: heartCount[msg.room] });
+        io.to(inRoom).emit('heartShow', { data: heartCount[msg.room] });
       });
 
       socket.on('roomMsg', async (msg) => {
@@ -658,12 +729,14 @@ const socketCon = (io) => {
         const timeCheck = JSON.parse(timeCheckGET).data;
         const msgLength = msg.roomMsg.length;
         if (timeCheck[msg.room] && questionText.test(msg.roomMsg) === true) {
-          socket.emit(`roomMsgShow${msg.room}`, { err: 'err', userName: msg.userName });
-          socket.broadcast.emit(`roomMsgShow${msg.room}`, { err: 'err', userName: msg.userName });
+          // socket.emit(`roomMsgShow${msg.room}`, { err: 'err', userName: msg.userName });
+          // socket.broadcast.emit(`roomMsgShow${msg.room}`, { err: 'err', userName: msg.userName });
+          io.to(inRoom).emit('roomMsgShow', { err: 'err', userName: msg.userName });
         } else {
           if (msgLength < 31) {
-            socket.emit(`roomMsgShow${msg.room}`, msg);
-            socket.broadcast.emit(`roomMsgShow${msg.room}`, msg);
+            // socket.emit(`roomMsgShow${msg.room}`, msg);
+            // socket.broadcast.emit(`roomMsgShow${msg.room}`, msg);
+            io.to(inRoom).emit('roomMsgShow', msg);
           }
         }
       });
@@ -680,10 +753,11 @@ const socketCon = (io) => {
             await promisifyset(msg.room + msg.canvasNum, msg.url, 'Ex', 300);
           }
           socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: msg.url });
-          socket.broadcast.emit(`convasData${msg.room}`, msg.url);
+          // socket.broadcast.emit(`convasData${msg.room}`, msg.url);
+          io.to(inRoom).emit('convasData', msg.url);
         }
         if (timeCheck[msg.room]) {
-          inputCanvas(gameId[msg.room], msg.canvasNum, msg.url, 0);
+          await inputCanvas(gameId[msg.room], msg.canvasNum, msg.url, 0);
         }
       });
       socket.on('undo', async (msg) => {
@@ -692,9 +766,10 @@ const socketCon = (io) => {
         const timeCheckGET = await promisifyget('timeCheck');
         const timeCheck = JSON.parse(timeCheckGET).data;
         socket.broadcast.emit('mainPageUndo', { room: msg.room, data: msg.data });
-        socket.broadcast.emit(`undo msg${msg.room}`, msg.data);
+        // socket.broadcast.emit(`undo msg${msg.room}`, msg.data);
+        io.to(inRoom).emit('undo msg', msg.data);
         if (timeCheck[msg.room]) {
-          inputCanvas(gameId[msg.room], msg.canvasNum, 0, msg.data);
+          await inputCanvas(gameId[msg.room], msg.canvasNum, 0, msg.data);
         }
       });
       socket.on('redo', async (msg) => {
@@ -706,22 +781,26 @@ const socketCon = (io) => {
             redoUrl = await promisifyget(gameId[msg.room] + msg.canvasNum);
             if (redoUrl) {
               socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: redoUrl });
-              socket.broadcast.emit(`convasData${msg.room}`, redoUrl);
-              socket.emit(`redo url${msg.room}`, redoUrl);
+              // socket.broadcast.emit(`convasData${msg.room}`, redoUrl);
+              io.to(inRoom).emit('convasData', redoUrl);
+              // socket.emit(`redo url${msg.room}`, redoUrl);
+              io.to(inRoom).emit('redo url', redoUrl);
             }
           } else {
             redoUrl = await promisifyget(msg.room + msg.canvasNum);
             if (redoUrl) {
               socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: redoUrl });
-              socket.broadcast.emit(`convasData${msg.room}`, redoUrl);
-              socket.emit(`redo url${msg.room}`, redoUrl);
+              // socket.broadcast.emit(`convasData${msg.room}`, redoUrl);
+              io.to(inRoom).emit('convasData', redoUrl);
+              // socket.emit(`redo url${msg.room}`, redoUrl);
+              io.to(inRoom).emit('redo url', redoUrl);
             }
           }
         }
         const timeCheckGET = await promisifyget('timeCheck');
         const timeCheck = JSON.parse(timeCheckGET).data;
         if (timeCheck[msg.room]) {
-          inputCanvas(gameId[msg.room], msg.canvasNum, redoUrl, 0);
+          await inputCanvas(gameId[msg.room], msg.canvasNum, redoUrl, 0);
         }
       });
 
@@ -741,10 +820,10 @@ const socketCon = (io) => {
       });
 
       socket.on('closeRoom', async (msg) => {
-        const roomUserIdGET = await promisifyget('roomUserId');
-        const roomUserId = JSON.parse(roomUserIdGET).data;
-        socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
+        // socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
+        io.to(inRoom).emit('closeRoom', { data: 'close' });
       });
+
       const timeCheckGET = await promisifyget('timeCheck');
       const timeCheck = JSON.parse(timeCheckGET).data;
       const gameIdGET = await promisifyget('gameId');
@@ -761,7 +840,7 @@ const socketCon = (io) => {
             if (canvasUpate[0]) {
               setTimeout(() => {
                 socket.emit('canvasUpdate', { room: parseInt(result[i]), canvas: canvasUpate, game: true });
-              }, 1000);
+              }, 300);
             } else {
               console.log('no canvas');
             }

@@ -14,7 +14,8 @@ const {
   getUserProfile,
   replacePhoto,
   uploadPhoto,
-  testRate
+  testRate,
+  delTest
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
@@ -37,5 +38,8 @@ router.route('/user/uploadPhoto')
 
 router.route('/user/testRate')
   .get(wrapAsync(testRate));
+
+router.route('/user/delTest')
+  .get(wrapAsync(delTest));
 
 module.exports = router;

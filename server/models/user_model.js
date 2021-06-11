@@ -10,6 +10,7 @@ const passwordencryption = function (password) {
     hash.update(password);
     return (hash.digest('hex'));
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -42,6 +43,7 @@ const signUp = async (name, password, photo) => {
     return { user };
   } catch (error) {
     await conn.query('ROLLBACK');
+    console.log(error);
     return { error };
   } finally {
     conn.release();
@@ -51,6 +53,9 @@ const signUp = async (name, password, photo) => {
 const signIn = async (name, password) => {
   const conn = await pool.getConnection();
   try {
+    if (name === 'test') {
+      await pool.query('DELETE FROM draw.history where user_id = 76');
+    }
     await conn.query('START TRANSACTION');
     const nameCheck = await conn.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
     if (!nameCheck[0][0]) {
@@ -91,6 +96,7 @@ const getUserDetail = async (userId) => {
     }
     return userDetail[0][0];
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -99,6 +105,7 @@ const replacePhoto = async (id, photo) => {
   try {
     await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -109,6 +116,7 @@ const uploadPhoto = async (id, photo) => {
     photo = IP + photo;
     return photo;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -127,6 +135,17 @@ const testRate = async () => {
     }
     return;
   } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+const delTest = async () => {
+  try {
+    await pool.query('DELETE FROM draw.history where user_id = 76');
+    return;
+  } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -137,5 +156,6 @@ module.exports = {
   getUserDetail,
   replacePhoto,
   uploadPhoto,
-  testRate
+  testRate,
+  delTest
 };

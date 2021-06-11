@@ -10,6 +10,7 @@ const getquestion = async (type) => {
     const question = await pool.query('SELECT * from question where type = ? AND inuse = 0 ORDER BY RAND() limit 1', type);
     return question[0];
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -19,6 +20,7 @@ const updateInuse = async (type) => {
     await pool.query('UPDATE question SET inuse = 0 where type = ?', type);
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -28,15 +30,17 @@ const resetInuse = async (id) => {
     await pool.query('UPDATE question SET inuse = 1 where id = ?', id);
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
 
 const getGame = async (questionId, hostId) => {
   try {
-    const result = await pool.query('INSERT into game(question_id,report,need_check,host_id) values(?,?,?,?)', [questionId, 0, 9, hostId]);
+    const result = await pool.query('INSERT into game(question_id,report,status,host_id) values(?,?,?,?)', [questionId, 0, 9, hostId]);
     return result[0].insertId;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -50,6 +54,7 @@ const getHistory = async (gameId, userId, record) => {
     await pool.query('INSERT into history(game_id,user_id,record) values ?', [sqlValue]);
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -59,6 +64,7 @@ const updateHistory = async (gameId, userId, record) => {
     await pool.query('UPDATE history SET record = ? where game_id = ? AND user_id = ?', [record, gameId, userId]);
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -72,6 +78,7 @@ const updateScore = async (score, userId, hostId, gameId) => {
     await pool.query('UPDATE user SET score = score + ? where id = ? ', [score, userId]);
     return hostScore;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -81,6 +88,7 @@ const inputCanvas = async (gameId, canvasNum, canvasData, data) => {
     await pool.query('INSERT INTO draw.canvas (game_id,canvas_num,canvas_data,canvas_undo) VALUES (?,?,?,?)', [gameId, canvasNum, canvasData, data]);
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -90,6 +98,7 @@ const verifyTokenSocket = (token) => {
     const user = jwt.verify(token, TOKEN_SECRET);
     return user;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -104,6 +113,7 @@ const getRank = async () => {
     }
     return data[0];
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -118,6 +128,7 @@ const getUser = async (userId) => {
     }
     return data[0];
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -128,10 +139,11 @@ const checkGameCanvas = async (gameId) => {
     if (data[0][0]) {
       return;
     } else {
-      await pool.query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
+      await pool.query('UPDATE draw.game SET status = 1 where id = ?', gameId);
       return;
     }
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -141,6 +153,7 @@ const canvasUpdate = async (gameId) => {
     const data = await pool.query('SELECT * from draw.canvas where game_id = ?', gameId);
     return data[0];
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -153,10 +166,11 @@ const updateReport = async (gameId, reason, userId) => {
     await pool.query('INSERT into draw.report(game_id,reason,report_user_id) values (?,?,?)', [gameId, reason, userId]);
     const reportCount = await pool.query('SELECT report from draw.game where id = ?', gameId);
     if (parseInt(reportCount[0][0].report) * 2 > totalCount) {
-      await pool.query('UPDATE draw.game SET need_check = 1 where id = ?', gameId);
+      await pool.query('UPDATE draw.game SET status = 1 where id = ?', gameId);
       return 'need check';
     }
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -167,6 +181,7 @@ const updateHeart = async (hostId) => {
     const heartCount = await pool.query('SELECT heart from user where id = ? ', [hostId]);
     return heartCount[0][0].heart;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };

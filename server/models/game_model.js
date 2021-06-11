@@ -5,7 +5,7 @@ const { IP } = process.env;
 
 const getSingleGame = async (id, type) => {
   try {
-    const gameIdList = await pool.query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ? AND draw.game.need_check = 0', [id, type]);
+    const gameIdList = await pool.query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ? AND draw.game.status = 0', [id, type]);
     const gameIdListArray = gameIdList[0].map(x => x.id);
     const gameIdCheck = await pool.query('SELECT game_id from draw.history where user_id = ?', id);
     const gameIdCheckArray = gameIdCheck[0].map(x => x.game_id);
@@ -35,6 +35,7 @@ const getSingleGame = async (id, type) => {
       return { data: data };
     }
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -56,15 +57,30 @@ const getSingleGameTest = async (id, gameId) => {
     };
     return { data: data };
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
 
-const checkGame = async (gameId) => {
+const getSingleGameNeedCheck = async () => {
   try {
-    await pool.query('UPDATE draw.game SET need_check = 0 where id = ?', gameId);
+    const gameCheck = await pool.query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.status = 9 limit 1');
+    const data = {
+      game: gameCheck[0]
+    };
+    return { data: data };
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+const checkGame = async (status, gameId) => {
+  try {
+    await pool.query('UPDATE draw.game SET status = ? where id = ?', [status, gameId]);
     return 'ok';
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -86,6 +102,7 @@ const updateHistory = async (gameId, userId, record) => {
     };
     return { data: data };
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -99,6 +116,7 @@ const checkAnswer = async (answerId, answerCheck) => {
       return { answer: '' };
     }
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -108,6 +126,7 @@ const getAnswer = async (answerId) => {
     const answer = await pool.query('SELECT question from draw.question where id = ?', answerId);
     return { answer: answer[0] };
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -117,6 +136,7 @@ const getcrawler = async (all) => {
     await pool.query('INSERT into draw.question(question,type,inuse) values (?,?,?)', [all, 'idiom', 0]);
     return;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -128,5 +148,6 @@ module.exports = {
   checkAnswer,
   getAnswer,
   getcrawler,
-  checkGame
+  checkGame,
+  getSingleGameNeedCheck
 };
