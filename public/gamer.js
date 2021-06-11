@@ -166,7 +166,6 @@ function startCountdown (interval) {
         title.className = 'time5';
       }
       countIndex++;
-
       // 下一次倒數計時
       startCountdown(timeout - deviation);
     } else {
@@ -174,7 +173,6 @@ function startCountdown (interval) {
       gameStatus = 0;
       title.className = 'time';
       limitTime = noChangeTime;
-      // message.textContent = '請等待下一局';
     }
   }, interval);
 }
@@ -250,8 +248,6 @@ socket.on('undo msg', (msg) => {
 });
 
 const answerCheckButton = document.getElementById('answerCheckButton');
-
-// const message = document.getElementById('message');
 answerCheckButton.addEventListener('click', function (ev) {
   const answerCheck = document.getElementById('answerCheck').value.toLowerCase();
   const answerElement = document.getElementById('answerCheck');
@@ -266,13 +262,11 @@ answerCheckButton.addEventListener('click', function (ev) {
 
     socket.on(`answerCorrect${'and' + userId}`, (msg) => {
       if (msg.check) {
-        // message.textContent = `正確答案！ ${answerCheck}`;
         Toast2.fire({
           icon: 'success',
           title: '答對了！',
           width: '400px',
           padding: '30px'
-
         });
         const audio = document.getElementById('mp3');
         audio.play();
@@ -282,7 +276,6 @@ answerCheckButton.addEventListener('click', function (ev) {
         answerGet = answerCheck;
         gameStatus = 2;
       } else {
-        // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
         const audio = document.getElementById('wrongMp3');
         audio.play();
         audio.volume = 0.7;
@@ -291,39 +284,31 @@ answerCheckButton.addEventListener('click', function (ev) {
           title: '猜錯了！',
           width: '400px',
           padding: '30px'
-
         });
       }
     });
   } else if (!answerLimit) {
-    // message.textContent = '作答時間間隔太短';
     Toast2.fire({
       icon: 'warning',
       title: '作答時間間隔太短',
       width: '400px',
       padding: '30px'
-
     });
   } else if (gameStatus === 0) {
-    // message.textContent = 'please wait for next game';
     Toast2.fire({
       icon: 'warning',
       title: 'please wait for next game',
       width: '400px',
       padding: '30px'
-
     });
   } else if (gameStatus === 2) {
-    // message.textContent = '您已答對 please wait for next game';
     Toast2.fire({
       icon: 'warning',
       title: '已經答對囉',
       width: '400px',
       padding: '30px'
-
     });
   }
-
   ev.preventDefault();
 }, false);
 
@@ -339,16 +324,13 @@ $('#answerCheck').on('keypress', function (e) {
         answerLimit = true;
       }, 2000);
       socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
-
       socket.on(`answerCorrect${'and' + userId}`, (msg) => {
         if (msg.check) {
-          // message.textContent = `正確答案！ ${answerCheck}`;
           Toast2.fire({
             icon: 'success',
             title: '答對了！',
             width: '400px',
             padding: '30px'
-
           });
           const audio = document.getElementById('mp3');
           audio.play();
@@ -358,7 +340,6 @@ $('#answerCheck').on('keypress', function (e) {
           answerGet = answerCheck;
           gameStatus = 2;
         } else {
-          // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
           const audio = document.getElementById('wrongMp3');
           audio.play();
           audio.volume = 0.7;
@@ -367,36 +348,29 @@ $('#answerCheck').on('keypress', function (e) {
             title: '猜錯了！',
             width: '400px',
             padding: '30px'
-
           });
         }
       });
     } else if (!answerLimit) {
-      // message.textContent = '作答時間間隔太短';
       Toast2.fire({
         icon: 'warning',
         title: '作答時間間隔太短',
         width: '400px',
         padding: '30px'
-
       });
     } else if (gameStatus === 0) {
-      // message.textContent = 'please wait for next game';
       Toast2.fire({
         icon: 'warning',
         title: 'please wait for next game',
         width: '400px',
         padding: '30px'
-
       });
     } else if (gameStatus === 2) {
-      // message.textContent = '您已答對 please wait for next game';
       Toast2.fire({
         icon: 'warning',
         title: '已經猜對囉 請欣賞並等待下一局！',
         width: '400px',
         padding: '30px'
-
       });
     }
   }
@@ -418,7 +392,6 @@ report.addEventListener('click', async function (ev) {
       },
       inputPlaceholder: '選擇違規事由',
       showCancelButton: true
-
     }).then(function (result) {
       if (result.value) {
         Swal.fire({
@@ -474,7 +447,6 @@ socket.on('userCorrect', (msg) => {
   } else {
     correctUserList[0] = msg.userData[0].name;
   }
-
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
@@ -524,18 +496,22 @@ socket.on('closeRoom', () => {
   });
 });
 
+function copyUrl () {
+  const input = document.getElementById('text');
+  input.select();
+  document.execCommand('copy');
+}
+
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
 socket.on('roomUserId', (msg) => {
   playerList.innerHTML = '';
-
   if (msg.roomUserData && msg.roomUserData[0]) {
     for (const i in msg.roomUserData) {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
       const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
-
       userinfo.id = 'userinfo' + gamerName;
       playerList.appendChild(userinfo);
 
@@ -618,14 +594,7 @@ socket.on('roomUserId', (msg) => {
     const gameMsgTd = document.createElement('td');
     gameMsgTd.className = 'msgTd';
     gameMsgTd.id = 'msgTdHost';
-
     hostinfo.appendChild(gameMsgTd);
-
-    // const gameMsg = document.createElement('p');
-    // gameMsg.id = 'msg' + hostName;
-    // gameMsg.className = 'msg fas fa-heart';
-    // gameMsg.textContent = 'X0';
-    // gameMsgTd.appendChild(gameMsg);
   }
   if (msg.roomUserId) {
     roomId = msg.roomUserId;

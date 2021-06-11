@@ -97,7 +97,7 @@ function getSingleNewGame (e) {
     })
       .then(function (response) {
         if (response.status === 200) {
-          return response.json(); // 內建promise , send type need json
+          return response.json();
         }
       }).then(data => {
         if (data.error) {

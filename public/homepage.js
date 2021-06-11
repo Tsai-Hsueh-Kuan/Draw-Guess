@@ -16,7 +16,9 @@ const socket = io((''), {
   },
   reconnect: true
 });
-
+socket.on('test', (msg) => {
+  console.log(msg);
+});
 socket.on('canvasUpdate', (msg) => {
   const roomId = msg.room;
   const canvasAll = msg.canvas;
