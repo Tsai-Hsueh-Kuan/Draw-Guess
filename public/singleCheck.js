@@ -55,11 +55,12 @@ fetch('/api/1.0/user/profileAdmin', {
 });
 
 const start = document.getElementById('start');
-const checkGame = document.getElementById('checkGame');
+const checkGame = document.getElementById('checkOk');
 checkGame.addEventListener('click', function () {
   const gameInput = document.getElementById('gameInput').value;
   const typeData = {
-    gameId: gameInput
+    gameId: gameInput,
+    status: 0
   };
   fetch('/api/1.0/game/checkGame', {
     method: 'post',
@@ -74,6 +75,32 @@ checkGame.addEventListener('click', function () {
         // 內建promise , send type need json
       }
     }).then(data => {
+      document.getElementById('gameInput').value = '';
+      console.log(data);
+    });
+});
+
+const checkGame1 = document.getElementById('checkNot');
+checkGame1.addEventListener('click', function () {
+  const gameInput = document.getElementById('gameInput').value;
+  const typeData = {
+    gameId: gameInput,
+    status: 1
+  };
+  fetch('/api/1.0/game/checkGame', {
+    method: 'post',
+    body: JSON.stringify(typeData),
+    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+  })
+    .then(function (response) {
+      if (response.status === 200) {
+        return response.json(); // 內建promise , send type need json
+      } else if (response.status === 403) {
+        alert('not admin');
+        // 內建promise , send type need json
+      }
+    }).then(data => {
+      document.getElementById('gameInput').value = '';
       console.log(data);
     });
 });
@@ -123,8 +150,6 @@ start.addEventListener('click', function () {
         });
       } else {
         canvasAll = data.data.game;
-        console.log(canvasAll[0].need_check);
-        console.log(canvasAll[0].report);
         gameId = canvasAll[0].game_id;
         if (canvasAll[0].canvas_data) {
           getAnswerId = canvasAll[0].question_id;
@@ -171,6 +196,46 @@ start.addEventListener('click', function () {
       return err;
     });
 });
+const get = document.getElementById('get');
+get.addEventListener('click', function () {
+  fetch('/api/1.0/game/singleGameNeedCheck', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
+  })
+    .then(function (response) {
+      if (response.status === 200) {
+        return response.json(); // 內建promise , send type need json
+      }
+    }).then(data => {
+      if (!data.data.game[0]) {
+        Swal.fire({
+          timer: 5000,
+          title: '沒這個題目！',
+          icon: 'warning'
+        });
+        gameDone = true;
+      }
+      if (data.error) {
+        Swal.fire({
+          timer: 5000,
+          title: '已無更多題目！',
+          text: '何不試試連線模式？',
+          icon: 'warning'
+        }).then(() => {
+          return window.location.assign('/');
+        });
+      } else {
+        canvasAll = data.data.game;
+        console.log(data.data);
+        gameId = canvasAll[0].game_id;
+        document.getElementById('gameInput').value = gameId;
+      }
+    })
+    .catch(function (err) {
+      return err;
+    });
+});
+
 const timeout = 1; // 觸發倒數計時任務的時間間隙
 let countIndex = 1; // 倒數計時任務執行次數
 const limitTime = 60;

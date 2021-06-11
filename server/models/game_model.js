@@ -62,9 +62,22 @@ const getSingleGameTest = async (id, gameId) => {
   }
 };
 
-const checkGame = async (gameId) => {
+const getSingleGameNeedCheck = async () => {
   try {
-    await pool.query('UPDATE draw.game SET status = 0 where id = ?', gameId);
+    const gameCheck = await pool.query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.status = 9 limit 1');
+    const data = {
+      game: gameCheck[0]
+    };
+    return { data: data };
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+const checkGame = async (status, gameId) => {
+  try {
+    await pool.query('UPDATE draw.game SET status = ? where id = ?', [status, gameId]);
     return 'ok';
   } catch (error) {
     console.log(error);
@@ -135,5 +148,6 @@ module.exports = {
   checkAnswer,
   getAnswer,
   getcrawler,
-  checkGame
+  checkGame,
+  getSingleGameNeedCheck
 };

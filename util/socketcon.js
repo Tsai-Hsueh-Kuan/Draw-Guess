@@ -792,9 +792,8 @@ const socketCon = (io) => {
       });
 
       socket.on('closeRoom', async (msg) => {
-        const roomUserIdGET = await promisifyget('roomUserId');
-        const roomUserId = JSON.parse(roomUserIdGET).data;
-        socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
+        // socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
+        io.to(inRoom).emit(`closeRoom${msg.room}`, { data: 'close' });
       });
 
       const timeCheckGET = await promisifyget('timeCheck');
@@ -813,7 +812,7 @@ const socketCon = (io) => {
             if (canvasUpate[0]) {
               setTimeout(() => {
                 socket.emit('canvasUpdate', { room: parseInt(result[i]), canvas: canvasUpate, game: true });
-              }, 1000);
+              }, 300);
             } else {
               console.log('no canvas');
             }

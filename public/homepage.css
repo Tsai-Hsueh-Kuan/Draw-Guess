@@ -446,7 +446,9 @@ margin-left: 3%;
  width: 200px;
  height: 30px;
 }
-#checkGame,
+#get,
+#checkOk,
+#checkNot,
 #start,
 #getQuestion{
   display: inline-block;
