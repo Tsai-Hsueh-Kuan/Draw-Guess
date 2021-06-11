@@ -177,7 +177,7 @@ start.addEventListener('click', function () {
           if (recordPhoto) {
             photo.setAttribute('src', `${recordPhoto}`);
           } else {
-            photo.setAttribute('src', './images/member2.png');
+            photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
           }
           photo.className = 'singleGamerPhoto';
           recordInfo.appendChild(photo);

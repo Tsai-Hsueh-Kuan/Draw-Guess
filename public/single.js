@@ -135,7 +135,7 @@ function getSingleNewGame (e) {
               if (recordPhoto) {
                 photo.setAttribute('src', `${recordPhoto}`);
               } else {
-                photo.setAttribute('src', './images/member2.png');
+                photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
               }
               photo.className = 'singleGamerPhoto';
               recordInfo.appendChild(photo);
@@ -299,7 +299,7 @@ answerCheckButton.addEventListener('click', function (ev) {
               if (recordPhoto) {
                 photo.setAttribute('src', `${recordPhoto}`);
               } else {
-                photo.setAttribute('src', './images/member2.png');
+                photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
               }
               photo.className = 'singleGamerPhoto';
               recordInfo.appendChild(photo);
@@ -432,7 +432,7 @@ $('#answerCheck').on('keypress', function (e) {
                 if (recordPhoto) {
                   photo.setAttribute('src', `${recordPhoto}`);
                 } else {
-                  photo.setAttribute('src', './images/member2.png');
+                  photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
                 }
                 photo.className = 'singleGamerPhoto';
                 recordInfo.appendChild(photo);
@@ -540,7 +540,7 @@ const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
 const randomNumber = Math.floor(Math.random() * 6);
 Swal.fire({
   title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageUrl: `https://d3cek75nx38k91.cloudfront.net/draw/${imgsAll[randomNumber]}.jpeg`,
   imageWidth: 200,
   imageHeight: 200,
   imageAlt: 'image',

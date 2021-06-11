@@ -286,7 +286,7 @@ invite.addEventListener('click', function () {
   const i = Math.floor(Math.random() * 6);
   Swal.fire({
     title: '邀請朋友加入',
-    imageUrl: `./images/${imgs[i]}.jpeg`,
+    imageUrl: `https://d3cek75nx38k91.cloudfront.net/draw/${imgs[i]}.jpeg`,
     imageWidth: 200,
     imageHeight: 200,
     imageAlt: 'image',
@@ -314,7 +314,7 @@ getQuestion.addEventListener('click', function () {
     time.className = 'timePlaying';
     time.textContent = '';
     getPassword = Math.floor(Math.random() * 50);
-    socket.emit(`getQuestion${room}`, { room: room, type: type, hostId: userId, getPassword: getPassword });
+    socket.emit('getQuestion', { room: room, type: type, hostId: userId, getPassword: getPassword });
     for (const i in correctUserList) {
       const correctEle = document.getElementById(`msgTd${correctUserList[i]}`);
       const correctMsg = document.getElementById(`msg${correctUserList[i]}`);
@@ -323,7 +323,7 @@ getQuestion.addEventListener('click', function () {
     }
     correctUserList = [];
 
-    socket.on(`question${room}${getPassword}`, (msg) => {
+    socket.on(`question${getPassword}`, (msg) => {
       countIndex = 1; // 倒數計時任務執行次數
       timeout = 1000; // 觸發倒數計時任務的時間間隙
       startTime = new Date().getTime();
@@ -443,7 +443,7 @@ redoBotton.addEventListener('click', function () {
   socket.emit('redo', { room: room, canvasNum: canvasNum });
 });
 
-socket.on(`redo url${room}`, async (msg) => {
+socket.on('redo url', async (msg) => {
   const myobjNow = document.getElementById(`draw${canvasNum}`);
   const contextNow = myobjNow.getContext('2d');
   const img = new Image();
@@ -455,7 +455,7 @@ socket.on(`redo url${room}`, async (msg) => {
   };
 });
 
-socket.on(`answerShow${room}`, (msg) => {
+socket.on('answerShow', (msg) => {
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `${msg.data}`;
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
@@ -465,7 +465,7 @@ socket.on(`answerShow${room}`, (msg) => {
   }, 2000);
 });
 
-socket.on(`userCorrect${room}`, (msg) => {
+socket.on('userCorrect', (msg) => {
   if (correctUserList[0]) {
     correctUserList.push(msg.userData[0].name);
   } else {
@@ -482,7 +482,7 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
 });
 
-socket.on(`reportOk${room}`, (msg) => {
+socket.on('reportOk', (msg) => {
   Swal.fire({
     title: '過半玩家檢舉了您！',
     text: '良好的遊戲體驗需要您我共能維護',
@@ -494,7 +494,7 @@ socket.on(`reportOk${room}`, (msg) => {
   });
 });
 
-socket.on(`heartShow${room}`, (msg) => {
+socket.on('heartShow', (msg) => {
   const count = msg.data;
   const msgTd = document.getElementsByClassName('msgTd');
   msgTd[0].innerHTML = '';
@@ -505,7 +505,7 @@ socket.on(`heartShow${room}`, (msg) => {
   }
 });
 
-socket.on(`allCorrect${room}`, (msg) => {
+socket.on('allCorrect', (msg) => {
   if (msg.data) {
     countIndex = 60;
     setTimeout(function () {
@@ -516,7 +516,7 @@ socket.on(`allCorrect${room}`, (msg) => {
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
-socket.on(`roomUserId${room}`, (msg) => {
+socket.on('roomUserId', (msg) => {
   playerList.innerHTML = '';
   if (msg.roomUserData && msg.roomUserData[0]) {
     for (const i in msg.roomUserData) {
@@ -536,7 +536,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member2.png');
+        photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
@@ -590,7 +590,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member2.png');
+      photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
@@ -657,7 +657,7 @@ $('#btn-input').on('keypress', function (e) {
 });
 
 const chat = document.getElementById('chat');
-socket.on(`roomMsgShow${room}`, (msg) => {
+socket.on('roomMsgShow', (msg) => {
   if (msg.err) {
     if (msg.userName === userName) {
       Swal.fire({
@@ -692,7 +692,7 @@ socket.on(`roomMsgShow${room}`, (msg) => {
     if (msg.userPhoto) {
       img.setAttribute('src', `${msg.userPhoto}`);
     } else {
-      img.setAttribute('src', './images/member2.png');
+      img.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
     }
     span.appendChild(img);
 
@@ -776,7 +776,7 @@ const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
 const randomNumber = Math.floor(Math.random() * 6);
 Swal.fire({
   title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageUrl: `https://d3cek75nx38k91.cloudfront.net/draw/${imgsAll[randomNumber]}.jpeg`,
   imageWidth: 200,
   imageHeight: 200,
   imageAlt: 'image',

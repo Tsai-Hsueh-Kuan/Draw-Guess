@@ -792,7 +792,7 @@ z-index: 1059;
  .correct{  
    background-color: hsla(0,0%,100%,0.70);
    background-blend-mode: overlay;
-   background-image: url("./images/correctGreen.png") !important;
+   background-image: url("https://d3cek75nx38k91.cloudfront.net/draw/correctGreen.png") !important;
    background-size: 50px 50px;
    background-repeat: no-repeat;
    background-position: 100% 50% ;
@@ -801,7 +801,7 @@ z-index: 1059;
  .inCorrect{
   background-color: hsla(0,0%,100%,0.70);
   background-blend-mode: overlay;
-  background-image: url("./images/inCorrect.png") !important;
+  background-image: url("https://d3cek75nx38k91.cloudfront.net/draw/inCorrect.png") !important;
   background-size: 50px 50px;
   background-repeat: no-repeat;
   background-position: 100% 50% ;

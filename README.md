@@ -3,12 +3,18 @@
 
 #### Website URL: [drawguess.tw](https://drawguess.tw)
 
-#### Test Accounts:
+#### One-Click Login:
+
+Type name and password automatically when sign in
 
 - test
   - name: test
   - password: test
 
+
+## Database Schema
+
+![Database Design](https://d3cek75nx38k91.cloudfront.net/draw/database.png)
 
 
 #### One-Click Login:

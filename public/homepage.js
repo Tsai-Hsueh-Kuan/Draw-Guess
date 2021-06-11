@@ -78,7 +78,7 @@ if (token) {
       if (userPhoto) {
         newPhoto.setAttribute('src', `${userPhoto}`);
       } else {
-        newPhoto.setAttribute('src', './images/member2.png');
+        newPhoto.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
       }
       photoTd.appendChild(newPhoto);
 
@@ -86,13 +86,13 @@ if (token) {
         const inputOptions = new Promise((resolve) => {
           setTimeout(() => {
             resolve({
-              'member2.png': '<img src="./images/member2.png" class="userPhotoReplace" >',
-              'chipmunk.jpeg': '<img src="./images/chipmunk.jpeg" class="userPhotoReplace" >',
-              'cow.jpeg': '<img src="./images/cow.jpeg" class="userPhotoReplace" >',
-              'dog.jpeg': '<img src="./images/dog.jpeg" class="userPhotoReplace" >',
-              'hippo.jpeg': '<img src="./images/hippo.jpeg" class="userPhotoReplace" >',
-              'elephant.jpeg': '<img src="./images/elephant.jpeg" class="userPhotoReplace" >',
-              'rabbit.jpeg': '<img src="./images/rabbit.jpeg" class="userPhotoReplace" >',
+              'member.png': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/member.png" class="userPhotoReplace" >',
+              'chipmunk.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/chipmunk.jpeg" class="userPhotoReplace" >',
+              'cow.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/cow.jpeg" class="userPhotoReplace" >',
+              'dog.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/dog.jpeg" class="userPhotoReplace" >',
+              'hippo.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/hippo.jpeg" class="userPhotoReplace" >',
+              'elephant.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/elephant.jpeg" class="userPhotoReplace" >',
+              'rabbit.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/rabbit.jpeg" class="userPhotoReplace" >',
               upload: '<div id="uploadText" ><i class="fas fa-upload"></i>上傳</div>'
             });
           }, 1000);
@@ -207,11 +207,11 @@ if (token) {
                 });
                 const userinfoPhotoElement = document.getElementById(`userinfoPhoto${userId}`);
                 if (userinfoPhotoElement) {
-                  userinfoPhotoElement.setAttribute('src', `./images/${photo}`);
+                  userinfoPhotoElement.setAttribute('src', `https://d3cek75nx38k91.cloudfront.net/draw/${photo}`);
                 }
 
                 const newPhoto = document.getElementById('userPhotoSignIn');
-                newPhoto.setAttribute('src', `./images/${photo}`);
+                newPhoto.setAttribute('src', `https://d3cek75nx38k91.cloudfront.net/draw/${photo}`);
               }
             });
           }
@@ -523,7 +523,7 @@ socket.on(`getRank${homeTime}`, async (msg) => {
     if (rankPhoto) {
       photo.setAttribute('src', `${rankPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member2.png');
+      photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
     }
     photoTd.appendChild(photo);
   }
@@ -593,7 +593,7 @@ socket.on('mainPageView', async (msg) => {
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member2.png');
+      photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
     }
     photoTd.appendChild(name);
     photoTd.appendChild(photo);
@@ -624,6 +624,7 @@ socket.on('mainPageView', async (msg) => {
 
   const th2 = document.createElement('div');
   th2.scope = 'col';
+  th2.id = `th2${roomId}`;
   th2.textContent = '目前玩家 0位';
   tr.appendChild(th2);
 
@@ -655,7 +656,42 @@ socket.on('mainPageView', async (msg) => {
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member2.png');
+        photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
+      }
+      photoTd.appendChild(name);
+      photoTd.appendChild(photo);
+    }
+  }
+});
+
+socket.on('mainPageViewPlayerChange', async (msg) => {
+  const roomId = msg.roomId;
+  const th2 = document.getElementById(`th2${roomId}`);
+  const tbodyPlayerList = document.getElementById(`tbodyPlayerList${roomId}`);
+  tbodyPlayerList.innerHTML = '';
+  th2.textContent = '目前玩家 0位';
+  if (msg.roomUserData && msg.roomUserData[0]) {
+    const playlistCount = msg.roomUserData.length;
+    th2.textContent = `目前玩家 共${playlistCount}位`;
+    for (const i in msg.roomUserData) {
+      const gamerName = msg.roomUserData[i][0].name;
+      const gamerPhoto = msg.roomUserData[i][0].photo;
+      const gamerScore = msg.roomUserData[i][0].score;
+      const userinfo = document.createElement('tr');
+      userinfo.className = 'userinfo';
+      tbodyPlayerList.appendChild(userinfo);
+      const name = document.createElement('td');
+      name.textContent = `${gamerName}`;
+      name.className = 'playerName hover';
+      const photoTd = document.createElement('td');
+      photoTd.className = 'gamerTd';
+      userinfo.appendChild(photoTd);
+      const photo = document.createElement('img');
+      photo.className = 'gamerPhoto';
+      if (gamerPhoto) {
+        photo.setAttribute('src', `${gamerPhoto}`);
+      } else {
+        photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
       }
       photoTd.appendChild(name);
       photoTd.appendChild(photo);

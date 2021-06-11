@@ -92,7 +92,7 @@ fetch('/api/1.0/user/profile', {
     userPhoto = data.data.photo;
     userScore = data.data.score;
 
-    socket.on(`canvasUpdate${room}id${token}`, (msg) => {
+    socket.on(`canvasUpdateid${token}`, (msg) => {
       const timeCheck = msg.timeCheck;
       const canvasAll = msg.canvas;
       for (const i in canvasAll) {
@@ -178,7 +178,7 @@ function startCountdown (interval) {
     }
   }, interval);
 }
-socket.on(`answerGet${room}`, (msg) => {
+socket.on('answerGet', (msg) => {
   gameDone = true;
   answerData = msg.answer;
   title.textContent = ('等待開始下局遊戲');
@@ -202,7 +202,7 @@ socket.on(`answerGet${room}`, (msg) => {
 });
 
 const title = document.getElementById('title');
-socket.on(`answer${room}`, () => {
+socket.on('answer', () => {
   const answerShow = document.getElementById('answerShow');
   answerShow.textContent = '';
   setTimeout(function () {
@@ -232,7 +232,7 @@ socket.on(`answer${room}`, () => {
   socket.emit('checkPlayerInGame', { userId: userId, room: room });
 });
 
-socket.on(`convasData${room}`, (msg) => {
+socket.on('convasData', (msg) => {
   const img = document.createElement('img');
   img.src = msg;
   img.className = 'img';
@@ -241,7 +241,7 @@ socket.on(`convasData${room}`, (msg) => {
   imgs.appendChild(img);
 });
 
-socket.on(`undo msg${room}`, (msg) => {
+socket.on('undo msg', (msg) => {
   if (msg) {
     const myobj = document.getElementById(`img${canvasNum - 1}`);
     myobj.remove();
@@ -264,7 +264,7 @@ answerCheckButton.addEventListener('click', function (ev) {
     }, 2000);
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
-    socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
+    socket.on(`answerCorrect${'and' + userId}`, (msg) => {
       if (msg.check) {
         // message.textContent = `正確答案！ ${answerCheck}`;
         Toast2.fire({
@@ -340,7 +340,7 @@ $('#answerCheck').on('keypress', function (e) {
       }, 2000);
       socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
-      socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
+      socket.on(`answerCorrect${'and' + userId}`, (msg) => {
         if (msg.check) {
           // message.textContent = `正確答案！ ${answerCheck}`;
           Toast2.fire({
@@ -458,7 +458,7 @@ report.addEventListener('click', async function (ev) {
   ev.preventDefault();
 }, false);
 
-socket.on(`answerShow${room}`, (msg) => {
+socket.on('answerShow', (msg) => {
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
   msgArea.textContent = `${msg.data}`;
   const msgTdArea = document.getElementById(`msgTd${msg.userData[0].name}`);
@@ -468,7 +468,7 @@ socket.on(`answerShow${room}`, (msg) => {
   }, 2000);
 });
 
-socket.on(`userCorrect${room}`, (msg) => {
+socket.on('userCorrect', (msg) => {
   if (correctUserList[0]) {
     correctUserList.push(msg.userData[0].name);
   } else {
@@ -485,7 +485,7 @@ socket.on(`userCorrect${room}`, (msg) => {
   updateHost.textContent = `${(parseInt(updateHost.textContent) + parseInt(msg.hostScore))}`;
 });
 
-socket.on(`reportOk${room}`, (msg) => {
+socket.on('reportOk', (msg) => {
   Swal.fire({
     timer: 3000,
     title: '過半玩家提出檢舉！',
@@ -494,7 +494,7 @@ socket.on(`reportOk${room}`, (msg) => {
   });
 });
 
-socket.on(`heartShow${room}`, (msg) => {
+socket.on('heartShow', (msg) => {
   const count = msg.data;
   const msgTd = document.getElementsByClassName('msgTd');
   msgTd[0].innerHTML = '';
@@ -505,7 +505,7 @@ socket.on(`heartShow${room}`, (msg) => {
   }
 });
 
-socket.on(`allCorrect${room}`, (msg) => {
+socket.on('allCorrect', (msg) => {
   if (msg.data) {
     setTimeout(function () {
       $('.rankPart').addClass('loaded');
@@ -513,7 +513,7 @@ socket.on(`allCorrect${room}`, (msg) => {
   }
 });
 
-socket.on(`closeRoom${room}`, () => {
+socket.on('closeRoom', () => {
   Swal.fire({
     timer: 3000,
     title: '房主已離開房間！',
@@ -526,7 +526,7 @@ socket.on(`closeRoom${room}`, () => {
 
 const playerList = document.getElementById('playerList');
 const host = document.getElementById('host');
-socket.on(`roomUserId${room}`, (msg) => {
+socket.on('roomUserId', (msg) => {
   playerList.innerHTML = '';
 
   if (msg.roomUserData && msg.roomUserData[0]) {
@@ -539,11 +539,6 @@ socket.on(`roomUserId${room}`, (msg) => {
       userinfo.id = 'userinfo' + gamerName;
       playerList.appendChild(userinfo);
 
-      // const userAnswerArea = document.createElement('div');
-      // userAnswerArea.className = 'userAnswerArea';
-      // userAnswerArea.id = 'userAnswerArea' + gamerName;
-      // userinfo.appendChild(userAnswerArea);
-
       const photoTd = document.createElement('td');
       photoTd.className = 'gamerPhotoTd';
       userinfo.appendChild(photoTd);
@@ -552,7 +547,7 @@ socket.on(`roomUserId${room}`, (msg) => {
       if (gamerPhoto) {
         photo.setAttribute('src', `${gamerPhoto}`);
       } else {
-        photo.setAttribute('src', './images/member2.png');
+        photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
       }
       photo.className = 'gamerPhoto';
       photoTd.appendChild(photo);
@@ -604,7 +599,7 @@ socket.on(`roomUserId${room}`, (msg) => {
     if (hostPhoto) {
       photo.setAttribute('src', `${hostPhoto}`);
     } else {
-      photo.setAttribute('src', './images/member2.png');
+      photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
     }
     photo.className = 'hostPhoto';
     photoTd.appendChild(photo);
@@ -679,11 +674,10 @@ $('#btn-input').on('keypress', function (e) {
 
 const invite = document.getElementById('invite');
 invite.addEventListener('click', function () {
-  const imgs = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
   const i = Math.floor(Math.random() * 6);
   Swal.fire({
     title: '邀請朋友加入',
-    imageUrl: `./images/${imgs[i]}.jpeg`,
+    imageUrl: `https://d3cek75nx38k91.cloudfront.net/draw/${imgsAll[i]}.jpeg`,
     imageWidth: 200,
     imageHeight: 200,
     imageAlt: 'image',
@@ -695,7 +689,7 @@ invite.addEventListener('click', function () {
 });
 
 const chat = document.getElementById('chat');
-socket.on(`roomMsgShow${room}`, (msg) => {
+socket.on('roomMsgShow', (msg) => {
   if (msg.err) {
     if (msg.userName === userName) {
       Swal.fire({
@@ -730,7 +724,7 @@ socket.on(`roomMsgShow${room}`, (msg) => {
     if (msg.userPhoto) {
       img.setAttribute('src', `${msg.userPhoto}`);
     } else {
-      img.setAttribute('src', './images/member2.png');
+      img.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
     }
     span.appendChild(img);
 
@@ -836,7 +830,7 @@ socket.on('onlineUserShow', async (msg) => {
   onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
 });
 
-socket.on(`repeat${room}`, (msg) => {
+socket.on('repeat', (msg) => {
   setTimeout(() => {
     if (msg.id === userId) {
       Swal.fire({
@@ -851,7 +845,7 @@ socket.on(`repeat${room}`, (msg) => {
   }, 1000);
 });
 
-socket.on(`repeatUser${room}`, (msg) => {
+socket.on('repeatUser', (msg) => {
   setTimeout(() => {
     if (msg.id === userId) {
       Swal.fire({
@@ -871,7 +865,7 @@ const imgsAll = ['chipmunk', 'cow', 'dog', 'elephant', 'hippo', 'rabbit'];
 const randomNumber = Math.floor(Math.random() * 6);
 Swal.fire({
   title: '歡迎加入遊戲',
-  imageUrl: `./images/${imgsAll[randomNumber]}.jpeg`,
+  imageUrl: `https://d3cek75nx38k91.cloudfront.net/draw/${imgsAll[randomNumber]}.jpeg`,
   imageWidth: 200,
   imageHeight: 200,
   imageAlt: 'image',
