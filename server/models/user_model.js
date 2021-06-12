@@ -123,11 +123,10 @@ const uploadPhoto = async (id, photo) => {
 
 const testRate = async () => {
   try {
-    // await pool.query('SELECT * FROM draw.canvas');
     for (let i = 0; i < 100; i++) {
-      for (let j = 0; j < 1000; j++) {
+      for (let j = 0; j < 100; j++) {
         for (let k = 0; k < 1000; k++) {
-          if (i === 99 && j === 999 && k === 999) {
+          if (i === 99 && j === 99 && k === 999) {
             console.log('done');
           }
         }

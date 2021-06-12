@@ -14,29 +14,23 @@
 <body>
   <div class="padding2">
 
-   
     <header class="index">
-      
           <div class="title-container">
             <a href="/" class="title">Draw<img src="./images/favicon.png" alt="favicon" id="favicon">Guess</a href="/">
-     
           </div>
           <div id="onlineUserCount" class="signUpButton button">
           </div>
           <div class="member-container">
-      
             <button type="button" class="singleButton signup-form-btn button" id="invite">INVITE <i class="fas fa-user-plus"></i></button>
             <button type="button" class="signOutButton signout-btn button" id="leave">LEAVE <i class="fas fa-door-open"></i></button>  
             <div class="info signup-btn item" id="info"><img class="userPhoto" id="userPhoto" src="https://d3cek75nx38k91.cloudfront.net/draw/member.png"></div>
           </div>
-    
     </header>
    
 
     <div class="container-fluid main mainpart" id="main">
       <div class="row rowMain rowGame">
         <div class="mainPart col-7" id="mainPart">
-
           <div id="startDiv">
             <div id="questionData">
               <div class="question">題庫：</div>
@@ -44,8 +38,7 @@
                 <div class="stage">
                     <div class="heart" id="heart"></div>
                 </div>
-              <button id="report" class="form-control">report  <i class="fas fa-exclamation-triangle"></i></button>
-           
+              <button id="report" class="form-control">report  <i class="fas fa-exclamation-triangle"></i></button>     
             </div>
           </div>
 
@@ -60,7 +53,6 @@
             <button id="answerCheckButton" class="form-control">確認  <i class="fas fa-paper-plane"></i></button>
           </div>
         
-          
         </div>
         <div class="rankPart col-4" id="rankShow">
           <div id="allCorrect" class="stamp"></div>
@@ -91,10 +83,7 @@
               </thead>
               <tbody class="playerList" id="playerList"></tbody>
             </table>
-          </div>
-
-            
-                   
+          </div>             
         </div>
       </div>
     </div>
@@ -151,19 +140,10 @@
 </div>
 <audio controls id="mp3" style="display: none;">
   <source src="https://d3cek75nx38k91.cloudfront.net/draw/622.wav" type="audio/ogg">
-  <source src="https://d3cek75nx38k91.cloudfront.net/draw/622.wav" type="audio/mpeg">
 </audio>
 <audio controls id="wrongMp3" style="display: none;">
   <source src="https://d3cek75nx38k91.cloudfront.net/draw/12607.wav" type="audio/ogg">
-  <source src="https://d3cek75nx38k91.cloudfront.net/draw/12607.wav" type="audio/mpeg">
 </audio>
-<script type="text/javascript">
-  function copyUrl() {
-      var input = document.getElementById("text");
-      input.select(); 
-      document.execCommand("copy");
-  }
-</script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

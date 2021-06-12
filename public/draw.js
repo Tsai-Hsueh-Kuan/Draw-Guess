@@ -9,7 +9,6 @@ const urlAll = protocol + '//' + urlhost + '/gamer.html?room=' + room + '&type='
 let userId;
 let userName;
 let userPhoto;
-let userScore;
 let limitTime = 60;
 let roomId = [];
 let correctUserList = [];
@@ -56,7 +55,6 @@ fetch('/api/1.0/user/profile', {
     userId = data.data.id;
     userName = data.data.name;
     userPhoto = data.data.photo;
-    userScore = data.data.score;
     const info = document.getElementById('info');
     const name = document.createElement('td');
     name.className = 'userName hover';
@@ -254,7 +252,7 @@ canvasDiv.addEventListener('mousedown', (e) => {
 });
 
 canvasDiv.addEventListener('mousemove', draw);
-canvasDiv.addEventListener('mousedown', () => isDrawing = true);
+canvasDiv.addEventListener('mousedown', () => { isDrawing = true; });
 
 const socketUrl = function () {
   if (isDrawing) {
@@ -293,7 +291,7 @@ invite.addEventListener('click', function () {
     html:
     ' 房間連結：' +
     `<input type="text" id="text" value=${urlAll} style="width: 200px;" >` +
-  '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
+    '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
   });
 });
 let getPassword;
@@ -323,7 +321,7 @@ getQuestion.addEventListener('click', function () {
     }
     correctUserList = [];
 
-    socket.on(`question${getPassword}`, (msg) => {
+    socket.on(`question${room}${getPassword}`, (msg) => {
       countIndex = 1; // 倒數計時任務執行次數
       timeout = 1000; // 觸發倒數計時任務的時間間隙
       startTime = new Date().getTime();
@@ -471,7 +469,6 @@ socket.on('userCorrect', (msg) => {
   } else {
     correctUserList[0] = msg.userData[0].name;
   }
-
   const updateId = document.getElementById(`score${msg.userData[0].name}`);
   updateId.textContent = `${msg.userData[0].score + msg.score}`;
   const msgArea = document.getElementById(`msg${msg.userData[0].name}`);
@@ -576,13 +573,10 @@ socket.on('roomUserId', (msg) => {
     const hostName = msg.hostDetail[0].name;
     const hostPhoto = msg.hostDetail[0].photo;
     const hostScore = msg.hostDetail[0].score;
-
     const hostinfo = document.createElement('tr');
-    // hostinfo.className = 'userinfo';
     hostinfo.id = 'userinfoHost';
     hostinfo.className = 'userinfo';
     host.appendChild(hostinfo);
-
     const photoTd = document.createElement('td');
     photoTd.className = 'gamerPhotoTd';
     hostinfo.appendChild(photoTd);
@@ -619,10 +613,8 @@ const roomElement = document.getElementById('btn-input');
 const roomMsgButton = document.getElementById('btn-chat');
 roomMsgButton.addEventListener('click', function (ev) {
   const roomMsg = document.getElementById('btn-input').value;
-
   roomElement.value = '';
   if (roomMsg.length === 0) {
-
   } else if (roomMsg.length < 31) {
     socket.emit('roomMsg', { room: room, userName: userName, userPhoto: userPhoto, roomMsg: roomMsg });
   } else {
@@ -642,7 +634,6 @@ $('#btn-input').on('keypress', function (e) {
     const roomElement = document.getElementById('btn-input');
     roomElement.value = '';
     if (roomMsg.length === 0) {
-
     } else if (roomMsg.length < 31) {
       socket.emit('roomMsg', { room: room, userName: userName, userPhoto: userPhoto, roomMsg: roomMsg });
     } else {
@@ -754,6 +745,12 @@ socket.on('onlineUserShow', async (msg) => {
   const onlineUserCount = document.getElementById('onlineUserCount');
   onlineUserCount.textContent = '在線人數：' + onlineCount + '人';
 });
+
+function copyUrl () {
+  const input = document.getElementById('text');
+  input.select();
+  document.execCommand('copy');
+}
 
 const leave = document.getElementById('leave');
 leave.addEventListener('click', function () {

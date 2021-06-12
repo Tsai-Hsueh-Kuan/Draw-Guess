@@ -1,8 +1,6 @@
 require('dotenv').config();
-
 const { pool } = require('../../util/mysqlcon.js');
 const { IP } = process.env;
-
 const getSingleGame = async (id, type) => {
   try {
     const gameIdList = await pool.query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ? AND draw.game.status = 0', [id, type]);

@@ -162,6 +162,7 @@ const socketCon = (io) => {
     const roomUserDataGET = await promisifyget('roomUserData');
     const roomUserData = JSON.parse(roomUserDataGET).data;
     socket.join(inRoom);
+    socket.join('' + inRoom + inToken);
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
       if (verifyHost.err) {
@@ -324,10 +325,8 @@ const socketCon = (io) => {
       const userId = JSON.parse(userIdGET).data;
       const correctUserListGET = await promisifyget('correctUserList');
       const correctUserList = JSON.parse(correctUserListGET).data;
-
-      // socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
-      io.to(inRoom).emit(`canvasUpdateid${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
-
+      socket.emit(`canvasUpdate${inRoom}id${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
+      // io.to(inRoom).emit(`canvasUpdateid${inToken}`, { canvas: canvasUpate, timeCheck: timeDev, correctUserList: correctUserList[inRoom] });
       await getHistory(gameId[inRoom], userId[inRoom], '999');
       userId[inRoom] = '';
       await promisifyset('userId', JSON.stringify({ data: userId }));
@@ -476,30 +475,6 @@ const socketCon = (io) => {
             // socket.emit(`roomUserId${outRoom}`, { roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
             // socket.broadcast.emit(`roomUserId${outRoom}`, { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
             io.to(inRoom).emit('roomUserId', { hostDetail: hostDetail[inRoom], roomUserId: roomUserId[outRoom], roomUserData: roomUserData[outRoom] });
-
-            // const timeCheckGET = await promisifyget('timeCheck');
-            // const timeCheck = JSON.parse(timeCheckGET).data;
-            // const gameIdGET = await promisifyget('gameId');
-            // const gameId = JSON.parse(gameIdGET).data;
-            // const roomListGET = await promisifyget('roomList');
-            // const roomList = JSON.parse(roomListGET).data;
-            // const result = roomList.filter(function (element, index, arr) {
-            //   return arr.indexOf(element) === index;
-            // });
-            // for (const i in result) {
-            //   if (timeCheck[parseInt(result[i])]) {
-            //     const canvasUpate = await canvasUpdate(gameId[parseInt(result[i])]);
-            //     if (canvasUpate[0]) {
-            //       setTimeout(() => {
-            //         socket.emit('canvasUpdate', { room: parseInt(result[i]), canvas: canvasUpate, game: true });
-            //       }, 300);
-            //     } else {
-            //       console.log('no canvas');
-            //     }
-            //   }
-            // }
-          } else {
-            console.log('不可能啊');
           }
         }
       }
@@ -555,13 +530,11 @@ const socketCon = (io) => {
             gameId[msg.room] = await getGame(questionId[msg.room], hostId[msg.room]);
             await promisifyset('gameId', JSON.stringify({ data: gameId }));
           }
-
           // socket.broadcast.emit(`answer${msg.room}`, '');
-          io.to(inRoom).emit('answer', '');
-          // socket.emit(`question${msg.room}${getPassword}`, question[msg.room]);
-          io.to(inRoom).emit(`question${getPassword}`, question[msg.room]);
-          getHistory(gameId[msg.room], roomUserId[inRoom], '999');
+          socket.to(inRoom).emit('answer', '');
+          socket.emit(`question${msg.room}${getPassword}`, question[msg.room]);
 
+          getHistory(gameId[msg.room], roomUserId[inRoom], '999');
           userId[msg.room] = '';
           await promisifyset('userId', JSON.stringify({ data: userId }));
           const gameTimeGET = await promisifyget('gameTime');
@@ -655,8 +628,8 @@ const socketCon = (io) => {
               }
 
               socket.broadcast.emit('getRank', { data: rankData });
-              // socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: true, answer: '' });
-              io.to(inRoom).emit(`answerCorrect${'and' + msg.userId}`, { check: true, answer: '' });
+              socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: true, answer: '' });
+              // io.to(inRoom).emit(`answerCorrect${'and' + msg.userId}`, { check: true, answer: '' });
               // socket.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
               // socket.broadcast.emit(`userCorrect${msg.room}`, { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
               io.to(inRoom).emit('userCorrect', { userData: userData, canvasNum: msg.canvasNum, time: timeDev, score: checktime, hostScore: hostScore });
@@ -676,8 +649,8 @@ const socketCon = (io) => {
                 }, 1000);
               }
             } else {
-              // socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
-              io.to(inRoom).emit(`answerCorrect${'and' + msg.userId}`, { check: false, answer: '' });
+              socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
+              // io.to(inRoom).emit(`answerCorrect${'and' + msg.userId}`, { check: false, answer: '' });
               // socket.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
               // socket.broadcast.emit(`answerShow${msg.room}`, { data: msg.answerData, userData: userData });
               io.to(inRoom).emit('answerShow', { data: msg.answerData, userData: userData });
@@ -754,7 +727,7 @@ const socketCon = (io) => {
           }
           socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: msg.url });
           // socket.broadcast.emit(`convasData${msg.room}`, msg.url);
-          io.to(inRoom).emit('convasData', msg.url);
+          socket.to(inRoom).emit('convasData', msg.url);
         }
         if (timeCheck[msg.room]) {
           await inputCanvas(gameId[msg.room], msg.canvasNum, msg.url, 0);
@@ -767,7 +740,7 @@ const socketCon = (io) => {
         const timeCheck = JSON.parse(timeCheckGET).data;
         socket.broadcast.emit('mainPageUndo', { room: msg.room, data: msg.data });
         // socket.broadcast.emit(`undo msg${msg.room}`, msg.data);
-        io.to(inRoom).emit('undo msg', msg.data);
+        socket.to(inRoom).emit('undo msg', msg.data);
         if (timeCheck[msg.room]) {
           await inputCanvas(gameId[msg.room], msg.canvasNum, 0, msg.data);
         }
@@ -782,18 +755,18 @@ const socketCon = (io) => {
             if (redoUrl) {
               socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: redoUrl });
               // socket.broadcast.emit(`convasData${msg.room}`, redoUrl);
-              io.to(inRoom).emit('convasData', redoUrl);
-              // socket.emit(`redo url${msg.room}`, redoUrl);
-              io.to(inRoom).emit('redo url', redoUrl);
+              socket.to(inRoom).emit('convasData', redoUrl);
+              socket.emit('redo url', redoUrl);
+              // io.to(inRoom).emit('redo url', redoUrl);
             }
           } else {
             redoUrl = await promisifyget(msg.room + msg.canvasNum);
             if (redoUrl) {
               socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: redoUrl });
               // socket.broadcast.emit(`convasData${msg.room}`, redoUrl);
-              io.to(inRoom).emit('convasData', redoUrl);
-              // socket.emit(`redo url${msg.room}`, redoUrl);
-              io.to(inRoom).emit('redo url', redoUrl);
+              socket.to(inRoom).emit('convasData', redoUrl);
+              socket.emit('redo url', redoUrl);
+              // io.to(inRoom).emit('redo url', redoUrl);
             }
           }
         }
@@ -821,7 +794,7 @@ const socketCon = (io) => {
 
       socket.on('closeRoom', async (msg) => {
         // socket.broadcast.emit(`closeRoom${msg.room}`, { newHostId: roomUserId[msg.room][0] });
-        io.to(inRoom).emit('closeRoom', { data: 'close' });
+        socket.to(inRoom).emit('closeRoom', { data: 'close' });
       });
 
       const timeCheckGET = await promisifyget('timeCheck');

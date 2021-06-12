@@ -161,8 +161,6 @@ start.addEventListener('click', function () {
           return;
         }
         gameStatus = 1;
-
-        // message.textContent = '請開始作答';
         const recordDiv = document.getElementById('record');
         recordDiv.innerHTML = '';
         for (const i in data.data.history) {

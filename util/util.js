@@ -20,8 +20,7 @@ const upload = multer({
   limits: {
     fileSize: 1000000
   }
-})
-  .single('photo');
+}).single('photo');
 
 const wrapAsync = (fn) => {
   return function (req, res, next) {

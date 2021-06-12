@@ -6,6 +6,8 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="shortcut icon" href="./images/favicon.png" />
       <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="/owl/owl.carousel.min.css">
+      <link rel="stylesheet" href="/owl/owl.theme.default.min.css">
       <link rel="stylesheet" href="/reset.css">
       <link rel="stylesheet" href="/homepage.css">
       <link rel="stylesheet" href="/mainpage.css">
@@ -68,9 +70,16 @@
                           <div class="itemMsg">挑戰紀錄榜上 其他玩家的紀錄！</div>
                         </div>
 
+                        <div class="item">
+                          <h4>同步瀏覽</h4> 
+                          <video autoplay muted loop class="rule">
+                            <source src="https://d3cek75nx38k91.cloudfront.net/draw/rules/singleMode.mov" type="video/mp4" >
+                          </video> 
+                          <div class="itemMsg">可同步觀看所有房間即時畫面 並直接點擊加入！</div>
+                        </div>
 
                         <div class="item">
-                          <h4>檢舉功能</h4> 
+                          <h4>檢舉搗蛋鬼</h4> 
                           <video autoplay muted loop class="rule">
                             <source src="https://d3cek75nx38k91.cloudfront.net/draw/rules/report.mov" type="video/mp4" >
                           </video> 
@@ -87,14 +96,8 @@
 
                     </div>
 
-                    
-              
-
-                     
-              
-                    <div class="feature-item-container">
-
                 
+                    <div class="feature-item-container">
 
                       <div class="feature-item">
                         <div class="icon-container">
@@ -104,12 +107,7 @@
                           <span>Learning through playing</span>
                           <br>
                           <span>Anywhere</span> 
-                        </div>
-                        <div class="feature-text">
-                          <span>
-                            <!-- 123 -->
-                          </span>
-                        </div>
+                        </div>           
                       </div>
 
            
@@ -121,12 +119,7 @@
                           <span>Enjoy a game with</span>
                           <br>
                           <span>Anyone</span> 
-                        </div>
-                        <div class="feature-text">
-                          <span>
-                            <!-- 123 -->
-                          </span>
-                        </div>
+                        </div>   
                       </div> 
 
                       <div class="feature-item">
@@ -137,29 +130,15 @@
                           <span>Play a game</span>
                           <br>
                           <span>Anytime</span> 
-                        </div>
-                        <div class="feature-text">
-                          <span>
-                            <!-- Single-player mode is available, and you can start a game by yourself challenging the best record. -->
-                          </span>
-                        </div>
+                        </div>           
                       </div>
                
-                           
-
                     </div>
-              
-                    
-
-
-
-                    
 
                   </div>
 
                   <div class="tab-pane fade " id="room" role="tabpanel" aria-labelledby="room-tab">
-                      
-                      
+                   
                       <div id="startOption">
 
                         <div id="joinRoom">JOIN ROOM</div>
@@ -177,15 +156,12 @@
                       <div id="noRoom">
                         <div class="noRoomDiv">
                           噢！ 看起來沒有房間可以加入... 試試自己創建！  <button type="button" class="createGame" id="createGame">CREATE GAME <i class="fas fa-marker"></i></button>
-                    
-               
                         </div>
                       </div>
                       
                       <div id="mainPart" class="homePageMainPart"></div>
 
                   </div>
-
                 </div>
           </div>
         </div>
@@ -195,12 +171,10 @@
             <table class="table">
               <thead>
                 <tr class="trTop">
-                  <!-- <div class="tableTitle"> -->
-                    <th scope="col" id="thRank" >#RANK</th>
+                    <th scope="col" id="thRank">#RANK</th>
                     <th scope="col" id="thName">NAME</th>
                     <th scope="col" id="thScore">SCORE</th>
                     <th scope="col" id="thPhoto">PHOTO</th>
-                  <!-- </div> -->
                 </tr>
               </thead>
               <tbody class="rank" id="rank"></tbody>
@@ -221,8 +195,6 @@
       <script src="https://kit.fontawesome.com/f11a2e7131.js" crossorigin="anonymous"></script>
       <script src="js/bootstrap.min.js"></script>
       <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-      <link rel="stylesheet" href="/owl/owl.carousel.min.css">
-      <link rel="stylesheet" href="/owl/owl.theme.default.min.css">
       <script src="/owl/owl.carousel.min.js"></script>
       <script src="/socket.io/socket.io.js"></script>
       <script src="homepage.js"></script>

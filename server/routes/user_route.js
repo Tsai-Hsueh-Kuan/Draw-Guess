@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-// const cpUpload = upload.single('photo');
 const {
   wrapAsync,
   verifyToken,
