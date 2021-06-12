@@ -321,7 +321,7 @@ getQuestion.addEventListener('click', function () {
     }
     correctUserList = [];
 
-    socket.on(`question${getPassword}`, (msg) => {
+    socket.on(`question${room}${getPassword}`, (msg) => {
       countIndex = 1; // 倒數計時任務執行次數
       timeout = 1000; // 觸發倒數計時任務的時間間隙
       startTime = new Date().getTime();

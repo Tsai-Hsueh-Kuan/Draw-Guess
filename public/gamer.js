@@ -92,7 +92,7 @@ fetch('/api/1.0/user/profile', {
     userPhoto = data.data.photo;
     userScore = data.data.score;
 
-    socket.on(`canvasUpdateid${token}`, (msg) => {
+    socket.on(`canvasUpdate${room}id${token}`, (msg) => {
       const timeCheck = msg.timeCheck;
       const canvasAll = msg.canvas;
       for (const i in canvasAll) {
@@ -260,7 +260,7 @@ answerCheckButton.addEventListener('click', function (ev) {
     }, 2000);
     socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
 
-    socket.on(`answerCorrect${'and' + userId}`, (msg) => {
+    socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
         Toast2.fire({
           icon: 'success',

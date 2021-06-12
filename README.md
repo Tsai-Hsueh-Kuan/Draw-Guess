@@ -12,7 +12,11 @@ Type name and password automatically when sign in
   - password: test
 
 
-## Database Schema
+## Architecture
+
+![Architecture](https://d3cek75nx38k91.cloudfront.net/draw/architecture.png)
+
+## Database Design
 
 ![Database Design](https://d3cek75nx38k91.cloudfront.net/draw/database.png)
 

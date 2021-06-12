@@ -897,7 +897,7 @@ playGame.addEventListener('click', function () {
         create: '連線模式',
         single: '單人模式'
       },
-      inputPlaceholder: '選擇遊戲模式',
+      // inputPlaceholder: '快速開始',
       showCancelButton: true,
       inputValidator: (value) => {
         if (value === 'quick') {
