@@ -14,7 +14,8 @@ Type name and password automatically when sign in
 
 ## Architecture
 
-![Architecture](https://d3cek75nx38k91.cloudfront.net/draw/architecture.png)
+![Architecture](https://d3cek75nx38k91.cloudfront.net/draw/architecture.v2.png)
+![socket.io-radis for load balancer](https://d3cek75nx38k91.cloudfront.net/draw/socker.io-redis-v2.png)
 
 ## Database Design
 
