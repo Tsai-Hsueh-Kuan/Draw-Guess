@@ -965,6 +965,8 @@ background-color: white;
  display: flex;
  flex-direction: column;
  font-size: 22px;
+ color: rgb(247, 247, 247);
+ background-color: #3f53d9;
 
 }
 #roomAnsDiv,
