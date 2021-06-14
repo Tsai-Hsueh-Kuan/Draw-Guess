@@ -21,10 +21,9 @@ Type name and password automatically when sign in
 
 ![Database Design](https://d3cek75nx38k91.cloudfront.net/draw/database.png)
 
-
 #### One-Click Login:
 
-Sign in test accounts automatically
+Type email and password automatically when sign in
 
   - [test](https://drawguess.tw/?test=test)
 
