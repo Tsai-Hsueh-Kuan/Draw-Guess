@@ -732,7 +732,7 @@ socket.on('roomMsgShow', (msg) => {
     divChatBody.appendChild(p);
 
     const panel = document.getElementsByClassName('panel-body');
-    panel[0].scrollTo(0, 99999999999999);
+    panel[0].scrollTo(0, panel[0].scrollHeight);
   }
 });
 
