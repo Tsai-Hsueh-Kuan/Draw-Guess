@@ -16,9 +16,7 @@ const socket = io((''), {
   },
   reconnect: true
 });
-socket.on('test', (msg) => {
-  console.log(msg);
-});
+
 socket.on('canvasUpdate', (msg) => {
   const roomId = msg.room;
   const canvasAll = msg.canvas;
@@ -703,6 +701,7 @@ socket.on('mainPageViewPlayerChange', async (msg) => {
 
 const roomTab = document.getElementById('room-tab');
 roomTab.addEventListener('click', function () {
+  socket.emit('homePageRoomTab', '');
   if (roomList) {
     if (roomList[0]) {
       const noRoom = document.getElementById('noRoom');

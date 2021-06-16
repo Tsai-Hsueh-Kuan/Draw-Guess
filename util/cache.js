@@ -11,13 +11,13 @@ cache.on('error', () => {
   console.log('redis is error');
 });
 
-const promisifyget = promisify(cache.get).bind(cache);
-const promisifyset = promisify(cache.set).bind(cache);
-const promisifydel = promisify(cache.del).bind(cache);
+const getCache = promisify(cache.get).bind(cache);
+const setCache = promisify(cache.set).bind(cache);
+const delCache = promisify(cache.del).bind(cache);
 
 module.exports = {
   cache,
-  promisifyget,
-  promisifyset,
-  promisifydel
+  getCache,
+  setCache,
+  delCache
 };

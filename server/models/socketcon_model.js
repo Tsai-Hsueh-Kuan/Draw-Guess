@@ -71,7 +71,7 @@ const updateHistory = async (gameId, userId, record) => {
 
 const updateScore = async (score, userId, hostId, gameId) => {
   try {
-    const totalList = await pool.query('SELECT * from draw.history where game_id = ? AND record <> "only view"', gameId);
+    const totalList = await pool.query('SELECT * from draw.history where game_id = ?', gameId);
     const totalCount = totalList[0].length;
     const hostScore = Math.ceil(score / totalCount);
     await pool.query('UPDATE user SET score = score + ? where id = ? ', [hostScore, hostId]);

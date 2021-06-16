@@ -15,7 +15,7 @@ const passwordencryption = function (password) {
   }
 };
 
-const signUp = async (name, password, photo) => {
+const signUp = async (name, password) => {
   const conn = await pool.getConnection();
   try {
     await conn.query('START TRANSACTION');
@@ -27,7 +27,7 @@ const signUp = async (name, password, photo) => {
     const user = {
       password: passwordencryption(password),
       name: name,
-      photo: photo || null,
+      photo: null,
       score: 0,
       heart: 0
     };

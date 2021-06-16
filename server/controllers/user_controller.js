@@ -4,10 +4,7 @@ const User = require('../models/user_model');
 
 const signUp = async (req, res) => {
   let { name, password } = req.body;
-  let photo;
-  if (req.file) {
-    photo = req.file.originalname;
-  }
+
   if (!name || !password) {
     res.status(400).send({ error: 'Name and password need to be entered completely' });
     return;
@@ -21,7 +18,7 @@ const signUp = async (req, res) => {
     res.status(400).send({ error: 'The number of password is limited to 18.' });
     return;
   }
-  const result = await User.signUp(name, password, photo);
+  const result = await User.signUp(name, password);
   if (result.error) {
     res.status(403).send({ error: result.error });
     return;

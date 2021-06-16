@@ -41,7 +41,7 @@ const io = require('socket.io')(server, {
 });
 const redis = require('socket.io-redis');
 io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
-const { socketCon } = require('./util/socketcon');
+const { socketCon } = require('./server/controllers/socketcon.js');
 socketCon(io);
 
 // Page not found

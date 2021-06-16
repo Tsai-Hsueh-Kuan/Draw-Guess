@@ -49,11 +49,7 @@ const Toast = Swal.mixin({
   toast: true,
   showConfirmButton: false,
   timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
+  timerProgressBar: true
 });
 
 const imgs = document.querySelector('#imgs');
@@ -262,15 +258,16 @@ answerCheckButton.addEventListener('click', function (ev) {
 
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
+        const audio = document.getElementById('mp3');
+        audio.play();
+        audio.volume = 0.7;
         Toast2.fire({
           icon: 'success',
           title: '答對了！',
           width: '400px',
           padding: '30px'
         });
-        const audio = document.getElementById('mp3');
-        audio.play();
-        audio.volume = 0.7;
+
         const answerShow = document.getElementById('answerShow');
         answerShow.textContent = `ANS : ${answerCheck}`;
         answerGet = answerCheck;
@@ -324,17 +321,18 @@ $('#answerCheck').on('keypress', function (e) {
         answerLimit = true;
       }, 2000);
       socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
-      socket.on(`answerCorrect${'and' + userId}`, (msg) => {
+      socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
         if (msg.check) {
+          const audio = document.getElementById('mp3');
+          audio.play();
+          audio.volume = 0.7;
           Toast2.fire({
             icon: 'success',
             title: '答對了！',
             width: '400px',
             padding: '30px'
           });
-          const audio = document.getElementById('mp3');
-          audio.play();
-          audio.volume = 0.7;
+
           const answerShow = document.getElementById('answerShow');
           answerShow.textContent = `ANS : ${answerCheck}`;
           answerGet = answerCheck;
