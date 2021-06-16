@@ -177,22 +177,24 @@ socket.on('answerGet', (msg) => {
   answerData = msg.answer;
   title.textContent = ('等待開始下局遊戲');
   const msgTdHost = document.getElementById('msgTdHost');
-  msgTdHost.innerHTML = '';
-  Toast.fire({
-    text: `正確答案:${answerData}`,
-    width: '400px',
-    padding: '30px'
-  });
-  const msgarea = document.getElementsByClassName('msg');
+  if (msgTdHost) {
+    msgTdHost.innerHTML = '';
+    Toast.fire({
+      text: `正確答案:${answerData}`,
+      width: '400px',
+      padding: '30px'
+    });
+    const msgarea = document.getElementsByClassName('msg');
 
-  for (const i in msgarea) {
-    msgarea[i].textContent = '';
+    for (const i in msgarea) {
+      msgarea[i].textContent = '';
+    }
+    heartStatus = 0;
+    const heart = document.getElementById('heart');
+    heart.className = 'heart';
+    const answerShow = document.getElementById('answerShow');
+    answerShow.textContent = '';
   }
-  heartStatus = 0;
-  const heart = document.getElementById('heart');
-  heart.className = 'heart';
-  const answerShow = document.getElementById('answerShow');
-  answerShow.textContent = '';
 });
 
 const title = document.getElementById('title');
@@ -436,7 +438,7 @@ socket.on('answerShow', (msg) => {
   msgTdArea.className = 'inCorrect';
   setTimeout(() => {
     msgTdArea.classList.remove('inCorrect');
-  }, 2000);
+  }, 3000);
 });
 
 socket.on('userCorrect', (msg) => {
@@ -465,6 +467,7 @@ socket.on('reportOk', (msg) => {
 });
 
 socket.on('heartShow', (msg) => {
+  console.log('333');
   const count = msg.data;
   const msgTd = document.getElementsByClassName('msgTd');
   msgTd[0].innerHTML = '';
@@ -594,6 +597,8 @@ socket.on('roomUserId', (msg) => {
     gameMsgTd.id = 'msgTdHost';
     hostinfo.appendChild(gameMsgTd);
   }
+  socket.emit('getHeart', 'get');
+  console.log('123');
   if (msg.roomUserId) {
     roomId = msg.roomUserId;
   }

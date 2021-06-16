@@ -460,7 +460,7 @@ socket.on('answerShow', (msg) => {
   msgTdArea.className = 'inCorrect';
   setTimeout(() => {
     msgTdArea.classList.remove('inCorrect');
-  }, 2000);
+  }, 3000);
 });
 
 socket.on('userCorrect', (msg) => {
@@ -604,6 +604,7 @@ socket.on('roomUserId', (msg) => {
     gameMsgTd.id = 'msgTdHost';
     hostinfo.appendChild(gameMsgTd);
   }
+  socket.emit('getHeart', 'get');
   if (msg.roomUserId) {
     roomId = msg.roomUserId;
   }

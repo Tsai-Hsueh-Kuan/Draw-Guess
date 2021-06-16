@@ -1,5 +1,5 @@
 const { pool } = require('../../util/mysqlcon.js');
-const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
+const { TOKEN_SECRET, IP } = process.env;
 const jwt = require('jsonwebtoken');
 
 const getquestion = async (type) => {

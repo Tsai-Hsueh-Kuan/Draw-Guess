@@ -4,18 +4,18 @@ const { IP } = process.env;
 const getSingleGame = async (id, type) => {
   try {
     const gameIdList = await pool.query('SELECT draw.game.id from draw.game left join draw.question on draw.game.question_id = draw.question.id where draw.game.host_id <> ? AND draw.question.type = ? AND draw.game.status = 0', [id, type]);
-    const gameIdListArray = gameIdList[0].map(x => x.id);
+    const gameIdListArr = gameIdList[0].map(x => x.id);
     const gameIdCheck = await pool.query('SELECT game_id from draw.history where user_id = ?', id);
-    const gameIdCheckArray = gameIdCheck[0].map(x => x.game_id);
+    const gameIdCheckArr = gameIdCheck[0].map(x => x.game_id);
 
-    const result = gameIdListArray.filter((e) => {
-      return gameIdCheckArray.indexOf(e) === -1;
+    const result = gameIdListArr.filter((e) => {
+      return gameIdCheckArr.indexOf(e) === -1;
     });
     if (!result[0]) {
       return { error: '已無更多題庫給您' };
     } else {
-      const rdQuestion = Math.floor(Math.random() * result.length);
-      const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? AND draw.history.record <> 999 order by draw.history.record', result[rdQuestion]);
+      const randomQuestion = Math.floor(Math.random() * result.length);
+      const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? AND draw.history.record <> 999 order by draw.history.record', result[randomQuestion]);
       for (const i in historyCheck[0]) {
         delete historyCheck[0][i].password;
         if (historyCheck[0][i].photo) {
@@ -23,8 +23,8 @@ const getSingleGame = async (id, type) => {
         }
       }
 
-      const gameCheck = await pool.query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.id = ?', result[rdQuestion]);
-      await pool.query('INSERT into history(game_id,user_id,record) values (?,?,?)', [result[rdQuestion], id, '999']);
+      const gameCheck = await pool.query('SELECT * from (draw.game left join draw.question on draw.game.question_id = draw.question.id) left join draw.canvas on draw.game.id = draw.canvas.game_id where draw.game.id = ?', result[randomQuestion]);
+      await pool.query('INSERT into history(game_id,user_id,record) values (?,?,?)', [result[randomQuestion], id, '999']);
 
       const data = {
         game: gameCheck[0],
@@ -38,7 +38,7 @@ const getSingleGame = async (id, type) => {
   }
 };
 
-const getSingleGameTest = async (id, gameId) => {
+const getSingleGameTest = async (gameId) => {
   try {
     const historyCheck = await pool.query('SELECT * from draw.history left join draw.user on draw.history.user_id = draw.user.id where draw.history.game_id = ? order by draw.history.record', gameId);
     for (const i in historyCheck[0]) {

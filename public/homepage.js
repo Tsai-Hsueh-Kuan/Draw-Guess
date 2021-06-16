@@ -27,12 +27,13 @@ socket.on('canvasUpdate', (msg) => {
         const img = document.createElement('img');
         img.src = canvasAll[i].canvas_data;
         img.className = `img img${roomId}`;
-        img.id = 'img' + roomId + 'step' + i;
-        canvasNum[roomId] = canvasAll[i].canvas_num - 1;
+        img.id = 'img' + roomId + 'step' + canvasAll[i].canvas_num;
+        canvasNum[roomId] = canvasAll[i].canvas_num + 1;
         imgs.appendChild(img);
       } else if (canvasAll[i].canvas_undo !== '0') {
         const img = document.getElementsByClassName(`img${roomId}`);
         const finalNum = img.length;
+        canvasNum[roomId]--;
         img[finalNum - 1].remove();
       }
     }
@@ -485,13 +486,12 @@ signOutButton.addEventListener('click', function () {
     });
 });
 
-const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
-socket.emit('homeRank', { homeTime: homeTime });
+socket.emit('homeRank', 'get');
 socket.emit('onlineUser', 'get');
 
 const rank = document.getElementById('rank');
-socket.on(`getRank${homeTime}`, async (msg) => {
+socket.on('getRank', async (msg) => {
   rank.innerHTML = '';
   for (const i in msg.data) {
     const rankId = msg.data[i].id;
@@ -698,10 +698,9 @@ socket.on('mainPageViewPlayerChange', async (msg) => {
     }
   }
 });
-
+let tabNew = true;
 const roomTab = document.getElementById('room-tab');
 roomTab.addEventListener('click', function () {
-  socket.emit('homePageRoomTab', '');
   if (roomList) {
     if (roomList[0]) {
       const noRoom = document.getElementById('noRoom');
@@ -716,6 +715,10 @@ roomTab.addEventListener('click', function () {
       const noRoom = document.getElementById('noRoom');
       noRoom.className = 'noRoom';
     }
+  }
+  if (tabNew) {
+    socket.emit('homePageRoomTab', '');
+    tabNew = false;
   }
 });
 
@@ -875,10 +878,10 @@ socket.on('mainPageConvasData', (msg) => {
 socket.on('mainPageUndo', (msg) => {
   const roomId = msg.room;
   if (msg.data) {
-    const myobj = document.getElementById(`img${roomId}step${canvasNum[roomId] - 1}`);
-
-    myobj.remove();
+    const img = document.getElementsByClassName(`img${roomId}`);
+    const finalNum = img.length;
     canvasNum[roomId]--;
+    img[finalNum - 1].remove();
   }
 });
 

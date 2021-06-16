@@ -9,7 +9,7 @@ const getSingleGame = async (req, res) => {
 };
 
 const getSingleGameTest = async (req, res) => {
-  const gameData = await game.getSingleGameTest(req.user.id, req.body.gameId);
+  const gameData = await game.getSingleGameTest(req.body.gameId);
   res.status(200).send(gameData);
 };
 
