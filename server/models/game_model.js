@@ -129,9 +129,9 @@ const getSingleAnswer = async (answerId) => {
   }
 };
 
-const getcrawler = async (all) => {
+const getcrawler = async (question, type) => {
   try {
-    await pool.query('INSERT into draw.question(question,type,inuse) values (?,?,?)', [all, 'idiom', 0]);
+    await pool.query('INSERT into draw.question(question,type,inuse) values (?,?,?)', [question, type, 0]);
     return;
   } catch (error) {
     console.log(error);

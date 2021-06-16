@@ -11,7 +11,8 @@ const {
   updateHistory,
   getSingleAnswer,
   singleAnswerCheck,
-  getcrawler,
+  idiomCrawler,
+  englishCrawler,
   gameCheck,
   getSingleGameNeedCheck
 } = require('../controllers/game_controller');
@@ -34,8 +35,11 @@ router.route('/game/singleAnswerCheck')
 router.route('/game/singleAnswer')
   .post(verifyToken, wrapAsync(getSingleAnswer));
 
-router.route('/game/crawler')
-  .get(wrapAsync(getcrawler));
+router.route('/game/idiomCrawler')
+  .get(wrapAsync(idiomCrawler));
+
+router.route('/game/englishCrawler')
+  .get(wrapAsync(englishCrawler));
 
 router.route('/game/gameCheck')
   .post(verifyTokenAdmin, wrapAsync(gameCheck));

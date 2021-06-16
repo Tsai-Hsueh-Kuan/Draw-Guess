@@ -29,7 +29,7 @@ const wrapAsync = (fn) => {
 };
 
 const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization; // Get the auth header value
+  const authHeader = req.headers.authorization;
   const token = authHeader.replace('Bearer ', '');
   if (token === 'null') {
     console.log('please登入');
@@ -48,7 +48,7 @@ const verifyToken = (req, res, next) => {
 };
 
 const verifyTokenAdmin = (req, res, next) => {
-  const authHeader = req.headers.authorization; // Get the auth header value
+  const authHeader = req.headers.authorization;
   const token = authHeader.replace('Bearer ', '');
   if (token === 'null') {
     console.log('please登入');

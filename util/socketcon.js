@@ -350,9 +350,9 @@ const socketCon = (io) => {
 
           const disconnectTimeGET = await promisifyget('disconnectTime');
           const disconnectTime = JSON.parse(disconnectTimeGET).data;
-          disconnectTime[outRoom] = 1; // 倒數計時任務執行次數
+          disconnectTime[outRoom] = 1; // countdown task execution times
           await promisifyset('disconnectTime', JSON.stringify({ data: disconnectTime }));
-          const timeout = 1000; // 觸發倒數計時任務的時間間隙
+          const timeout = 1000; // time gap
           const starttime = new Date().getTime();
           function startCountdown (interval) {
             setTimeout(async () => {
@@ -519,9 +519,9 @@ const socketCon = (io) => {
           await promisifyset('userId', JSON.stringify({ data: userId }));
           const gameTimeGET = await promisifyget('gameTime');
           const gameTime = JSON.parse(gameTimeGET).data;
-          gameTime[msg.room] = 1;// 倒數計時任務執行次數
+          gameTime[msg.room] = 1;// countdown task execution times
           await promisifyset('gameTime', JSON.stringify({ data: gameTime }));
-          const timeout = 1000; // 觸發倒數計時任務的時間間隙
+          const timeout = 1000; // time gap
           const startTimeGET = await promisifyget('startTime');
           const startTime = JSON.parse(startTimeGET).data;
           startTime[msg.room] = new Date().getTime();

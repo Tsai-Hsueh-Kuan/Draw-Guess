@@ -24,7 +24,7 @@ function rateLimiter (token) {
 }
 
 const rateLimiterRoute = async (req, res, next) => {
-  if (!Cache.cache.ready) { // when redis not connected
+  if (!Cache.cache.ready) {
     return next();
   } else {
     try {

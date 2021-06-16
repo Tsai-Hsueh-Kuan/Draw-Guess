@@ -38,24 +38,24 @@ const gameCheck = async (req, res) => {
   res.status(200).send({ data: data });
 };
 
-const getcrawler = async (req, res) => {
+const idiomCrawler = async (req, res) => {
+  const count = 0;
   const request = require('request');
-  for (let i = 1; i < 1000; i++) {
-    const url = `https://dict.idioms.moe.edu.tw/idiomView.jsp?ID=${i + 2000}&q=1`;
+  for (let i = 1; i < count; i++) {
+    const url = `https://dict.idioms.moe.edu.tw/idiomView.jsp?ID=${i}&q=1`;
 
     request(url, (err, res, body) => {
       try {
         const $ = cheerio.load(body);
-        const weathers = [];
+        const data = [];
         $('#idiomTab tbody tr td').each(function (i, elem) {
-          weathers.push($(this).text().split('\n'));
+          DataTransfer.push($(this).text().split('\n'));
         });
 
-        if (weathers[0][0].length === 4) {
-          console.log(weathers[0][0]);
-          // game.getcrawler(weathers[0][0]);
+        const idiom = data[0][0].split('(')[1].replace(')', '');
+        if (idiom.length === 4) {
+          game.getcrawler(idiom, 'idiom');
         }
-
         return;
       } catch {
         return err;
@@ -66,22 +66,33 @@ const getcrawler = async (req, res) => {
   res.status(200).send('done');
 };
 
-// const request = require('request');
-//   const url = 'https://dict.idioms.moe.edu.tw/idiomView.jsp?ID=549&q=1';
-//   request(url, (err, res, body) => {
-//     try {
-//       const $ = cheerio.load(body);
-//       const weathers = [];
-//       $('#idiomTab tbody tr td').each(function (i, elem) {
-//         weathers.push($(this).text().split('\n'));
-//       });
-//       console.log(weathers[0][0]);
-//       res.status(200).send('123');
-//       return;
-//     } catch {
-//       return err;
-//     }
-//   });
+const englishCrawler = async (req, res) => {
+  const count = 5;
+  const request = require('request');
+  const url = 'https://lingokids.com/english-for-kids/animals';
+  request(url, (err, res, body) => {
+    try {
+      const $ = cheerio.load(body);
+      const data = [];
+      $('.elementor-13514 .elementor-element.elementor-element-b3e5474').each(function (i, elem) {
+        data.push($(this).text().split('\n'));
+      });
+      for (let i = 0; i < count; i++) {
+        if (data[0][48 + (i)] && data[0][48 + (i)] !== ' ') {
+          try {
+            console.log(data[0][48 + (i)]);
+            game.getcrawler(data[0][48 + (i)], 'english');
+          } catch {
+            console.log('err');
+          }
+        }
+      }
+    } catch {
+      return err;
+    }
+  });
+  res.status(200).send('done');
+};
 
 module.exports = {
   getSingleGame,
@@ -89,7 +100,8 @@ module.exports = {
   updateHistory,
   singleAnswerCheck,
   getSingleAnswer,
-  getcrawler,
+  idiomCrawler,
+  englishCrawler,
   gameCheck,
   getSingleGameNeedCheck
 };
