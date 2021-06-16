@@ -62,7 +62,7 @@ checkGame.addEventListener('click', function () {
     gameId: gameInput,
     status: 0
   };
-  fetch('/api/1.0/game/checkGame', {
+  fetch('/api/1.0/game/gameCheck', {
     method: 'post',
     body: JSON.stringify(typeData),
     headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
@@ -87,7 +87,7 @@ checkGame1.addEventListener('click', function () {
     gameId: gameInput,
     status: 1
   };
-  fetch('/api/1.0/game/checkGame', {
+  fetch('/api/1.0/game/gameCheck', {
     method: 'post',
     body: JSON.stringify(typeData),
     headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
@@ -266,7 +266,7 @@ function startCountdown (interval) {
       const data = {
         answerId: getAnswerId
       };
-      fetch('/api/1.0/game/done', {
+      fetch('/api/1.0/game/singleAnswer', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
@@ -302,19 +302,19 @@ leave.addEventListener('click', function () {
     });
 });
 
-const Toast2 = Swal.mixin({
-  toast: true,
-  showConfirmButton: false,
-  timer: 5000
-});
+// const Toast2 = Swal.mixin({
+//   toast: true,
+//   showConfirmButton: false,
+//   timer: 5000
+// });
 
-const Toast = Swal.mixin({
-  toast: true,
-  showConfirmButton: false,
-  timer: 8000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
-});
+// const Toast = Swal.mixin({
+//   toast: true,
+//   showConfirmButton: false,
+//   timer: 8000,
+//   timerProgressBar: true,
+//   didOpen: (toast) => {
+//     toast.addEventListener('mouseenter', Swal.stopTimer);
+//     toast.addEventListener('mouseleave', Swal.resumeTimer);
+//   }
+// });

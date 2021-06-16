@@ -232,7 +232,7 @@ answerCheckButton.addEventListener('click', function (ev) {
       answerId: getAnswerId,
       answerCheck: answerCheck
     };
-    fetch('/api/1.0/game/answer', {
+    fetch('/api/1.0/game/singleAnswerCheck', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
@@ -371,7 +371,7 @@ $('#answerCheck').on('keypress', function (e) {
         answerId: getAnswerId,
         answerCheck: answerCheck
       };
-      fetch('/api/1.0/game/answer', {
+      fetch('/api/1.0/game/singleAnswerCheck', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }

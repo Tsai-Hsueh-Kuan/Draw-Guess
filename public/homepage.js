@@ -126,8 +126,8 @@ if (token) {
               const formData = new FormData(file);
               if (result.isConfirmed) {
                 if (file) {
-                  fetch('/api/1.0/user/uploadPhoto', {
-                    method: 'POST',
+                  fetch('/api/1.0/user/photoUpload', {
+                    method: 'PUT',
                     body: formData,
                     headers: { authorization: `Bearer ${token}` }
                   }).then(function (response) {
@@ -178,8 +178,8 @@ if (token) {
             const data = {
               photo: photo
             };
-            fetch('/api/1.0/user/replacePhoto', {
-              method: 'POST',
+            fetch('/api/1.0/user/photoReplace', {
+              method: 'PUT',
               body: JSON.stringify(data),
               headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
             }).then(function (response) {
@@ -1151,44 +1151,46 @@ if (test === 'test') {
     }
 
   }).then(function (result) {
-    const signInData = {
-      name: result.value[0],
-      password: result.value[1]
-    };
-    fetch('/api/1.0/user/signin', {
-      method: 'POST',
-      body: JSON.stringify(signInData),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        Swal.fire({
-          timer: 5000,
-          title: 'Too Many Requests',
-          icon: 'error'
-        });
-      } else if (response.status === 400) {
-        return response.json();
-      } else if (response.status === 403) {
-        return response.json();
-      } else if (response.status === 500) {
-        return response.json();
-      }
-    }).then(data => {
-      if (data.error) {
-        Swal.fire('OOPS！', `${data.error}`, 'error');
-      } else if (data.data) {
-        localStorage.setItem('token', `${data.data.access_token}`);
-        Swal.fire({
-          timer: 5000,
-          title: '登入成功',
-          text: `歡迎${data.data.user.name}玩家`,
-          icon: 'success'
-        }).then(() => {
-          return window.location.assign('/');
-        });
-      }
-    });
+    if (result.value) {
+      const signInData = {
+        name: result.value[0],
+        password: result.value[1]
+      };
+      fetch('/api/1.0/user/signin', {
+        method: 'POST',
+        body: JSON.stringify(signInData),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(function (response) {
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 429) {
+          Swal.fire({
+            timer: 5000,
+            title: 'Too Many Requests',
+            icon: 'error'
+          });
+        } else if (response.status === 400) {
+          return response.json();
+        } else if (response.status === 403) {
+          return response.json();
+        } else if (response.status === 500) {
+          return response.json();
+        }
+      }).then(data => {
+        if (data.error) {
+          Swal.fire('OOPS！', `${data.error}`, 'error');
+        } else if (data.data) {
+          localStorage.setItem('token', `${data.data.access_token}`);
+          Swal.fire({
+            timer: 5000,
+            title: '登入成功',
+            text: `歡迎${data.data.user.name}玩家`,
+            icon: 'success'
+          }).then(() => {
+            return window.location.assign('/');
+          });
+        }
+      });
+    }
   });
 }

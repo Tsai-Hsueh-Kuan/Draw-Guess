@@ -35,7 +35,7 @@ header.index {
  align-items: center;
  top: 0;
  position: fixed;
- z-index: 99999;
+ z-index: 1059;
 }
 
 
@@ -670,7 +670,7 @@ display: flex;
 position: absolute;
 bottom: 0px;
 margin: 0px;
-z-index: 1059;
+z-index: 1058;
 }
 
 .tableDivSingle{
@@ -699,7 +699,7 @@ position: absolute;
 align-items: center;
 justify-content: center;
 margin: 0%;
-z-index: 1059;
+z-index: 1058;
 }
 
 .tbodyPlayerList{
@@ -715,7 +715,7 @@ z-index: 1059;
  }
 
 .tbodyHost{
-  z-index: 1059;
+  z-index: 1058;
 }
 
  
@@ -880,10 +880,10 @@ padding:3px */
  flex-direction: column;
 }
  
-/* .homePageImgs:hover{
+.homePageImgs:hover{
   -webkit-filter:brightness(.7);
   background-color:rgba(150,150,150,0.1)
-} */
+}
 
 #imgs{
  border: 1px solid #999;

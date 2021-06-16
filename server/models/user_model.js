@@ -101,7 +101,7 @@ const getUserDetail = async (userId) => {
   }
 };
 
-const replacePhoto = async (id, photo) => {
+const photoReplace = async (id, photo) => {
   try {
     await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
   } catch (error) {
@@ -110,7 +110,7 @@ const replacePhoto = async (id, photo) => {
   }
 };
 
-const uploadPhoto = async (id, photo) => {
+const photoUpload = async (id, photo) => {
   try {
     await pool.query('UPDATE draw.user SET photo = ? where id = ?', [photo, id]);
     photo = IP + photo;
@@ -153,8 +153,8 @@ module.exports = {
   signUp,
   signIn,
   getUserDetail,
-  replacePhoto,
-  uploadPhoto,
+  photoReplace,
+  photoUpload,
   testRate,
   delTest
 };

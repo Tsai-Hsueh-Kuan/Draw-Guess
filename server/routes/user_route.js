@@ -11,10 +11,9 @@ const {
   signUp,
   signIn,
   getUserProfile,
-  replacePhoto,
-  uploadPhoto,
-  testRate,
-  delTest
+  photoReplace,
+  photoUpload,
+  testRate
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
@@ -29,16 +28,13 @@ router.route('/user/profile')
 router.route('/user/profileAdmin')
   .get(verifyTokenAdmin, wrapAsync(getUserProfile));
 
-router.route('/user/replacePhoto')
-  .post(verifyToken, upload, wrapAsync(replacePhoto));
+router.route('/user/photoReplace')
+  .put(verifyToken, upload, wrapAsync(photoReplace));
 
-router.route('/user/uploadPhoto')
-  .post(verifyToken, upload, wrapAsync(uploadPhoto));
+router.route('/user/photoUpload')
+  .post(verifyToken, upload, wrapAsync(photoUpload));
 
 router.route('/user/testRate')
   .get(wrapAsync(testRate));
-
-router.route('/user/delTest')
-  .get(wrapAsync(delTest));
 
 module.exports = router;

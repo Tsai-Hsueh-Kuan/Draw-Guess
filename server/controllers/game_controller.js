@@ -23,18 +23,18 @@ const updateHistory = async (req, res) => {
   res.status(200).send(data);
 };
 
-const checkAnswer = async (req, res) => {
-  const answer = await game.checkAnswer(req.body.answerId, req.body.answerCheck);
+const singleAnswerCheck = async (req, res) => {
+  const answer = await game.singleAnswerCheck(req.body.answerId, req.body.answerCheck);
   res.status(200).send(answer);
 };
 
-const getAnswer = async (req, res) => {
-  const answer = await game.getAnswer(req.body.answerId);
+const getSingleAnswer = async (req, res) => {
+  const answer = await game.getSingleAnswer(req.body.answerId);
   res.status(200).send(answer);
 };
 
-const checkGame = async (req, res) => {
-  const data = await game.checkGame(req.body.status, req.body.gameId);
+const gameCheck = async (req, res) => {
+  const data = await game.gameCheck(req.body.status, req.body.gameId);
   res.status(200).send({ data: data });
 };
 
@@ -53,7 +53,7 @@ const getcrawler = async (req, res) => {
 
         if (weathers[0][0].length === 4) {
           console.log(weathers[0][0]);
-          game.getcrawler(weathers[0][0]);
+          // game.getcrawler(weathers[0][0]);
         }
 
         return;
@@ -87,9 +87,9 @@ module.exports = {
   getSingleGame,
   getSingleGameTest,
   updateHistory,
-  checkAnswer,
-  getAnswer,
+  singleAnswerCheck,
+  getSingleAnswer,
   getcrawler,
-  checkGame,
+  gameCheck,
   getSingleGameNeedCheck
 };

@@ -56,6 +56,9 @@ const signIn = async (req, res) => {
     res.status(500).send({ error: 'Database Query Error' });
     return;
   }
+  if (user.name === 'test') {
+    await User.delTest();
+  }
   res.status(200).send({
     data: {
       access_token: user.access_token,
@@ -79,18 +82,19 @@ const getUserProfile = async (req, res) => {
   });
 };
 
-const replacePhoto = async (req, res) => {
+const photoReplace = async (req, res) => {
   const id = req.user.id;
   const photo = req.body.photo;
-  await User.replacePhoto(id, photo);
+  await User.photoReplace(id, photo);
   res.status(200).send({ ok: 'ok' });
 };
-const uploadPhoto = async (req, res) => {
+
+const photoUpload = async (req, res) => {
   const id = req.user.id;
   if (req.file) {
     const photo = req.file.originalname;
     if (photo) {
-      const photoUrl = await User.uploadPhoto(id, photo);
+      const photoUrl = await User.photoUpload(id, photo);
       res.status(200).send({ ok: 'ok', photo: photoUrl });
     } else {
       res.status(200).send({ none: 'none' });
@@ -105,17 +109,11 @@ const testRate = async (req, res) => {
   res.status(200).send({ ok: 'ok' });
 };
 
-const delTest = async (req, res) => {
-  await User.delTest();
-  res.status(200).send({ ok: 'ok' });
-};
-
 module.exports = {
   signIn,
   signUp,
   getUserProfile,
-  replacePhoto,
-  uploadPhoto,
-  testRate,
-  delTest
+  photoReplace,
+  photoUpload,
+  testRate
 };

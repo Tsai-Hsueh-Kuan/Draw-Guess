@@ -11,6 +11,58 @@ Type name and password automatically when sign in
   - name: test
   - password: test
 
+## Technologies
+
+### Backend
+
+- Linux
+- Node.js / Express.js
+- RESTful API
+- NGINX
+
+### Front-end
+
+- HTML
+- CSS
+- JavaScript
+- Bootstrap
+- AJAX
+- jQuery
+
+### Cloud Service (AWS)
+
+- Elastic Compute Cloud (EC2)
+- Simple Storage Service (S3)
+- CloudFront (CDN)
+- Relational Database Service (RDS)
+- Elastic Load Balancer(ELB)
+- Auto Scaling
+
+### Database
+
+- MySQL
+
+### WebSocket
+
+- Socket.io
+
+### Networking
+
+- HTTP & HTTPS
+- Domain Name System
+
+### Test
+
+- Mocha
+- Chai
+
+### Others
+
+- Design Pattern: MVC
+- Version Control: Git, GitHub
+- Agile: Trello (Scrum)
+
+
 
 ## Architecture
 

@@ -73,7 +73,7 @@ const getSingleGameNeedCheck = async () => {
   }
 };
 
-const checkGame = async (status, gameId) => {
+const gameCheck = async (status, gameId) => {
   try {
     await pool.query('UPDATE draw.game SET status = ? where id = ?', [status, gameId]);
     return 'ok';
@@ -105,7 +105,7 @@ const updateHistory = async (gameId, userId, record) => {
   }
 };
 
-const checkAnswer = async (answerId, answerCheck) => {
+const singleAnswerCheck = async (answerId, answerCheck) => {
   try {
     const answer = await pool.query('SELECT question from draw.question where id = ?', answerId);
     if (answer[0][0].question === answerCheck) {
@@ -119,7 +119,7 @@ const checkAnswer = async (answerId, answerCheck) => {
   }
 };
 
-const getAnswer = async (answerId) => {
+const getSingleAnswer = async (answerId) => {
   try {
     const answer = await pool.query('SELECT question from draw.question where id = ?', answerId);
     return { answer: answer[0] };
@@ -143,9 +143,9 @@ module.exports = {
   getSingleGame,
   getSingleGameTest,
   updateHistory,
-  checkAnswer,
-  getAnswer,
+  singleAnswerCheck,
+  getSingleAnswer,
   getcrawler,
-  checkGame,
+  gameCheck,
   getSingleGameNeedCheck
 };
