@@ -15,11 +15,8 @@ if (type === 'english') {
 let userId;
 let userName;
 let userPhoto;
-let userScore;
 let answerLimit = true;
-let answerGet;
 let limitTime;
-let roomId = [];
 let noChangeTime;
 if (type === 'english') {
   limitTime = 60;
@@ -58,8 +55,8 @@ let canvasNum = 0;
 let gameStatus = 0;
 let answerData;
 let gameDone = true;
-let countIndex = 1; // 倒數計時任務執行次數
-let timeout = 1000; // 觸發倒數計時任務的時間間隙
+let countIndex = 1; // countdown task execution times
+let timeout = 1000; // time gap
 let startTime = new Date().getTime();
 let correctUserList = [];
 fetch('/api/1.0/user/profile', {
@@ -81,12 +78,17 @@ fetch('/api/1.0/user/profile', {
         .then(() => {
           return window.location.assign('/');
         });
+    } else if (response.status === 429) {
+      Swal.fire({
+        timer: 5000,
+        title: 'Too Many Requests',
+        icon: 'error'
+      });
     }
   }).then(data => {
     userId = data.data.id;
     userName = data.data.name;
     userPhoto = data.data.photo;
-    userScore = data.data.score;
 
     socket.on(`canvasUpdate${room}id${token}`, (msg) => {
       const timeCheck = msg.timeCheck;
@@ -110,10 +112,10 @@ fetch('/api/1.0/user/profile', {
       limitTime = limitTime - parseInt(timeCheck);
       gameStatus = 1;
       reportStatus = 1;
-      countIndex = 1; // 倒數計時任務執行次數
-      timeout = 1000; // 觸發倒數計時任務的時間間隙
+      countIndex = 1; // countdown task execution times
+      timeout = 1000; // time gap
       startTime = new Date().getTime();
-      startCountdown(50);
+      startCountdown(timeout);
       title.textContent = ('遊戲開始');
       title.className = 'timePlaying';
       gameDone = false;
@@ -154,7 +156,6 @@ fetch('/api/1.0/user/profile', {
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
-    // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime && !gameDone) {
       title.textContent = (`剩 ${limitTime - countIndex} 秒`);
@@ -162,7 +163,6 @@ function startCountdown (interval) {
         title.className = 'time5';
       }
       countIndex++;
-      // 下一次倒數計時
       startCountdown(timeout - deviation);
     } else {
       reportStatus = 0;
@@ -209,10 +209,10 @@ socket.on('answer', () => {
   canvasNum = 0;
   gameStatus = 1;
   reportStatus = 1;
-  countIndex = 1; // 倒數計時任務執行次數
-  timeout = 1000; // 觸發倒數計時任務的時間間隙
+  countIndex = 1; // countdown task execution times
+  timeout = 1000; // time gap
   startTime = new Date().getTime();
-  startCountdown(50);
+  startCountdown(timeout);
   title.textContent = ('遊戲開始');
 
   for (const i in correctUserList) {
@@ -272,7 +272,6 @@ answerCheckButton.addEventListener('click', function (ev) {
 
         const answerShow = document.getElementById('answerShow');
         answerShow.textContent = `ANS : ${answerCheck}`;
-        answerGet = answerCheck;
         gameStatus = 2;
       } else {
         const audio = document.getElementById('wrongMp3');
@@ -337,7 +336,6 @@ $('#answerCheck').on('keypress', function (e) {
 
           const answerShow = document.getElementById('answerShow');
           answerShow.textContent = `ANS : ${answerCheck}`;
-          answerGet = answerCheck;
           gameStatus = 2;
         } else {
           const audio = document.getElementById('wrongMp3');
@@ -598,10 +596,6 @@ socket.on('roomUserId', (msg) => {
     hostinfo.appendChild(gameMsgTd);
   }
   socket.emit('getHeart', 'get');
-  console.log('123');
-  if (msg.roomUserId) {
-    roomId = msg.roomUserId;
-  }
 });
 
 const roomElement = document.getElementById('btn-input');

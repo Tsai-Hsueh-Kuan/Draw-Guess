@@ -47,7 +47,7 @@ if (token) {
   })
     .then(function (response) {
       if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
+        return response.json();
       } else if (response.status === 403) {
         localStorage.removeItem('token');
         Swal.fire('登入逾期！', '請重新登入', 'error')
@@ -56,6 +56,12 @@ if (token) {
           });
       } else if (response.status === 401) {
         console.log('尚未登入');
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
       }
     }).then(data => {
       userId = data.data.id;
@@ -66,8 +72,6 @@ if (token) {
       signOutButton.style = 'display:block;';
       const info = document.getElementById('info');
       const name = document.createElement('div');
-      // name.textContent = `NAME: ${userName}`;
-      // name.className = 'userNameM hover';
       info.appendChild(name);
       const photoTd = document.createElement('td');
       info.appendChild(photoTd);
@@ -96,7 +100,7 @@ if (token) {
               'rabbit.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/rabbit.jpeg" class="userPhotoReplace" >',
               upload: '<div id="uploadText" ><i class="fas fa-upload"></i>上傳</div>'
             });
-          }, 1000);
+          }, 100);
         });
 
         const { value: photo } = await Swal.fire({
@@ -126,7 +130,7 @@ if (token) {
               if (result.isConfirmed) {
                 if (file) {
                   fetch('/api/1.0/user/photoUpload', {
-                    method: 'PUT',
+                    method: 'PATCH',
                     body: formData,
                     headers: { authorization: `Bearer ${token}` }
                   }).then(function (response) {
@@ -178,7 +182,7 @@ if (token) {
               photo: photo
             };
             fetch('/api/1.0/user/photoReplace', {
-              method: 'PUT',
+              method: 'PATCH',
               body: JSON.stringify(data),
               headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
             }).then(function (response) {
@@ -464,9 +468,6 @@ signIn.addEventListener('click', async function () {
 
 const signOutButton = document.getElementById('exampleModal2');
 const playGame = document.getElementById('playGame');
-
-// const singlePlay = document.getElementById('singlePlay');
-
 signOutButton.addEventListener('click', function () {
   Swal.fire({
     title: '確定要登出嗎？',
@@ -899,7 +900,6 @@ playGame.addEventListener('click', function () {
         create: '連線模式',
         single: '單人模式'
       },
-      // inputPlaceholder: '快速開始',
       showCancelButton: true,
       inputValidator: (value) => {
         if (value === 'quick') {
@@ -1142,7 +1142,6 @@ if (test === 'test') {
     '<input id="swal-input1" type="text" class="swal2-input" value="test" maxlength="10">' +
     '<div>PASSWORD</div>' +
     '<input id="swal-input2" type="password" class="swal2-input" value="test" maxlength="18">',
-    // timer: 000,
     preConfirm: function () {
       return new Promise(function (resolve) {
         resolve([

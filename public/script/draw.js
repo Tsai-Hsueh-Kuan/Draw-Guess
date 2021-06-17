@@ -19,7 +19,6 @@ if (type === 'english') {
 }
 
 const token = localStorage.getItem('token');
-// socket io
 const socket = io((''), {
   auth: {
     token: token,
@@ -50,6 +49,12 @@ fetch('/api/1.0/user/profile', {
         .then(() => {
           return window.location.assign('/');
         });
+    } else if (response.status === 429) {
+      Swal.fire({
+        timer: 5000,
+        title: 'Too Many Requests',
+        icon: 'error'
+      });
     }
   }).then(data => {
     userId = data.data.id;
@@ -77,15 +82,15 @@ const ctx = [];
 let canvasNum = 0;
 ctx[canvasNum] = canvas.getContext('2d');
 
-// 設置畫筆的粗度以及形狀
+// width / shape
 ctx[canvasNum].lineJoin = 'round';
 ctx[canvasNum].lineCap = 'round';
 ctx[canvasNum].lineWidth = 5;
-// 設置flag以及起始座標
+// flag / start coordinates
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
-// 色彩設置
+// color
 let hue = 0;
 let colorNow = '#000000';
 let lineWidthNow = 5;
@@ -322,11 +327,11 @@ getQuestion.addEventListener('click', function () {
     correctUserList = [];
 
     socket.on(`question${room}${getPassword}`, (msg) => {
-      countIndex = 1; // 倒數計時任務執行次數
-      timeout = 1000; // 觸發倒數計時任務的時間間隙
+      countIndex = 1; // countdown task execution times
+      timeout = 1000; // time gap
       startTime = new Date().getTime();
       if (msg) {
-        startCountdown(50);
+        startCountdown(timeout);
         const canvasDiv = document.querySelector('#addCanvas');
         canvasDiv.innerHTML = '';
         canvasNum = 0;
@@ -354,8 +359,8 @@ getQuestion.addEventListener('click', function () {
   }
 });
 
-let countIndex = 1; // 倒數計時任務執行次數
-let timeout = 1000; // 觸發倒數計時任務的時間間隙
+let countIndex = 1; // countdown task execution times
+let timeout = 1000; // time gap
 let startTime = new Date().getTime();
 
 let questionSql;
@@ -365,11 +370,9 @@ const time = document.getElementById('time');
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
-    // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime) {
       time.textContent = (`剩 ${limitTime - countIndex} 秒`);
-      // 下一次倒數計時
       if ((limitTime - countIndex) === 5) {
         time.className = 'time5';
       }

@@ -13,11 +13,9 @@ cache.on('error', () => {
 
 const getCache = promisify(cache.get).bind(cache);
 const setCache = promisify(cache.set).bind(cache);
-const delCache = promisify(cache.del).bind(cache);
 
 module.exports = {
   cache,
   getCache,
-  setCache,
-  delCache
+  setCache
 };

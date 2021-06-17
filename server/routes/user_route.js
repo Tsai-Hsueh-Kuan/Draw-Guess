@@ -29,12 +29,12 @@ router.route('/user/profileAdmin')
   .get(verifyTokenAdmin, wrapAsync(getUserProfile));
 
 router.route('/user/photoReplace')
-  .put(verifyToken, upload, wrapAsync(photoReplace));
+  .patch(verifyToken, upload, wrapAsync(photoReplace));
 
 router.route('/user/photoUpload')
-  .post(verifyToken, upload, wrapAsync(photoUpload));
+  .patch(verifyToken, upload, wrapAsync(photoUpload));
 
 router.route('/user/testRate')
-  .get(wrapAsync(testRate));
+  .get(verifyTokenAdmin, wrapAsync(testRate));
 
 module.exports = router;

@@ -129,23 +129,12 @@ const getSingleAnswer = async (answerId) => {
   }
 };
 
-const getcrawler = async (question, type) => {
-  try {
-    await pool.query('INSERT into draw.question(question,type,inuse) values (?,?,?)', [question, type, 0]);
-    return;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
 module.exports = {
   getSingleGame,
   getSingleGameTest,
   updateHistory,
   singleAnswerCheck,
   getSingleAnswer,
-  getcrawler,
   gameCheck,
   getSingleGameNeedCheck
 };

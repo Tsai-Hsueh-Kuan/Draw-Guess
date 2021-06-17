@@ -32,13 +32,12 @@ const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.replace('Bearer ', '');
   if (token === 'null') {
-    console.log('please登入');
-    res.sendStatus(401);
+    res.status(401).send({ error: 'please登入' });
   } else {
     jwt.verify(token, TOKEN_SECRET, async (err, result) => {
       if (err) {
-        console.log('wrong token');
-        return res.sendStatus(403);
+        res.status(403).send({ error: 'wrong token' });
+        return;
       };
       result = await User.getUserDetail(result.id);
       req.user = result;
@@ -51,18 +50,17 @@ const verifyTokenAdmin = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader.replace('Bearer ', '');
   if (token === 'null') {
-    console.log('please登入');
-    res.sendStatus(401);
+    res.status(401).send({ error: 'please登入' });
   } else {
     jwt.verify(token, TOKEN_SECRET, async (err, result) => {
       if (err) {
-        console.log('wrong token');
-        return res.sendStatus(403);
+        res.status(403).send({ error: 'wrong token' });
+        return;
       };
       result = await User.getUserDetail(result.id);
       if (result.name !== 'KUAN') {
-        console.log('not admin');
-        res.sendStatus(403);
+        res.status(403).send({ error: 'not admin' });
+        return;
       }
       req.user = result;
       next();

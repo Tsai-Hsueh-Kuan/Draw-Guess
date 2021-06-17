@@ -21,7 +21,6 @@ function setCacheArr (name) {
     cache.set(name[i], JSON.stringify({ data: [] }), 'NX', function (err) {
       if (err) {
         console.log(err);
-        console.log(`${name[i]} err`);
       }
     });
   }
@@ -104,13 +103,13 @@ const socketCon = (io) => {
         } else if (`${intype}` === 'player') {
           const hostId = await getCacheData('hostId');
           if (verifyHost.id === hostId[inRoom]) {
-            socket.emit('repeat', { id: verifyHost.id });/// ///
+            socket.emit('repeat', { id: verifyHost.id });
             return;
           } else {
             const roomUserId = await getCacheData('roomUserId');
             if (roomUserId[inRoom]) {
               if (roomUserId[inRoom].indexOf(verifyHost.id) !== -1) {
-                socket.emit('repeatUser', { id: verifyHost.id });/// ///
+                socket.emit('repeatUser', { id: verifyHost.id });
                 return;
               }
             }
@@ -189,6 +188,7 @@ const socketCon = (io) => {
             if (hostDisconnect[inRoom] === true) {
               socket.broadcast.emit('mainPageViewClose', { room: inRoom });
               io.to(inRoom).emit('closeRoom');
+
               const timeCheck = await getCacheData('timeCheck');
               timeCheck[inRoom] = '';
               await setCacheData('timeCheck', timeCheck);
@@ -331,13 +331,13 @@ const socketCon = (io) => {
                 const correctUserList = await getCacheData('correctUserList');
                 correctUserList[msg.room] = '';
                 await setCacheData('correctUserList', correctUserList);
-                checkGameCanvas(gameId[msg.room]);
+                await checkGameCanvas(gameId[msg.room]);
                 const question = await getCacheData('question');
                 io.to(inRoom).emit('answerGet', { answer: question[msg.room] });
               }
             }, interval);
           }
-          startCountdown(10000);/// /////
+          startCountdown(timeout);
         }
       });
 
@@ -391,8 +391,6 @@ const socketCon = (io) => {
               socket.emit(`answerCorrect${msg.room + 'and' + msg.userId}`, { check: false, answer: '' });
               io.to(inRoom).emit('answerShow', { data: msg.answerData, userData: userData });
             }
-          } else if (timeCheck[msg.room] === 0) {
-            console.log('timeout');
           }
         }
       });
@@ -486,8 +484,6 @@ const socketCon = (io) => {
             const canvasUpate = await canvasUpdate(gameId[parseInt(result[i])]);
             if (canvasUpate[0]) {
               socket.emit('canvasUpdate', { room: parseInt(result[i]), canvas: canvasUpate, game: true });
-            } else {
-              console.log('no canvas');
             }
           }
         }

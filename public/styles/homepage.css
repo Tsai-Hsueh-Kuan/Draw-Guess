@@ -1497,32 +1497,29 @@ margin-bottom: 10px;
 
 @media(min-width: 1281px) {
 
-  .rowMain,
+.rowMain,
 .main{
- margin-top:140px;
+  margin-top:140px;
 }
-  /* #footerTop{
-    height: 220px;
-  } */
-  body {
-    height: 990px !important;
-  }
 
-  .homePart{
-    flex-grow: 1;
-    height: 965px;
-    background-color: rgb(247, 247, 247)
-    /* box-shadow:-5px -5px 35px -10px rgba(0,0,0,0.5) */
+body {
+  height: 990px !important;
+}
+
+.homePart{
+  flex-grow: 1;
+  height: 965px;
+  background-color: rgb(247, 247, 247)
+}
+
+.mainTableDiv{
+  height: 940px;
+  overflow-y: scroll;
   }
-  
-  .mainTableDiv{
-    height: 940px;
-    overflow-y: scroll;
-   }
-  .padding2{
-  background-color: white;
-  position: relative;
-  height: 990px;
+.padding2{
+background-color: white;
+position: relative;
+height: 990px;
 }
 .container{
   bottom: 2% !important;

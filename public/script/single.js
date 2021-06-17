@@ -46,6 +46,12 @@ fetch('/api/1.0/user/profile', {
       .then(() => {
         return window.location.assign('/');
       });
+  } else if (response.status === 429) {
+    Swal.fire({
+      timer: 5000,
+      title: 'Too Many Requests',
+      icon: 'error'
+    });
   }
 }).then(data => {
   userName = data.data.name;
@@ -98,6 +104,12 @@ function getSingleNewGame (e) {
       .then(function (response) {
         if (response.status === 200) {
           return response.json();
+        } else if (response.status === 429) {
+          Swal.fire({
+            timer: 5000,
+            title: 'Too Many Requests',
+            icon: 'error'
+          });
         }
       }).then(data => {
         if (data.error) {
@@ -158,19 +170,18 @@ function getSingleNewGame (e) {
         return err;
       });
   }
-  e.preventDefault(); // 停止預設功能
+  e.preventDefault();
 }
 
 start.addEventListener('click', getSingleNewGame, true);
 
-let timeout = 2000; // 觸發倒數計時任務的時間間隙
-let countIndex = 1; // 倒數計時任務執行次數
+let timeout = 2000; // countdown task execution times
+let countIndex = 1; // time gap
 const limitTime = 60;
 let startTime;
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
-    // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if ((countIndex < limitTime) && canvasAll[i]) {
       if (canvasAll[i].canvas_data !== '0') {
@@ -184,7 +195,6 @@ function startCountdown (interval) {
         const finalNum = img.length;
         img[finalNum - 1].remove();
       }
-      // 下一次倒數計時
       i++;
       countIndex++;
       startCountdown(timeout - deviation);
@@ -196,13 +206,19 @@ function startCountdown (interval) {
       const data = {
         answerId: getAnswerId
       };
-      fetch('/api/1.0/game/done', {
+      fetch('/api/1.0/game/singleAnswer', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
       }).then(function (response) {
         if (response.status === 200) {
           return response.json();
+        } else if (response.status === 429) {
+          Swal.fire({
+            timer: 5000,
+            title: 'Too Many Requests',
+            icon: 'error'
+          });
         }
       }).then((data) => {
         gameDone = true;
@@ -238,7 +254,13 @@ answerCheckButton.addEventListener('click', function (ev) {
       headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
     }).then(function (response) {
       if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
+        return response.json();
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
       }
     }).then((data) => {
       if (data.answer) {
@@ -275,7 +297,13 @@ answerCheckButton.addEventListener('click', function (ev) {
         })
           .then(function (response) {
             if (response.status === 200) {
-              return response.json(); // 內建promise , send type need json
+              return response.json();
+            } else if (response.status === 429) {
+              Swal.fire({
+                timer: 5000,
+                title: 'Too Many Requests',
+                icon: 'error'
+              });
             }
           }).then(data => {
             const recordDiv = document.getElementById('record');
@@ -377,7 +405,13 @@ $('#answerCheck').on('keypress', function (e) {
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
       }).then(function (response) {
         if (response.status === 200) {
-          return response.json(); // 內建promise , send type need json
+          return response.json();
+        } else if (response.status === 429) {
+          Swal.fire({
+            timer: 5000,
+            title: 'Too Many Requests',
+            icon: 'error'
+          });
         }
       }).then((data) => {
         if (data.answer) {
@@ -414,7 +448,13 @@ $('#answerCheck').on('keypress', function (e) {
           })
             .then(function (response) {
               if (response.status === 200) {
-                return response.json(); // 內建promise , send type need json
+                return response.json();
+              } else if (response.status === 429) {
+                Swal.fire({
+                  timer: 5000,
+                  title: 'Too Many Requests',
+                  icon: 'error'
+                });
               }
             }).then(data => {
               const recordDiv = document.getElementById('record');
@@ -456,7 +496,6 @@ $('#answerCheck').on('keypress', function (e) {
               return err;
             });
         } else {
-          // message.textContent = `再亂猜啊！ 才不是${answerCheck}`;
           const audio = document.getElementById('wrongMp3');
           audio.play();
           audio.volume = 0.7;
@@ -486,7 +525,6 @@ $('#answerCheck').on('keypress', function (e) {
         background: '#ffffff'
       });
     } else if (!answerLimit) {
-      // message.textContent = '作答時間間隔太短';
       Toast2.fire({
         icon: 'warning',
         title: '作答時間間隔太短',
