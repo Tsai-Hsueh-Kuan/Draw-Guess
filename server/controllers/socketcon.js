@@ -433,7 +433,7 @@ const socketCon = (io) => {
 
       socket.on('canvasData', async (msg) => {
         const gameId = await getCacheData('gameId');
-        await setCache(gameId[msg.room] + msg.canvasNum, msg.url, 'Ex', 300);
+        await setCache(gameId[msg.room] + msg.canvasNum, msg.url, 'Ex', 60);
         socket.broadcast.emit('mainPageConvasData', { room: msg.room, url: msg.url });
         socket.to(inRoom).emit('convasData', msg.url);
         await inputCanvas(gameId[msg.room], msg.canvasNum, msg.url, 0);

@@ -165,9 +165,10 @@ function startCountdown (interval) {
       countIndex++;
       startCountdown(timeout - deviation);
     } else {
+      title.textContent = ('等待開始下局遊戲');
+      title.className = 'time';
       reportStatus = 0;
       gameStatus = 0;
-      title.className = 'time';
       limitTime = noChangeTime;
     }
   }, interval);
@@ -176,6 +177,7 @@ socket.on('answerGet', (msg) => {
   gameDone = true;
   answerData = msg.answer;
   title.textContent = ('等待開始下局遊戲');
+  title.className = 'time';
   const msgTdHost = document.getElementById('msgTdHost');
   if (msgTdHost) {
     msgTdHost.innerHTML = '';

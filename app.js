@@ -27,7 +27,8 @@ app.use('/api/' + API_VERSION,
   rateLimiterRoute,
   [
     require('./server/routes/user_route'),
-    require('./server/routes/game_route')
+    require('./server/routes/game_route'),
+    require('./server/routes/admin_route')
   ]
 );
 // socket.io

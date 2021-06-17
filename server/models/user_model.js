@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { pool } = require('../../util/mysqlcon');
-const { TOKEN_SECRET, IP } = process.env; // 30 days by seconds
+const { TOKEN_SECRET, IP } = process.env;
 const jwt = require('jsonwebtoken');
 const { createHash } = require('crypto');
 
@@ -19,8 +19,8 @@ const signUp = async (name, password) => {
   const conn = await pool.getConnection();
   try {
     await conn.query('START TRANSACTION');
-    const nameCheck = await conn.query('SELECT name FROM user WHERE name = ? FOR UPDATE', name);
-    if (nameCheck[0].length > 0) {
+    const [nameCheck] = await conn.query('SELECT name FROM user WHERE name = ? FOR UPDATE', name);
+    if (nameCheck.length > 0) {
       await conn.query('COMMIT');
       return { error: 'Name Already Exists' };
     }
@@ -32,8 +32,8 @@ const signUp = async (name, password) => {
       heart: 0
     };
     const queryStr = 'INSERT INTO user SET ?';
-    const result = await conn.query(queryStr, user);
-    user.id = result[0].insertId;
+    const [result] = await conn.query(queryStr, user);
+    user.id = result.insertId;
     const accessToken = jwt.sign({
       id: user.id,
       name: user.name
@@ -57,22 +57,22 @@ const signIn = async (name, password) => {
       await pool.query('DELETE FROM draw.history where user_id = 76');
     }
     await conn.query('START TRANSACTION');
-    const nameCheck = await conn.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
-    if (!nameCheck[0][0]) {
+    const [nameCheck] = await conn.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
+    if (!nameCheck[0]) {
       return { error: 'please check your name' };
     }
-    if (nameCheck[0][0].password !== passwordencryption(password)) {
+    if (nameCheck[0].password !== passwordencryption(password)) {
       await conn.query('COMMIT');
       return { error: 'Password is wrong' };
     }
     const user = {
-      id: nameCheck[0][0].id,
+      id: nameCheck[0].id,
       password: passwordencryption(password),
-      name: nameCheck[0][0].name,
-      photo: nameCheck[0][0].photo
+      name: nameCheck[0].name,
+      photo: nameCheck[0].photo
     };
     const accessToken = jwt.sign({
-      id: nameCheck[0][0].id,
+      id: nameCheck[0].id,
       name: user.name
     }, TOKEN_SECRET);
 
@@ -90,11 +90,11 @@ const signIn = async (name, password) => {
 
 const getUserDetail = async (userId) => {
   try {
-    const userDetail = await pool.query('SELECT * FROM user WHERE id = ?', userId);
-    if (userDetail[0][0].photo) {
-      userDetail[0][0].photo = IP + userDetail[0][0].photo;
+    const [userDetail] = await pool.query('SELECT * FROM user WHERE id = ?', userId);
+    if (userDetail[0].photo) {
+      userDetail[0].photo = IP + userDetail[0].photo;
     }
-    return userDetail[0][0];
+    return userDetail[0];
   } catch (error) {
     console.log(error);
     return error;

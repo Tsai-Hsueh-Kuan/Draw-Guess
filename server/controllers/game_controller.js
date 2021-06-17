@@ -7,16 +7,6 @@ const getSingleGame = async (req, res) => {
   res.status(200).send(gameData);
 };
 
-const getSingleGameTest = async (req, res) => {
-  const gameData = await game.getSingleGameTest(req.body.gameId);
-  res.status(200).send(gameData);
-};
-
-const getSingleGameNeedCheck = async (req, res) => {
-  const gameData = await game.getSingleGameNeedCheck();
-  res.status(200).send(gameData);
-};
-
 const updateHistory = async (req, res) => {
   const data = await game.updateHistory(req.body.gameId, req.user.id, req.body.record);
   res.status(200).send(data);
@@ -32,17 +22,9 @@ const getSingleAnswer = async (req, res) => {
   res.status(200).send(answer);
 };
 
-const gameCheck = async (req, res) => {
-  const data = await game.gameCheck(req.body.status, req.body.gameId);
-  res.status(200).send({ data: data });
-};
-
 module.exports = {
   getSingleGame,
-  getSingleGameTest,
   updateHistory,
   singleAnswerCheck,
-  getSingleAnswer,
-  gameCheck,
-  getSingleGameNeedCheck
+  getSingleAnswer
 };
