@@ -55,8 +55,8 @@ let canvasNum = 0;
 let gameStatus = 0;
 let answerData;
 let gameDone = true;
-let countIndex = 1; // countdown task execution times
-let timeout = 1000; // time gap
+let countIndex = 1;
+let timeout = 1000;
 let startTime = new Date().getTime();
 let correctUserList = [];
 fetch('/api/1.0/user/profile', {
@@ -112,8 +112,8 @@ fetch('/api/1.0/user/profile', {
       limitTime = limitTime - parseInt(timeCheck);
       gameStatus = 1;
       reportStatus = 1;
-      countIndex = 1; // countdown task execution times
-      timeout = 1000; // time gap
+      countIndex = 1;
+      timeout = 1000;
       startTime = new Date().getTime();
       startCountdown(timeout);
       title.textContent = ('遊戲開始');
@@ -211,8 +211,8 @@ socket.on('answer', () => {
   canvasNum = 0;
   gameStatus = 1;
   reportStatus = 1;
-  countIndex = 1; // countdown task execution times
-  timeout = 1000; // time gap
+  countIndex = 1;
+  timeout = 1000;
   startTime = new Date().getTime();
   startCountdown(timeout);
   title.textContent = ('遊戲開始');
@@ -467,7 +467,6 @@ socket.on('reportOk', (msg) => {
 });
 
 socket.on('heartShow', (msg) => {
-  console.log('333');
   const count = msg.data;
   const msgTd = document.getElementsByClassName('msgTd');
   msgTd[0].innerHTML = '';

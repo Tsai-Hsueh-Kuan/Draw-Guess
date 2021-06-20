@@ -101,16 +101,10 @@ const photoUpload = async (req, res) => {
   }
 };
 
-const testRate = async (req, res) => {
-  await User.testRate();
-  res.status(200).send({ ok: 'ok' });
-};
-
 module.exports = {
   signIn,
   signUp,
   getUserProfile,
   photoReplace,
-  photoUpload,
-  testRate
+  photoUpload
 };

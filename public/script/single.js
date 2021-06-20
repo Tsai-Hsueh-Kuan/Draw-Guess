@@ -175,8 +175,8 @@ function getSingleNewGame (e) {
 
 start.addEventListener('click', getSingleNewGame, true);
 
-let timeout = 2000; // countdown task execution times
-let countIndex = 1; // time gap
+let timeout = 2000;
+let countIndex = 1;
 const limitTime = 60;
 let startTime;
 function startCountdown (interval) {

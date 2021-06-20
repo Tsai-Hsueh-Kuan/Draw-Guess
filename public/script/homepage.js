@@ -54,8 +54,6 @@ if (token) {
           .then(() => {
             return window.location.assign('/');
           });
-      } else if (response.status === 401) {
-        console.log('尚未登入');
       } else if (response.status === 429) {
         Swal.fire({
           timer: 5000,

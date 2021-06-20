@@ -50,12 +50,11 @@ fetch('/api/1.0/user/profileAdmin', {
   return err;
 });
 
-const checkGame = document.getElementById('checkOk');
-checkGame.addEventListener('click', function () {
+const checkGameFun = (status) => {
   const gameInput = document.getElementById('gameInput').value;
   const typeData = {
     gameId: gameInput,
-    status: 0
+    status: status
   };
   fetch('/api/1.0/admin/gameStatus', {
     method: 'PATCH',
@@ -76,34 +75,16 @@ checkGame.addEventListener('click', function () {
       document.getElementById('gameInput').value = '';
       console.log(data);
     });
+};
+
+const checkGame = document.getElementById('checkOk');
+checkGame.addEventListener('click', function () {
+  checkGameFun(0);
 });
 
 const checkGame1 = document.getElementById('checkNot');
 checkGame1.addEventListener('click', function () {
-  const gameInput = document.getElementById('gameInput').value;
-  const typeData = {
-    gameId: gameInput,
-    status: 1
-  };
-  fetch('/api/1.0/admin/gameStatus', {
-    method: 'PATCH',
-    body: JSON.stringify(typeData),
-    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        Swal.fire({
-          timer: 5000,
-          title: 'Too Many Requests',
-          icon: 'error'
-        });
-      }
-    }).then(data => {
-      document.getElementById('gameInput').value = '';
-      console.log(data);
-    });
+  checkGameFun(1);
 });
 
 const imgs = document.getElementById('imgs');
@@ -226,8 +207,8 @@ get.addEventListener('click', function () {
     });
 });
 
-const timeout = 1; // countdown task execution times
-let countIndex = 1; // time gap
+const timeout = 1;
+let countIndex = 1;
 const limitTime = 60;
 let startTime;
 function startCountdown (interval) {

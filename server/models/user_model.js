@@ -121,24 +121,6 @@ const photoUpload = async (id, photo) => {
   }
 };
 
-const testRate = async () => {
-  try {
-    for (let i = 0; i < 100; i++) {
-      for (let j = 0; j < 100; j++) {
-        for (let k = 0; k < 1000; k++) {
-          if (i === 99 && j === 99 && k === 999) {
-            console.log('done');
-          }
-        }
-      }
-    }
-    return;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
 const delTest = async () => {
   try {
     await pool.query('DELETE FROM draw.history where user_id = 76');
@@ -155,6 +137,5 @@ module.exports = {
   getUserDetail,
   photoReplace,
   photoUpload,
-  testRate,
   delTest
 };

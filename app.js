@@ -33,13 +33,15 @@ app.use('/api/' + API_VERSION,
 );
 // socket.io
 const server = require('http').createServer(app);
-const io = require('socket.io')(server, {
-  cors: {
-    origin: 'localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
+const io = require('socket.io')(server
+  // , {
+  //   cors: {
+  //     origin: 'localhost:3000',
+  //     methods: ['GET', 'POST'],
+  //     credentials: true
+  //   }
+  // }
+);
 const redis = require('socket.io-redis');
 io.adapter(redis({ host: REDIS_HOST, port: 6379 }));
 const { socketCon } = require('./server/controllers/socketcon.js');
@@ -56,8 +58,10 @@ app.use(function (err, req, res, next) {
   res.status(500).send('Internal Server Error');
 });
 
-if (NODE_ENV !== 'production') {
+if (require.main === module) {
+  // this module was run directly from the command line as in node xxx.js
   server.listen(port, () => { console.log(`Listening on port: ${port}`); });
 }
 
 module.exports = app;
+module.exports = server;

@@ -16,7 +16,7 @@ cache.flushdb(function (err, ok) {
   }
 });
 
-function setCacheArr (name) {
+function createCacheItems (name) {
   for (const i in name) {
     cache.set(name[i], JSON.stringify({ data: [] }), 'NX', function (err) {
       if (err) {
@@ -26,7 +26,7 @@ function setCacheArr (name) {
   }
 }
 
-setCacheArr(['timeCheck', 'question', 'questionId', 'canvas', 'hostId', 'gameId', 'gameTime', 'userId', 'roomUserId', 'hostDetail', 'roomUserData', 'correctUserList', 'roomType', 'hostDisconnect', 'roomList', 'userAll', 'startTime', 'heartCount']);
+createCacheItems(['timeCheck', 'question', 'questionId', 'canvas', 'hostId', 'gameId', 'gameTime', 'userId', 'roomUserId', 'hostDetail', 'roomUserData', 'correctUserList', 'roomType', 'hostDisconnect', 'roomList', 'userAll', 'startTime', 'heartCount']);
 
 async function getCacheData (name) {
   const cacheGet = await getCache(`${name}`);
@@ -44,10 +44,6 @@ const socketCon = (io) => {
     const intype = socket.handshake.auth.type;
     const inRoomType = socket.handshake.auth.roomType;
     const limitTime = socket.handshake.auth.limitTime;
-
-    const timeCheck = await getCacheData('timeCheck');
-    const roomUserId = await getCacheData('roomUserId');
-    const roomUserData = await getCacheData('roomUserData');
     socket.join(inRoom);
     if (inToken) {
       const verifyHost = await verifyTokenSocket(inToken);
@@ -145,7 +141,7 @@ const socketCon = (io) => {
         }
       }
     }
-
+    const timeCheck = await getCacheData('timeCheck');
     if (timeCheck[inRoom]) {
       const gameId = await getCacheData('gameId');
       const canvasUpate = await canvasUpdate(gameId[inRoom]);
@@ -304,9 +300,9 @@ const socketCon = (io) => {
           userId[msg.room] = '';
           await setCacheData('userId', userId);
           const gameTime = await getCacheData('gameTime');
-          gameTime[msg.room] = 1;// countdown task execution times
+          gameTime[msg.room] = 1;
           await setCacheData('gameTime', gameTime);
-          const timeout = 1000; // time gap
+          const timeout = 1000;
           const startTime = await getCacheData('startTime');
           startTime[msg.room] = new Date().getTime();
           await setCacheData('startTime', startTime);
@@ -462,14 +458,12 @@ const socketCon = (io) => {
         const hostDetail = await getCacheData('hostDetail');
         const roomType = await getCacheData('roomType');
         const roomList = await getCacheData('roomList');
+        const roomUserId = await getCacheData('roomUserId');
+        const roomUserData = await getCacheData('roomUserData');
         socket.emit('roomList', { roomList: roomList });
         for (const i in roomList) {
           socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[parseInt(roomList[i])], hostDetail: hostDetail[parseInt(roomList[i])], roomType: roomType[parseInt(roomList[i])], roomUserId: roomUserId[parseInt(roomList[i])], roomUserData: roomUserData[parseInt(roomList[i])] });
         }
-      });
-
-      socket.on('closeRoom', async (msg) => {
-        socket.to(inRoom).emit('closeRoom', { data: 'close' });
       });
 
       socket.on('homePageRoomTab', async (msg) => {

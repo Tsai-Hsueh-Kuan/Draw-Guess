@@ -12,8 +12,7 @@ const {
   signIn,
   getUserProfile,
   photoReplace,
-  photoUpload,
-  testRate
+  photoUpload
 } = require('../controllers/user_controller');
 
 router.route('/user/signup')
@@ -33,8 +32,5 @@ router.route('/user/photoReplace')
 
 router.route('/user/photoUpload')
   .patch(verifyToken, upload, wrapAsync(photoUpload));
-
-router.route('/user/testRate')
-  .get(verifyTokenAdmin, wrapAsync(testRate));
 
 module.exports = router;

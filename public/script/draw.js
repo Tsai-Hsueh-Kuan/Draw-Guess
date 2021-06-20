@@ -327,8 +327,8 @@ getQuestion.addEventListener('click', function () {
     correctUserList = [];
 
     socket.on(`question${room}${getPassword}`, (msg) => {
-      countIndex = 1; // countdown task execution times
-      timeout = 1000; // time gap
+      countIndex = 1;
+      timeout = 1000;
       startTime = new Date().getTime();
       if (msg) {
         startCountdown(timeout);
@@ -359,8 +359,8 @@ getQuestion.addEventListener('click', function () {
   }
 });
 
-let countIndex = 1; // countdown task execution times
-let timeout = 1000; // time gap
+let countIndex = 1;
+let timeout = 1000;
 let startTime = new Date().getTime();
 
 let questionSql;
