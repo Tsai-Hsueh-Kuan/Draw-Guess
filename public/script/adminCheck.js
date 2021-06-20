@@ -1,15 +1,7 @@
-const url = new URLSearchParams(window.location.search);
-const type = url.get('type');
-const game = url.get('game');
-let userId;
 let userName;
 let userPhoto;
-let userScore;
 let canvasAll;
 let i = 0;
-let gameStatus = 0;
-let gameDone = true;
-const answerLimit = true;
 let getAnswerId;
 let gameId;
 let getAnswer;
@@ -18,12 +10,13 @@ const token = localStorage.getItem('token');
 fetch('/api/1.0/user/profileAdmin', {
   method: 'GET',
   headers: { authorization: `Bearer ${token}` }
-}).then(function (response) {
+}).then(async function (response) {
   if (response.status === 200) {
     return response.json();
   } else if (response.status === 403) {
+    const data = await response.json();
     localStorage.removeItem('token');
-    Swal.fire('not admin！', '請重新登入', 'error')
+    Swal.fire(data.error, '請重新登入', 'error')
       .then(() => {
         return window.location.assign('/');
       });
@@ -33,14 +26,17 @@ fetch('/api/1.0/user/profileAdmin', {
       .then(() => {
         return window.location.assign('/');
       });
+  } else if (response.status === 429) {
+    Swal.fire({
+      timer: 5000,
+      title: 'Too Many Requests',
+      icon: 'error'
+    });
   }
 }).then(data => {
-  userId = data.data.id;
   userName = data.data.name;
   userPhoto = data.data.photo;
-  userScore = data.data.score;
   const info = document.getElementById('info');
-
   const name = document.createElement('div');
   name.textContent = `NAME: ${userName}`;
   name.className = 'userName hover';
@@ -54,81 +50,64 @@ fetch('/api/1.0/user/profileAdmin', {
   return err;
 });
 
-const start = document.getElementById('start');
-const checkGame = document.getElementById('checkOk');
-checkGame.addEventListener('click', function () {
+const checkGameFun = (status) => {
   const gameInput = document.getElementById('gameInput').value;
   const typeData = {
     gameId: gameInput,
-    status: 0
+    status: status
   };
-  fetch('/api/1.0/game/checkGame', {
-    method: 'post',
+  fetch('/api/1.0/admin/gameStatus', {
+    method: 'PATCH',
     body: JSON.stringify(typeData),
     headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
   })
     .then(function (response) {
       if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
-      } else if (response.status === 403) {
-        alert('not admin');
-        // 內建promise , send type need json
+        return response.json();
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
       }
     }).then(data => {
       document.getElementById('gameInput').value = '';
       console.log(data);
     });
+};
+
+const checkGame = document.getElementById('checkOk');
+checkGame.addEventListener('click', function () {
+  checkGameFun(0);
 });
 
 const checkGame1 = document.getElementById('checkNot');
 checkGame1.addEventListener('click', function () {
-  const gameInput = document.getElementById('gameInput').value;
-  const typeData = {
-    gameId: gameInput,
-    status: 1
-  };
-  fetch('/api/1.0/game/checkGame', {
-    method: 'post',
-    body: JSON.stringify(typeData),
-    headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
-  })
-    .then(function (response) {
-      if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
-      } else if (response.status === 403) {
-        alert('not admin');
-        // 內建promise , send type need json
-      }
-    }).then(data => {
-      document.getElementById('gameInput').value = '';
-      console.log(data);
-    });
+  checkGameFun(1);
 });
 
 const imgs = document.getElementById('imgs');
+const start = document.getElementById('start');
 start.addEventListener('click', function () {
-  if (!gameDone) {
-    Swal.fire({
-      timer: 3000,
-      icon: 'warning',
-      title: '這題還沒答對呢！',
-      showConfirmButton: false
-    });
-    return;
-  }
-  gameDone = false;
   const gameInput = document.getElementById('gameInput').value;
   const typeData = {
     gameId: gameInput
   };
-  fetch('/api/1.0/game/singleTest', {
+  fetch('/api/1.0/admin/gameInfo', {
     method: 'post',
     body: JSON.stringify(typeData),
     headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
   })
     .then(function (response) {
       if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
+        return response.json();
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
       }
     }).then(data => {
       if (!data.data.game[0]) {
@@ -137,81 +116,75 @@ start.addEventListener('click', function () {
           title: '沒這個題目！',
           icon: 'warning'
         });
-        gameDone = true;
+        return;
       }
-      if (data.error) {
-        Swal.fire({
-          timer: 5000,
-          title: '已無更多題目！',
-          text: '何不試試連線模式？',
-          icon: 'warning'
-        }).then(() => {
-          return window.location.assign('/');
-        });
+      canvasAll = data.data.game;
+      gameId = canvasAll[0].game_id;
+      if (canvasAll[0].canvas_data) {
+        getAnswerId = canvasAll[0].question_id;
+        imgs.innerHTML = '';
+        startTime = new Date().getTime();
+        startCountdown(1);
       } else {
-        canvasAll = data.data.game;
-        gameId = canvasAll[0].game_id;
-        if (canvasAll[0].canvas_data) {
-          getAnswerId = canvasAll[0].question_id;
-          imgs.innerHTML = '';
-          startTime = new Date().getTime();
-          startCountdown(50);
+        return;
+      }
+      const recordDiv = document.getElementById('record');
+      recordDiv.innerHTML = '';
+      for (const i in data.data.history) {
+        const recordName = data.data.history[i].name;
+        const recordPhoto = data.data.history[i].photo;
+        const recordRecord = data.data.history[i].record;
+        const recordInfo = document.createElement('tr');
+        recordInfo.className = 'recordInfo';
+        recordDiv.appendChild(recordInfo);
+
+        const photo = document.createElement('img');
+        if (recordPhoto) {
+          photo.setAttribute('src', `${recordPhoto}`);
         } else {
-          gameDone = true;
-          return;
+          photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
         }
-        gameStatus = 1;
-        const recordDiv = document.getElementById('record');
-        recordDiv.innerHTML = '';
-        for (const i in data.data.history) {
-          const recordName = data.data.history[i].name;
-          const recordPhoto = data.data.history[i].photo;
-          const recordRecord = data.data.history[i].record;
-          const recordInfo = document.createElement('tr');
-          recordInfo.className = 'recordInfo';
-          recordDiv.appendChild(recordInfo);
+        photo.className = 'singleGamerPhoto';
+        recordInfo.appendChild(photo);
 
-          const photo = document.createElement('img');
-          if (recordPhoto) {
-            photo.setAttribute('src', `${recordPhoto}`);
-          } else {
-            photo.setAttribute('src', 'https://d3cek75nx38k91.cloudfront.net/draw/member.png');
-          }
-          photo.className = 'singleGamerPhoto';
-          recordInfo.appendChild(photo);
+        const name = document.createElement('td');
+        name.textContent = `${recordName}`;
+        recordInfo.appendChild(name);
 
-          const name = document.createElement('td');
-          name.textContent = `${recordName}`;
-          recordInfo.appendChild(name);
-
-          const record = document.createElement('td');
-          record.textContent = `${recordRecord}`;
-          recordInfo.appendChild(record);
-        }
+        const record = document.createElement('td');
+        record.textContent = `${recordRecord}`;
+        recordInfo.appendChild(record);
       }
     })
     .catch(function (err) {
       return err;
     });
 });
+
 const get = document.getElementById('get');
 get.addEventListener('click', function () {
-  fetch('/api/1.0/game/singleGameNeedCheck', {
+  fetch('/api/1.0/admin/pendingGame', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
   })
     .then(function (response) {
       if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
+        return response.json();
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
       }
     }).then(data => {
       if (!data.data.game[0]) {
         Swal.fire({
           timer: 5000,
-          title: '沒這個題目！',
+          title: '沒題目需要確認！',
           icon: 'warning'
         });
-        gameDone = true;
+        return;
       }
       if (data.error) {
         Swal.fire({
@@ -234,14 +207,13 @@ get.addEventListener('click', function () {
     });
 });
 
-const timeout = 1; // 觸發倒數計時任務的時間間隙
-let countIndex = 1; // 倒數計時任務執行次數
+const timeout = 1;
+let countIndex = 1;
 const limitTime = 60;
 let startTime;
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
-    // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if ((countIndex < limitTime) && canvasAll[i]) {
       if (canvasAll[i].canvas_data !== '0') {
@@ -255,31 +227,33 @@ function startCountdown (interval) {
         const finalNum = img.length;
         img[finalNum - 1].remove();
       }
-      // 下一次倒數計時
       i++;
       countIndex++;
       startCountdown(timeout - deviation);
     } else {
-      gameStatus = 0;
       i = 0;
       countIndex = 1;
       const data = {
         answerId: getAnswerId
       };
-      fetch('/api/1.0/game/done', {
+      fetch('/api/1.0/game/singleAnswer', {
         method: 'POST',
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
       }).then(function (response) {
         if (response.status === 200) {
-          return response.json(); // 內建promise , send type need json
+          return response.json();
+        } else if (response.status === 429) {
+          Swal.fire({
+            timer: 5000,
+            title: 'Too Many Requests',
+            icon: 'error'
+          });
         }
       }).then((data) => {
         getAnswer = data.answer[0].question;
         const roomAnsDiv = document.getElementById('roomAnsDiv');
         roomAnsDiv.textContent = getAnswer;
-
-        gameDone = true;
       });
     }
   }, interval);
@@ -300,21 +274,4 @@ leave.addEventListener('click', function () {
         return window.location.assign('/');
       }
     });
-});
-
-const Toast2 = Swal.mixin({
-  toast: true,
-  showConfirmButton: false,
-  timer: 5000
-});
-
-const Toast = Swal.mixin({
-  toast: true,
-  showConfirmButton: false,
-  timer: 8000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
 });

@@ -16,9 +16,7 @@ const socket = io((''), {
   },
   reconnect: true
 });
-socket.on('test', (msg) => {
-  console.log(msg);
-});
+
 socket.on('canvasUpdate', (msg) => {
   const roomId = msg.room;
   const canvasAll = msg.canvas;
@@ -29,12 +27,13 @@ socket.on('canvasUpdate', (msg) => {
         const img = document.createElement('img');
         img.src = canvasAll[i].canvas_data;
         img.className = `img img${roomId}`;
-        img.id = 'img' + roomId + 'step' + i;
-        canvasNum[roomId] = canvasAll[i].canvas_num - 1;
+        img.id = 'img' + roomId + 'step' + canvasAll[i].canvas_num;
+        canvasNum[roomId] = canvasAll[i].canvas_num + 1;
         imgs.appendChild(img);
       } else if (canvasAll[i].canvas_undo !== '0') {
         const img = document.getElementsByClassName(`img${roomId}`);
         const finalNum = img.length;
+        canvasNum[roomId]--;
         img[finalNum - 1].remove();
       }
     }
@@ -48,15 +47,19 @@ if (token) {
   })
     .then(function (response) {
       if (response.status === 200) {
-        return response.json(); // 內建promise , send type need json
+        return response.json();
       } else if (response.status === 403) {
         localStorage.removeItem('token');
         Swal.fire('登入逾期！', '請重新登入', 'error')
           .then(() => {
             return window.location.assign('/');
           });
-      } else if (response.status === 401) {
-        console.log('尚未登入');
+      } else if (response.status === 429) {
+        Swal.fire({
+          timer: 5000,
+          title: 'Too Many Requests',
+          icon: 'error'
+        });
       }
     }).then(data => {
       userId = data.data.id;
@@ -67,8 +70,6 @@ if (token) {
       signOutButton.style = 'display:block;';
       const info = document.getElementById('info');
       const name = document.createElement('div');
-      // name.textContent = `NAME: ${userName}`;
-      // name.className = 'userNameM hover';
       info.appendChild(name);
       const photoTd = document.createElement('td');
       info.appendChild(photoTd);
@@ -97,7 +98,7 @@ if (token) {
               'rabbit.jpeg': '<img src="https://d3cek75nx38k91.cloudfront.net/draw/rabbit.jpeg" class="userPhotoReplace" >',
               upload: '<div id="uploadText" ><i class="fas fa-upload"></i>上傳</div>'
             });
-          }, 1000);
+          }, 100);
         });
 
         const { value: photo } = await Swal.fire({
@@ -126,8 +127,8 @@ if (token) {
               const formData = new FormData(file);
               if (result.isConfirmed) {
                 if (file) {
-                  fetch('/api/1.0/user/uploadPhoto', {
-                    method: 'POST',
+                  fetch('/api/1.0/user/photoUpload', {
+                    method: 'PATCH',
                     body: formData,
                     headers: { authorization: `Bearer ${token}` }
                   }).then(function (response) {
@@ -178,8 +179,8 @@ if (token) {
             const data = {
               photo: photo
             };
-            fetch('/api/1.0/user/replacePhoto', {
-              method: 'POST',
+            fetch('/api/1.0/user/photoReplace', {
+              method: 'PATCH',
               body: JSON.stringify(data),
               headers: { 'Content-Type': 'application/json', authorization: `Bearer ${token}` }
             }).then(function (response) {
@@ -465,9 +466,6 @@ signIn.addEventListener('click', async function () {
 
 const signOutButton = document.getElementById('exampleModal2');
 const playGame = document.getElementById('playGame');
-
-// const singlePlay = document.getElementById('singlePlay');
-
 signOutButton.addEventListener('click', function () {
   Swal.fire({
     title: '確定要登出嗎？',
@@ -487,13 +485,12 @@ signOutButton.addEventListener('click', function () {
     });
 });
 
-const homeTime = new Date().getTime();
 socket.emit('roomData', 'get');
-socket.emit('homeRank', { homeTime: homeTime });
+socket.emit('homeRank', 'get');
 socket.emit('onlineUser', 'get');
 
 const rank = document.getElementById('rank');
-socket.on(`getRank${homeTime}`, async (msg) => {
+socket.on('getRank', async (msg) => {
   rank.innerHTML = '';
   for (const i in msg.data) {
     const rankId = msg.data[i].id;
@@ -700,7 +697,7 @@ socket.on('mainPageViewPlayerChange', async (msg) => {
     }
   }
 });
-
+let tabNew = true;
 const roomTab = document.getElementById('room-tab');
 roomTab.addEventListener('click', function () {
   if (roomList) {
@@ -717,6 +714,10 @@ roomTab.addEventListener('click', function () {
       const noRoom = document.getElementById('noRoom');
       noRoom.className = 'noRoom';
     }
+  }
+  if (tabNew) {
+    socket.emit('homePageRoomTab', '');
+    tabNew = false;
   }
 });
 
@@ -876,10 +877,10 @@ socket.on('mainPageConvasData', (msg) => {
 socket.on('mainPageUndo', (msg) => {
   const roomId = msg.room;
   if (msg.data) {
-    const myobj = document.getElementById(`img${roomId}step${canvasNum[roomId] - 1}`);
-
-    myobj.remove();
+    const img = document.getElementsByClassName(`img${roomId}`);
+    const finalNum = img.length;
     canvasNum[roomId]--;
+    img[finalNum - 1].remove();
   }
 });
 
@@ -897,7 +898,6 @@ playGame.addEventListener('click', function () {
         create: '連線模式',
         single: '單人模式'
       },
-      // inputPlaceholder: '快速開始',
       showCancelButton: true,
       inputValidator: (value) => {
         if (value === 'quick') {
@@ -1140,7 +1140,6 @@ if (test === 'test') {
     '<input id="swal-input1" type="text" class="swal2-input" value="test" maxlength="10">' +
     '<div>PASSWORD</div>' +
     '<input id="swal-input2" type="password" class="swal2-input" value="test" maxlength="18">',
-    // timer: 000,
     preConfirm: function () {
       return new Promise(function (resolve) {
         resolve([
@@ -1151,44 +1150,46 @@ if (test === 'test') {
     }
 
   }).then(function (result) {
-    const signInData = {
-      name: result.value[0],
-      password: result.value[1]
-    };
-    fetch('/api/1.0/user/signin', {
-      method: 'POST',
-      body: JSON.stringify(signInData),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(function (response) {
-      if (response.status === 200) {
-        return response.json();
-      } else if (response.status === 429) {
-        Swal.fire({
-          timer: 5000,
-          title: 'Too Many Requests',
-          icon: 'error'
-        });
-      } else if (response.status === 400) {
-        return response.json();
-      } else if (response.status === 403) {
-        return response.json();
-      } else if (response.status === 500) {
-        return response.json();
-      }
-    }).then(data => {
-      if (data.error) {
-        Swal.fire('OOPS！', `${data.error}`, 'error');
-      } else if (data.data) {
-        localStorage.setItem('token', `${data.data.access_token}`);
-        Swal.fire({
-          timer: 5000,
-          title: '登入成功',
-          text: `歡迎${data.data.user.name}玩家`,
-          icon: 'success'
-        }).then(() => {
-          return window.location.assign('/');
-        });
-      }
-    });
+    if (result.value) {
+      const signInData = {
+        name: result.value[0],
+        password: result.value[1]
+      };
+      fetch('/api/1.0/user/signin', {
+        method: 'POST',
+        body: JSON.stringify(signInData),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(function (response) {
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 429) {
+          Swal.fire({
+            timer: 5000,
+            title: 'Too Many Requests',
+            icon: 'error'
+          });
+        } else if (response.status === 400) {
+          return response.json();
+        } else if (response.status === 403) {
+          return response.json();
+        } else if (response.status === 500) {
+          return response.json();
+        }
+      }).then(data => {
+        if (data.error) {
+          Swal.fire('OOPS！', `${data.error}`, 'error');
+        } else if (data.data) {
+          localStorage.setItem('token', `${data.data.access_token}`);
+          Swal.fire({
+            timer: 5000,
+            title: '登入成功',
+            text: `歡迎${data.data.user.name}玩家`,
+            icon: 'success'
+          }).then(() => {
+            return window.location.assign('/');
+          });
+        }
+      });
+    }
   });
 }

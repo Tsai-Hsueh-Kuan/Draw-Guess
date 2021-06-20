@@ -15,11 +15,8 @@ if (type === 'english') {
 let userId;
 let userName;
 let userPhoto;
-let userScore;
 let answerLimit = true;
-let answerGet;
 let limitTime;
-let roomId = [];
 let noChangeTime;
 if (type === 'english') {
   limitTime = 60;
@@ -49,11 +46,7 @@ const Toast = Swal.mixin({
   toast: true,
   showConfirmButton: false,
   timer: 3000,
-  timerProgressBar: true,
-  didOpen: (toast) => {
-    toast.addEventListener('mouseenter', Swal.stopTimer);
-    toast.addEventListener('mouseleave', Swal.resumeTimer);
-  }
+  timerProgressBar: true
 });
 
 const imgs = document.querySelector('#imgs');
@@ -62,8 +55,8 @@ let canvasNum = 0;
 let gameStatus = 0;
 let answerData;
 let gameDone = true;
-let countIndex = 1; // 倒數計時任務執行次數
-let timeout = 1000; // 觸發倒數計時任務的時間間隙
+let countIndex = 1;
+let timeout = 1000;
 let startTime = new Date().getTime();
 let correctUserList = [];
 fetch('/api/1.0/user/profile', {
@@ -85,12 +78,17 @@ fetch('/api/1.0/user/profile', {
         .then(() => {
           return window.location.assign('/');
         });
+    } else if (response.status === 429) {
+      Swal.fire({
+        timer: 5000,
+        title: 'Too Many Requests',
+        icon: 'error'
+      });
     }
   }).then(data => {
     userId = data.data.id;
     userName = data.data.name;
     userPhoto = data.data.photo;
-    userScore = data.data.score;
 
     socket.on(`canvasUpdate${room}id${token}`, (msg) => {
       const timeCheck = msg.timeCheck;
@@ -114,10 +112,10 @@ fetch('/api/1.0/user/profile', {
       limitTime = limitTime - parseInt(timeCheck);
       gameStatus = 1;
       reportStatus = 1;
-      countIndex = 1; // 倒數計時任務執行次數
-      timeout = 1000; // 觸發倒數計時任務的時間間隙
+      countIndex = 1;
+      timeout = 1000;
       startTime = new Date().getTime();
-      startCountdown(50);
+      startCountdown(timeout);
       title.textContent = ('遊戲開始');
       title.className = 'timePlaying';
       gameDone = false;
@@ -158,7 +156,6 @@ fetch('/api/1.0/user/profile', {
 function startCountdown (interval) {
   setTimeout(() => {
     const endTime = new Date().getTime();
-    // 偏差值
     const deviation = endTime - (startTime + countIndex * timeout);
     if (countIndex < limitTime && !gameDone) {
       title.textContent = (`剩 ${limitTime - countIndex} 秒`);
@@ -166,12 +163,12 @@ function startCountdown (interval) {
         title.className = 'time5';
       }
       countIndex++;
-      // 下一次倒數計時
       startCountdown(timeout - deviation);
     } else {
+      title.textContent = ('等待開始下局遊戲');
+      title.className = 'time';
       reportStatus = 0;
       gameStatus = 0;
-      title.className = 'time';
       limitTime = noChangeTime;
     }
   }, interval);
@@ -180,23 +177,26 @@ socket.on('answerGet', (msg) => {
   gameDone = true;
   answerData = msg.answer;
   title.textContent = ('等待開始下局遊戲');
+  title.className = 'time';
   const msgTdHost = document.getElementById('msgTdHost');
-  msgTdHost.innerHTML = '';
-  Toast.fire({
-    text: `正確答案:${answerData}`,
-    width: '400px',
-    padding: '30px'
-  });
-  const msgarea = document.getElementsByClassName('msg');
+  if (msgTdHost) {
+    msgTdHost.innerHTML = '';
+    Toast.fire({
+      text: `正確答案:${answerData}`,
+      width: '400px',
+      padding: '30px'
+    });
+    const msgarea = document.getElementsByClassName('msg');
 
-  for (const i in msgarea) {
-    msgarea[i].textContent = '';
+    for (const i in msgarea) {
+      msgarea[i].textContent = '';
+    }
+    heartStatus = 0;
+    const heart = document.getElementById('heart');
+    heart.className = 'heart';
+    const answerShow = document.getElementById('answerShow');
+    answerShow.textContent = '';
   }
-  heartStatus = 0;
-  const heart = document.getElementById('heart');
-  heart.className = 'heart';
-  const answerShow = document.getElementById('answerShow');
-  answerShow.textContent = '';
 });
 
 const title = document.getElementById('title');
@@ -211,10 +211,10 @@ socket.on('answer', () => {
   canvasNum = 0;
   gameStatus = 1;
   reportStatus = 1;
-  countIndex = 1; // 倒數計時任務執行次數
-  timeout = 1000; // 觸發倒數計時任務的時間間隙
+  countIndex = 1;
+  timeout = 1000;
   startTime = new Date().getTime();
-  startCountdown(50);
+  startCountdown(timeout);
   title.textContent = ('遊戲開始');
 
   for (const i in correctUserList) {
@@ -262,18 +262,18 @@ answerCheckButton.addEventListener('click', function (ev) {
 
     socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
       if (msg.check) {
+        const audio = document.getElementById('mp3');
+        audio.play();
+        audio.volume = 0.7;
         Toast2.fire({
           icon: 'success',
           title: '答對了！',
           width: '400px',
           padding: '30px'
         });
-        const audio = document.getElementById('mp3');
-        audio.play();
-        audio.volume = 0.7;
+
         const answerShow = document.getElementById('answerShow');
         answerShow.textContent = `ANS : ${answerCheck}`;
-        answerGet = answerCheck;
         gameStatus = 2;
       } else {
         const audio = document.getElementById('wrongMp3');
@@ -324,20 +324,20 @@ $('#answerCheck').on('keypress', function (e) {
         answerLimit = true;
       }, 2000);
       socket.emit('answerCheck', { room: room, userId: userId, time: time, answerData: answerCheck, canvasNum: canvasNum });
-      socket.on(`answerCorrect${'and' + userId}`, (msg) => {
+      socket.on(`answerCorrect${room + 'and' + userId}`, (msg) => {
         if (msg.check) {
+          const audio = document.getElementById('mp3');
+          audio.play();
+          audio.volume = 0.7;
           Toast2.fire({
             icon: 'success',
             title: '答對了！',
             width: '400px',
             padding: '30px'
           });
-          const audio = document.getElementById('mp3');
-          audio.play();
-          audio.volume = 0.7;
+
           const answerShow = document.getElementById('answerShow');
           answerShow.textContent = `ANS : ${answerCheck}`;
-          answerGet = answerCheck;
           gameStatus = 2;
         } else {
           const audio = document.getElementById('wrongMp3');
@@ -438,7 +438,7 @@ socket.on('answerShow', (msg) => {
   msgTdArea.className = 'inCorrect';
   setTimeout(() => {
     msgTdArea.classList.remove('inCorrect');
-  }, 2000);
+  }, 3000);
 });
 
 socket.on('userCorrect', (msg) => {
@@ -596,9 +596,7 @@ socket.on('roomUserId', (msg) => {
     gameMsgTd.id = 'msgTdHost';
     hostinfo.appendChild(gameMsgTd);
   }
-  if (msg.roomUserId) {
-    roomId = msg.roomUserId;
-  }
+  socket.emit('getHeart', 'get');
 });
 
 const roomElement = document.getElementById('btn-input');

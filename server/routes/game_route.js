@@ -1,43 +1,26 @@
 const router = require('express').Router();
 const {
   wrapAsync,
-  verifyToken,
-  verifyTokenAdmin
+  verifyToken
 } = require('../../util/util');
 
 const {
   getSingleGame,
-  getSingleGameTest,
   updateHistory,
-  getAnswer,
-  checkAnswer,
-  getcrawler,
-  checkGame,
-  getSingleGameNeedCheck
+  getSingleAnswer,
+  singleAnswerCheck
 } = require('../controllers/game_controller');
 
 router.route('/game/single')
   .post(verifyToken, wrapAsync(getSingleGame));
 
-router.route('/game/singleTest')
-  .post(verifyToken, wrapAsync(getSingleGameTest));
-
-router.route('/game/singleGameNeedCheck')
-  .get(verifyToken, wrapAsync(getSingleGameNeedCheck));
-
 router.route('/game/history')
   .post(verifyToken, wrapAsync(updateHistory));
 
-router.route('/game/answer')
-  .post(verifyToken, wrapAsync(checkAnswer));
+router.route('/game/singleAnswerCheck')
+  .post(verifyToken, wrapAsync(singleAnswerCheck));
 
-router.route('/game/done')
-  .post(verifyToken, wrapAsync(getAnswer));
-
-router.route('/game/crawler')
-  .get(wrapAsync(getcrawler));
-
-router.route('/game/checkGame')
-  .post(verifyTokenAdmin, wrapAsync(checkGame));
+router.route('/game/singleAnswer')
+  .post(verifyToken, wrapAsync(getSingleAnswer));
 
 module.exports = router;
