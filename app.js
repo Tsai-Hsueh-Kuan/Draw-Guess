@@ -50,7 +50,7 @@ app.use(function (err, req, res, next) {
   res.status(500).send('Internal Server Error');
 });
 
-if (require.main === module && NODE_ENV === ('production' || 'development')) {
+if (NODE_ENV === ('production' || 'development')) {
   server.listen(port, () => { console.log(`Listening on port: ${port}`); });
 }
 
