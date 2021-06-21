@@ -1,12 +1,10 @@
 const router = require('express').Router();
-
 const {
   wrapAsync,
   verifyToken,
   verifyTokenAdmin,
   upload
 } = require('../../util/util');
-
 const {
   signUp,
   signIn,

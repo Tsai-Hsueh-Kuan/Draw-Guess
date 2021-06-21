@@ -6,16 +6,6 @@ const {
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../models/socketcon_model');
 
-cache.flushdb(function (err, ok) {
-  if (err) {
-    console.log(err);
-    return err;
-  }
-  if (ok) {
-    console.log(ok);
-  }
-});
-
 function createCacheItems (name) {
   for (const i in name) {
     cache.set(name[i], JSON.stringify({ data: [] }), 'NX', function (err) {

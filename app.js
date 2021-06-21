@@ -54,5 +54,4 @@ if (require.main === module && NODE_ENV === ('production' || 'development')) {
   server.listen(port, () => { console.log(`Listening on port: ${port}`); });
 }
 
-module.exports = app;
 module.exports = server;
