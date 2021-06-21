@@ -639,7 +639,6 @@ socket.on('mainPageView', async (msg) => {
     for (const i in msg.roomUserData) {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
-      const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
       userinfo.className = 'userinfo';
       tbodyPlayerList.appendChild(userinfo);
@@ -675,7 +674,6 @@ socket.on('mainPageViewPlayerChange', async (msg) => {
     for (const i in msg.roomUserData) {
       const gamerName = msg.roomUserData[i][0].name;
       const gamerPhoto = msg.roomUserData[i][0].photo;
-      const gamerScore = msg.roomUserData[i][0].score;
       const userinfo = document.createElement('tr');
       userinfo.className = 'userinfo';
       tbodyPlayerList.appendChild(userinfo);
