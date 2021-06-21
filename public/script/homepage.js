@@ -17,6 +17,20 @@ const socket = io((''), {
   reconnect: true
 });
 
+// 取cookies
+function getCookie (name) {
+  const arr = document.cookie.match(new RegExp('(^| )' + name + '=([^;]*)(;|$)'));
+  if (arr != null) return unescape(arr[2]);
+  return null;
+}
+// 刪除cookie
+function delCookie (name) {
+  const exp = new Date();
+  exp.setTime(exp.getTime() - 1);
+  const cval = getCookie(name);
+  if (cval != null) { document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString() + ';path=/'; }
+}
+
 socket.on('canvasUpdate', (msg) => {
   const roomId = msg.room;
   const canvasAll = msg.canvas;
@@ -727,6 +741,8 @@ roomIdJoin.addEventListener('click', function () {
   if (roomImgs) {
     const roomUrl = roomImgs.alt;
     roomIdSearchArea.value = '';
+    delCookie('AWSALB');
+    delCookie('AWSALBCORS');
     Swal.fire({
       timer: 2000,
       title: '加入遊戲中',
@@ -753,6 +769,8 @@ $('#roomIdSearch').on('keypress', function (e) {
     if (roomImgs) {
       const roomUrl = roomImgs.alt;
       roomIdSearchArea.value = '';
+      delCookie('AWSALB');
+      delCookie('AWSALBCORS');
       Swal.fire({
         timer: 2000,
         title: '加入遊戲中',
@@ -780,6 +798,8 @@ hostNameJoin.addEventListener('click', function () {
   if (hostPhoto) {
     const roomUrl = hostPhoto.alt;
     hostNameSearchArea.value = '';
+    delCookie('AWSALB');
+    delCookie('AWSALBCORS');
     Swal.fire({
       timer: 2000,
       title: '加入遊戲中',
@@ -806,6 +826,8 @@ $('#hostNameSearch').on('keypress', function (e) {
     if (hostPhoto) {
       const roomUrl = hostPhoto.alt;
       hostNameSearchArea.value = '';
+      delCookie('AWSALB');
+      delCookie('AWSALBCORS');
       Swal.fire({
         timer: 2000,
         title: '加入遊戲中',
@@ -907,6 +929,8 @@ playGame.addEventListener('click', function () {
             const roomImgs = document.getElementById(`imgs${roomList[0]}`);
             if (roomImgs) {
               const roomUrl = roomImgs.alt;
+              delCookie('AWSALB');
+              delCookie('AWSALBCORS');
               Swal.fire({
                 timer: 2000,
                 title: '加入遊戲中',
@@ -924,6 +948,8 @@ playGame.addEventListener('click', function () {
                 break;
               }
             }
+            delCookie('AWSALB');
+            delCookie('AWSALBCORS');
             Swal.fire({
               timer: 2000,
               title: '創建房間中',
@@ -937,6 +963,8 @@ playGame.addEventListener('click', function () {
               return window.location.assign(`/draw.html?room=${room}&type=idiom`);
             }
           } else {
+            delCookie('AWSALB');
+            delCookie('AWSALBCORS');
             Swal.fire({
               timer: 2000,
               title: '單人模式加入中',
@@ -959,6 +987,8 @@ playGame.addEventListener('click', function () {
               break;
             }
           }
+          delCookie('AWSALB');
+          delCookie('AWSALBCORS');
           Swal.fire({
             title: '準備開始連線模式',
             input: 'select',
@@ -977,6 +1007,8 @@ playGame.addEventListener('click', function () {
             }
           });
         } else if (value === 'single') {
+          delCookie('AWSALB');
+          delCookie('AWSALBCORS');
           Swal.fire({
             title: '準備開始單人模式',
             input: 'select',
@@ -1116,8 +1148,12 @@ createGame.addEventListener('click', function () {
     showCancelButton: true,
     inputValidator: (value) => {
       if (value === 'english') {
+        delCookie('AWSALB');
+        delCookie('AWSALBCORS');
         return window.location.assign(`/draw.html?room=${room}&type=english`);
       } else if (value === 'idiom') {
+        delCookie('AWSALB');
+        delCookie('AWSALBCORS');
         return window.location.assign(`/draw.html?room=${room}&type=idiom`);
       } else {
         Swal.fire({
