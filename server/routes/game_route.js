@@ -3,7 +3,6 @@ const {
   wrapAsync,
   verifyToken
 } = require('../../util/util');
-
 const {
   getSingleGame,
   updateHistory,

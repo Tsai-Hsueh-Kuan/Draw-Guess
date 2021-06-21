@@ -3,7 +3,6 @@ const {
   wrapAsync,
   verifyTokenAdmin
 } = require('../../util/util');
-
 const {
   getGameInfo,
   gameStatus,

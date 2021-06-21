@@ -73,7 +73,6 @@ const checkGameFun = (status) => {
       }
     }).then(data => {
       document.getElementById('gameInput').value = '';
-      console.log(data);
     });
 };
 
@@ -197,7 +196,6 @@ get.addEventListener('click', function () {
         });
       } else {
         canvasAll = data.data.game;
-        console.log(data.data);
         gameId = canvasAll[0].game_id;
         document.getElementById('gameInput').value = gameId;
       }

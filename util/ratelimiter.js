@@ -1,9 +1,13 @@
 require('dotenv').config();
-const { NODE_ENV, RATE_LIMIT_WINDOW, RATE_LIMIT_COUNT } = process.env;
+const { NODE_ENV, RATE_LIMIT_WINDOW, RATE_LIMIT_COUNT, RATE_LIMIT_COUNT_DEVELOPMENT, RATE_LIMIT_COUNT_TEST } = process.env;
 const Cache = require('./cache');
-const QUOTA = (NODE_ENV === 'test' ? 10000 : (RATE_LIMIT_COUNT || 10));
+const env = NODE_ENV;
+const QUOTA = {
+  production: RATE_LIMIT_COUNT,
+  development: RATE_LIMIT_COUNT_DEVELOPMENT,
+  test: RATE_LIMIT_COUNT_TEST
+};
 const WINDOW = (RATE_LIMIT_WINDOW || 1);
-
 function rateLimiter (token) {
   return new Promise((resolve, reject) => {
     Cache.cache
@@ -15,8 +19,8 @@ function rateLimiter (token) {
           resolve({ status: 500, message: 'Internal Server Error' });
         }
         const reqCount = replies[1];
-        if (reqCount > QUOTA) {
-          resolve({ status: 429, message: `Quota of ${QUOTA} per ${WINDOW}sec exceeded` });
+        if (reqCount > QUOTA[env]) {
+          resolve({ status: 429, message: `Quota of ${QUOTA[env]} per ${WINDOW}sec exceeded` });
         }
         resolve({ status: 200, message: 'OK' });
       });
