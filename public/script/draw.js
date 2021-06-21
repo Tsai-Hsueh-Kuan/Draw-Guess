@@ -203,6 +203,7 @@ function draw (e) {
   [lastX, lastY] = [e.offsetX, e.offsetY];
   hue <= 360 ? hue++ : hue = 0;
 }
+
 const createCanvas = function () {
   canvasNum++;
   const canvas = document.createElement('canvas');
@@ -299,6 +300,7 @@ invite.addEventListener('click', function () {
     '<button id="copyButton" class="btn btn-outline-primary" onclick="copyUrl()">複製</button>'
   });
 });
+
 let getPassword;
 const getQuestion = document.getElementById('getQuestion');
 let gameDone = true;
@@ -362,10 +364,8 @@ getQuestion.addEventListener('click', function () {
 let countIndex = 1;
 let timeout = 1000;
 let startTime = new Date().getTime();
-
 let questionSql;
 const question = document.querySelector('#question');
-
 const time = document.getElementById('time');
 function startCountdown (interval) {
   setTimeout(() => {
