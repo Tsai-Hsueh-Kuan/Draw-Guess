@@ -6,15 +6,15 @@ const {
 
 const { getquestion, updateInuse, resetInuse, getGame, getHistory, updateHistory, updateScore, inputCanvas, verifyTokenSocket, getRank, getUser, checkGameCanvas, canvasUpdate, updateReport, updateHeart } = require('../models/socketcon_model');
 
-// cache.flushdb(function (err, ok) {
-//   if (err) {
-//     console.log(err);
-//     return err;
-//   }
-//   if (ok) {
-//     console.log(ok);
-//   }
-// });
+cache.flushdb(function (err, ok) {
+  if (err) {
+    console.log(err);
+    return err;
+  }
+  if (ok) {
+    console.log(ok);
+  }
+});
 
 function createCacheItems (name) {
   for (const i in name) {
@@ -39,7 +39,6 @@ async function setCacheData (name, data) {
 
 const socketCon = (io) => {
   io.on('connection', async (socket) => {
-    console.log('test');
     const inToken = socket.handshake.auth.token;
     const inRoom = socket.handshake.auth.room;
     const intype = socket.handshake.auth.type;
