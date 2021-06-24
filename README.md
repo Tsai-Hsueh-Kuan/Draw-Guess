@@ -12,20 +12,19 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
   - name: test
   - password: test
 
-#### One-Click Login:
+<!-- #### One-Click Login:
 
-Type email and password automatically when sign in
+Type email and password automatically when sign in -->
 
-  - [test](https://drawguess.tw/?test=test)
+  - [One-Click Login to Play](https://drawguess.tw/?test=test)
 
 ## Table of Contents
 
 - [Technologies](#Technologies)
 - [Architecture](#Architecture)
-- [Database Design](#Database-Design)
 - [Socket Server Auto Scaling Flowchart](#Socket-Server-Auto-Scaling-Flowchart)
+- [Database Design](#Database-Design)
 - [Features](#Features)
-- [Demonstration](#Demonstration)
 - [Data Source](#Data-Source)
 - [Contact](#Contact)
 
@@ -92,10 +91,6 @@ Type email and password automatically when sign in
 
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/architecture.v4.png">
 
-## Database Design
-
-<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/database.png">
-
 ## Socket Server Auto Scaling Flowchart
 
 - Used AWS ELB & Auto Scaling to deal with high-loading issues.
@@ -106,7 +101,10 @@ Type email and password automatically when sign in
 
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/del_cookies.gif">
 
-<br>
+## Database Design
+
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/database.png">
+
 
 ## Features
 
