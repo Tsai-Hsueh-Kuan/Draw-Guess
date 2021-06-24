@@ -1,6 +1,6 @@
 # [Draw & Guess](https://drawguess.tw)
 
-Draw & Guess is a casual drawing game for free with multiple game modes! Join on worldwide rooms or create your own. Host start a game and draw while everyone else guesses as fast as they can!
+An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy drawing and guessing.
 
 #### Website URL: [https://drawguess.tw](https://drawguess.tw)
 
@@ -22,6 +22,7 @@ Type email and password automatically when sign in
 - [Technologies](#Technologies)
 - [Architecture](#Architecture)
 - [Database Design](#Database-Design)
+- [Socket Server Auto Scaling Flowchart](#Socket-Server-Auto-Scaling-Flowchart)
 - [Features](#Features)
 - [Demonstration](#Demonstration)
 - [Data Source](#Data-Source)
@@ -29,13 +30,14 @@ Type email and password automatically when sign in
 
 ## Technologies
 
-### Backend
+### Back-End
 
+- Node.js
+- Express.js
+- MVC
 - Linux
-- Node.js / Express.js
-- RESTful API
 
-### Front-end
+### Front-End
 
 - HTML
 - CSS
@@ -48,7 +50,7 @@ Type email and password automatically when sign in
 
 - Elastic Compute Cloud (EC2)
 - Simple Storage Service (S3)
-- CloudFront (CDN)
+- CloudFront
 - Relational Database Service (RDS)
 - ElastiCache
 - Route 53
@@ -62,16 +64,15 @@ Type email and password automatically when sign in
 
 ### WebSocket
 
-- <span>Socket.io</span>
-- socket.io-redis
-- socket.io-client
+- <span>Socket.IO</span>
+- Socket.IO-redis
+- Socket.IO-client
 
 ### Networking
 
 - HTTP & HTTPS
 - Domain Name System(DNS)
-- Nginx
-- SSL Certificate (Cloudflare)
+- NGINX
 
 ### Test
 
@@ -88,31 +89,39 @@ Type email and password automatically when sign in
 
 ## Architecture
 
-<!-- ![Architecture](https://d3cek75nx38k91.cloudfront.net/draw/architecture.v4.png) -->
 <img width="1000" src="https://d3cek75nx38k91.cloudfront.net/draw/architecture.v4.png">
-
-## Socket Server Auto Scaling Flowchart
-<!-- ![socket.io-redis for load balancer](https://d3cek75nx38k91.cloudfront.net/draw/socket.io-redis.v3.png) -->
-<img width="1000" src="https://d3cek75nx38k91.cloudfront.net/draw/socket.io-redis.v3.png">
 
 ## Database Design
 
-<!-- ![Database Design](https://d3cek75nx38k91.cloudfront.net/draw/database.png) -->
 <img width="1000" src="https://d3cek75nx38k91.cloudfront.net/draw/database.png">
+
+## Socket Server Auto Scaling Flowchart
+
+- Used AWS ELB & Auto Scaling to deal with high-loading issues.
+- Solved socket server synchronization issues of horizontal expansion with sticky sessions and Socket.IO-redis.
+- Reshaped the traffic by clearing cookies when users join rooms.
+
+<img width="1000" src="https://d3cek75nx38k91.cloudfront.net/draw/socket.io-redis.v3.png">
 
 ## Features
 
 ### Synchronous Browsing
 
+- Used <span>Socket.IO</span>to simultaneously browse drawings in each room.
+
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/room_view.gif">
 
 ### Chat Room
 
+- Accomplished a real-time group chat room.
+- Built an answer filtering system to prevent cheating.
 <img width="800" src="">
 
-### Chat Room
+### Change Photo
 
-<img width="800" src="">
+- Players can choose their favorite headers or upload their own photos.
+
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/replacePhoto.gif">
 
 ## Demonstration
 
@@ -130,8 +139,7 @@ Type email and password automatically when sign in
 
 ### Single Mode
 
-<img width="800" src="">
-
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/single+mode.gif">
 
 ## Data Source
 
