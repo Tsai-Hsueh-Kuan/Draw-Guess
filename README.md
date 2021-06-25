@@ -4,19 +4,14 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
 
 #### Website URL: [https://drawguess.tw](https://drawguess.tw)
 
-<img width="800" src="可愛圖片">
+<img width="800" src="完整遊玩影片">
 
 #### Test Accounts:
 
-- test
-  - name: test
-  - password: test
+- name: test
+- password: test
 
-<!-- #### One-Click Login:
-
-Type email and password automatically when sign in -->
-
-  - [One-Click Login to Play](https://drawguess.tw/?test=test)
+- [One-Click Login to Play](https://drawguess.tw/?test=test)
 
 ## Table of Contents
 
@@ -112,8 +107,8 @@ Type email and password automatically when sign in -->
 
 - The game will keep showing the drawing all the time, whether the player joins the room after the game has already started or leaves the room then rejoins again.
 
-#### Technique
-- Used <span>Socket.IO</span> with redis to simultaneously browse drawings in each room.
+  #### Technique
+  - Used <span>Socket.IO</span> with redis to simultaneously browse drawings in each room.
 
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/room_view.gif">
 
@@ -121,22 +116,22 @@ Type email and password automatically when sign in -->
 
 - Players can choose either single or multiplayer when starting the game. System will also decide a game mode automatically if players press the quick start button.
 
-#### Technique
+  #### Technique
 
-- Prevent a player from joining a room multiple times in order to gain abnormal scores. 
-- When quick start mode activated, <span>Socket.IO</span> will check the concurrent users then guide players into 3 possible situations as follows:
-  1. if there are no concurrent users, players will be directed to single player mode.
-  2. if there are concurrent users with open rooms, players will be directed to a room as a guesser.
-  3. if there are concurrent users with no open rooms, players will be directed to a room as a drawer.
+  - Prevent a player from joining a room multiple times in order to gain abnormal scores. 
+  - When quick start mode activated, <span>Socket.IO</span> will check the concurrent users then guide players into 3 possible situations as follows:
+    1. if there are no concurrent users, players will be directed to single player mode.
+    2. if there are concurrent users with open rooms, players will be directed to a room as a guesser.
+    3. if there are concurrent users with no open rooms, players will be directed to a room as a drawer.
 
 ### Chat Room
 
 - Accomplished a real-time group chat room.
 
-#### Technique
+  #### Technique
 
-- Utilized <span>Socket.IO</span> to achieve user communication in real-time
-- Built an answer filtering system to prevent cheating by regular expressions.
+  - Utilized <span>Socket.IO</span> to achieve user communication in real-time
+  - Built an answer filtering system to prevent cheating by regular expressions.
 
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/chatRoom.gif">
 
@@ -144,9 +139,9 @@ Type email and password automatically when sign in -->
 
 - Players can choose their favorite headers or upload their own photos.
 
-#### Technique
+  #### Technique
 
-- Stored and delivered images by AWS S3 and CloudFront service.
+  - Stored and delivered images by AWS S3 and CloudFront service.
 
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/replacePhoto.gif">
 
@@ -154,11 +149,23 @@ Type email and password automatically when sign in -->
 
 - Players can earn points in the game to instantly improve their rankings.
 
-#### Technique
+  #### Technique
 
-- The left time of guessing will be counted into players final score in Back-End calculation.
+  - The left time of guessing will be counted into players final score in Back-End calculation.
 
-<img width="800" src="答題得到分數影片">
+### Admin System
+
+- Admin can manage all the drawings through admin check page
+
+  #### Technique
+
+  - The admin check page can do the following managements:
+  1. Get the unclassified drawing to determine if the drawing is effective or not
+  2. Get specific drawing by id
+  3. Classify the drawing as effective
+  4. Classify the drawing as ineffective
+
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/adminCheck.gif">
 
 ### Online Mode : Draw
 
