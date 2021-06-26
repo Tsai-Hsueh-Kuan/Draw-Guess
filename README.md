@@ -4,7 +4,7 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
 
 #### Website URL: [https://drawguess.tw](https://drawguess.tw)
 
-<img width="800" src="完整遊玩影片">
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/readmeMain.gif">
 
 #### Test Accounts:
 
@@ -169,11 +169,11 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
 
 ### Online Mode : Draw
 
-<img width="800" src="畫畫中影片">
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/readmeDraw.gif">
 
 ### Online Mode : Guess
 
-<img width="800" src="答題影片">
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/readmeGuess.gif">
 
 ### Single Mode
 
