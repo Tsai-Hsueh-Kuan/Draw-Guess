@@ -587,9 +587,10 @@ socket.on('mainPageView', async (msg) => {
   imgs.appendChild(tbodyHost);
 
   tbodyHost.innerHTML = '';
-  if (msg.hostDetail) {
-    const hostName = msg.hostDetail[0].name;
-    const hostPhoto = msg.hostDetail[0].photo;
+
+  if (msg.hostDetail[0]) {
+    const hostName = msg.hostDetail[0][0].name;
+    const hostPhoto = msg.hostDetail[0][0].photo;
     const hostinfo = document.createElement('tr');
     hostinfo.className = 'hostinfo roomHostInfo';
     tbodyHost.appendChild(hostinfo);
@@ -709,6 +710,7 @@ socket.on('mainPageViewPlayerChange', async (msg) => {
     }
   }
 });
+
 let tabNew = true;
 const roomTab = document.getElementById('room-tab');
 roomTab.addEventListener('click', function () {

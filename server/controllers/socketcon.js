@@ -72,8 +72,8 @@ const socketCon = (io) => {
           hostId[inRoom] = verifyHost.id;
           await setCacheData('hostId', hostId);
 
-          const hostDetail = getCacheData('hostDetail');
-          hostDetail[inRoom] = await getUser(verifyHost.id);
+          const hostDetail = await getCacheData('hostDetail');
+          hostDetail[inRoom] = [await getUser(verifyHost.id)];
           await setCacheData('hostDetail', hostDetail);
 
           const roomUserId = await getCacheData('roomUserId');
@@ -451,8 +451,11 @@ const socketCon = (io) => {
         const roomUserId = await getCacheData('roomUserId');
         const roomUserData = await getCacheData('roomUserData');
         socket.emit('roomList', { roomList: roomList });
+
         for (const i in roomList) {
-          socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[parseInt(roomList[i])], hostDetail: hostDetail[parseInt(roomList[i])], roomType: roomType[parseInt(roomList[i])], roomUserId: roomUserId[parseInt(roomList[i])], roomUserData: roomUserData[parseInt(roomList[i])] });
+          setTimeout(async () => {
+            socket.emit('mainPageView', { roomId: roomList[i], hostId: hostId[parseInt(roomList[i])], hostDetail: hostDetail[parseInt(roomList[i])], roomType: roomType[parseInt(roomList[i])], roomUserId: roomUserId[parseInt(roomList[i])], roomUserData: roomUserData[parseInt(roomList[i])] });
+          }, 500);
         }
       });
 
@@ -463,6 +466,7 @@ const socketCon = (io) => {
         const result = roomList.filter(function (element, index, arr) {
           return arr.indexOf(element) === index;
         });
+        await setCacheData('roomList', result);
         for (const i in result) {
           if (timeCheck[parseInt(result[i])]) {
             const canvasUpate = await canvasUpdate(gameId[parseInt(result[i])]);

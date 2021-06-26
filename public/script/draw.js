@@ -572,10 +572,10 @@ socket.on('roomUserId', (msg) => {
   }
 
   host.innerHTML = '';
-  if (msg.hostDetail) {
-    const hostName = msg.hostDetail[0].name;
-    const hostPhoto = msg.hostDetail[0].photo;
-    const hostScore = msg.hostDetail[0].score;
+  if (msg.hostDetail[0]) {
+    const hostName = msg.hostDetail[0][0].name;
+    const hostPhoto = msg.hostDetail[0][0].photo;
+    const hostScore = msg.hostDetail[0][0].score;
     const hostinfo = document.createElement('tr');
     hostinfo.id = 'userinfoHost';
     hostinfo.className = 'userinfo';
