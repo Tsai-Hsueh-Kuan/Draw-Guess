@@ -1,6 +1,6 @@
 # [Draw & Guess](https://drawguess.tw)
 
-An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy drawing and guessing.
+An educational real-time multiplayer game to enjoy drawing and guessing.
 
 #### Website URL: [https://drawguess.tw](https://drawguess.tw)
 
@@ -84,7 +84,7 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
 
 ## Architecture
 
-<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/architecture.v4.png">
+<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/architecture.v2.png">
 
 ## Socket Server Auto Scaling Flowchart
 
@@ -93,8 +93,6 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
 - Reshaped the traffic by clearing cookies when users join rooms.
 
 <img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/socket.io-redis.v3.png">
-
-<img width="800" src="https://d3cek75nx38k91.cloudfront.net/draw/del_cookies.gif">
 
 ## Database Design
 
@@ -119,7 +117,7 @@ An educational real-time multiplayer game using <span>Socket.IO</span> to enjoy 
   #### Technique
 
   - Prevent a player from joining a room multiple times in order to gain abnormal scores. 
-  - When quick start mode activated, <span>Socket.IO</span> will check the concurrent users then guide players into 3 possible situations as follows:
+  - When quick start mode activated, Back-End server will check the concurrent users then guide players into 3 possible situations as follows:
     1. if there are no concurrent users, players will be directed to single player mode.
     2. if there are concurrent users with open rooms, players will be directed to a room as a guesser.
     3. if there are concurrent users with no open rooms, players will be directed to a room as a drawer.
