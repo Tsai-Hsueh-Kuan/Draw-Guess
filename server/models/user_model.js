@@ -16,12 +16,9 @@ const passwordencryption = function (password) {
 };
 
 const signUp = async (name, password) => {
-  const conn = await pool.getConnection();
   try {
-    await conn.query('START TRANSACTION');
-    const [nameCheck] = await conn.query('SELECT name FROM user WHERE name = ? FOR UPDATE', name);
+    const [nameCheck] = await pool.query('SELECT name FROM user WHERE name = ? FOR UPDATE', name);
     if (nameCheck.length > 0) {
-      await conn.query('COMMIT');
       return { error: 'Name Already Exists' };
     }
     const user = {
@@ -32,37 +29,32 @@ const signUp = async (name, password) => {
       heart: 0
     };
     const queryStr = 'INSERT INTO user SET ?';
-    const [result] = await conn.query(queryStr, user);
+    const [result] = await pool.query(queryStr, user);
     user.id = result.insertId;
     const accessToken = jwt.sign({
       id: user.id,
       name: user.name
     }, TOKEN_SECRET);
     user.access_token = accessToken;
-    await conn.query('COMMIT');
+
     return { user };
   } catch (error) {
-    await conn.query('ROLLBACK');
     console.log(error);
     return { error };
-  } finally {
-    conn.release();
   }
 };
 
 const signIn = async (name, password) => {
-  const conn = await pool.getConnection();
   try {
     if (name === 'test') {
       await pool.query('DELETE FROM draw.history where user_id = 76');
     }
-    await conn.query('START TRANSACTION');
-    const [nameCheck] = await conn.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
+
+    const [nameCheck] = await pool.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
     if (!nameCheck[0]) {
       return { error: 'please check your name' };
     }
     if (nameCheck[0].password !== passwordencryption(password)) {
-      await conn.query('COMMIT');
       return { error: 'Password is wrong' };
     }
     const user = {
@@ -77,14 +69,12 @@ const signIn = async (name, password) => {
     }, TOKEN_SECRET);
 
     user.access_token = accessToken;
-    await conn.query('COMMIT');
+
     return { user };
   } catch (error) {
     console.log(error);
-    await conn.query('ROLLBACK');
+
     return { error };
-  } finally {
-    conn.release();
   }
 };
 
