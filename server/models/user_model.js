@@ -17,7 +17,7 @@ const passwordencryption = function (password) {
 
 const signUp = async (name, password) => {
   try {
-    const [nameCheck] = await pool.query('SELECT name FROM user WHERE name = ? FOR UPDATE', name);
+    const [nameCheck] = await pool.query('SELECT name FROM user WHERE name = ?', name);
     if (nameCheck.length > 0) {
       return { error: 'Name Already Exists' };
     }
@@ -50,7 +50,7 @@ const signIn = async (name, password) => {
       await pool.query('DELETE FROM draw.history where user_id = 76');
     }
 
-    const [nameCheck] = await pool.query('SELECT * FROM user WHERE name = ? FOR UPDATE', name);
+    const [nameCheck] = await pool.query('SELECT * FROM user WHERE name = ?', name);
     if (!nameCheck[0]) {
       return { error: 'please check your name' };
     }
