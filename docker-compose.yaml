@@ -1,0 +1,23 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/node.conf:/etc/nginx/conf.d/node.template
+      # if run docker on local, comment /etc/ssl:/etc/ssl
+      - ./ssl/drawguess.tw.csr:/etc/nginx/ssl/ssl.csr
+      - ./ssl/drawguess.tw.key:/etc/nginx/ssl/ssl.key
+
+    ports:
+      - 80:80
+      # if run docker on local, comment 443:443
+      - 443:443
+    command: 'bash -c "cat /etc/nginx/conf.d/node.template > /etc/nginx/conf.d/default.conf && nginx -g ''daemon off;''"'
+  node:
+    ports:
+      - 3000:3000
+    build: .
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
