@@ -10,6 +10,7 @@
     "clipboard": "^2.0.8",
     "dotenv": "^9.0.1",
     "expect": "^27.0.2",
+    "express": "^4.17.1",
     "got": "^11.8.2",
     "has-binary2": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
