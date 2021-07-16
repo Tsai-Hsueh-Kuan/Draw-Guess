@@ -30,6 +30,7 @@
     "validator": "^13.6.0"
   },
   "devDependencies": {
+    "mocha": "^9.0.2",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "chai-json-equal": "^0.0.1",
